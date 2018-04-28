@@ -42,7 +42,7 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
 
 function getAnimeFigure(title, synonyms, chapter, image, malId) {
   function escape(s) {
-    return s.replace("'", "\\'");
+    return s ? s.replace("'", "\\'") : '';
   }
   return `<article>\
     <a href="#" onclick="watchAnime('${escape(title)}', '${escape(synonyms)}', ${chapter}, ${malId})">\
@@ -84,7 +84,7 @@ function emptyAnime() {
   planToWatch.empty();
 }
 
-function changeProfile(id) {
+function changeProfile(id, user) {
   var icon;
   if (id == undefined) {
     icon = "load-fig.gif";
@@ -92,6 +92,7 @@ function changeProfile(id) {
     icon = "mal.jpg";
   } else {
     icon = `https://myanimelist.cdn-dena.com/images/userimages/${id}.jpg`;
+    $("#profile-link").attr("href", `https://myanimelist.net/profile/${user}`);
   }
   $("#profile-icon").attr("src", icon);
 }
@@ -107,7 +108,7 @@ function searchUser() {
       if (mal) {
         animes = mal.anime;
         parseAnime();
-        changeProfile(mal.myinfo.user_id);
+        changeProfile(mal.myinfo.user_id, user);
       } else {
         alert(`User ${user} does not exists.`);
         changeProfile(0);
