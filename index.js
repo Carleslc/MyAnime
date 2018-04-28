@@ -30,7 +30,7 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
       //window.open(getUrl(), "_self");
     }).fail(function() {
       console.log('Failed');
-      if (synonyms.length() > 0) {
+      if (synonyms.length > 0) {
         openAnime(synonyms.pop());
       } else {
         //window.open(getUrl(originalTitle), "_self");
