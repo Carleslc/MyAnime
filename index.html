@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>My Anime</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+  <link rel="stylesheet" type="text/css" href="index.css" />
+</head>
+
+<body>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
+  <section class="lastcap">
+    <div class="user-header row justify-content-between align-items-center">
+      <div class="col-auto">
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <a href="https://myanimelist.net/">
+            <img src="mal.jpg" width="64" height="64" id="profile-icon">
+          </a>
+          </div>
+          <div class="col-auto">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" data-toggle="tooltip" data-placement="right" title="https://myanimelist.net/profile/" id="user-addon">@</span>
+              </div>
+              <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon3" id="search-user">
+              <div class="input-group-append">
+                <a href="#" onclick="searchUser()" class="btn btn-success" role="button">Search</a></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="form-row align-items-center">
+          <div class="col-auto">
+            <label class="mr-sm-2 selector-title" for="provider-selector">Provider</label>
+          </div>
+          <div class="col-auto">
+            <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="provider-selector">
+              <option value="myanimelist">MyAnimeList</option>
+              <option value="animeid" selected>AnimeID</option>
+              <option value="animemovil">AnimeMovil</option>
+              <option value="jkanime">jkanime</option>
+              <!--<option value="animeflv">AnimeFlv</option>
+              <option value="crunchyroll">Crunchyroll</option>
+              <option value="GogoAnime">GogoAnime</option>-->
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="title">Watching</div>
+    <div class="animes" id="watching"></div>
+    <div class="title">On Hold</div>
+    <div class="animes" id="on-hold"></div>
+    <div class="title">Plan to Watch</div>
+    <div class="animes" id="plan-to-watch"></div>
+  </section>
+
+  <script type="text/javascript">
+  $('[data-toggle="tooltip"]').tooltip();
+  </script>
+
+  <script type="text/javascript" src="index.js"></script>
+</body>
+
+</html>
