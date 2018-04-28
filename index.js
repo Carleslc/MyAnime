@@ -6,7 +6,10 @@ var animes = [];
 
 $('#provider-selector').on('change', function() { provider = $(this).val(); });
 
-function asUrl(s) {
+function asUrl(s, append) {
+  if (append) {
+    s = `${s}-${append}`;
+  }
   s = s.toLowerCase().replace(/\s/g, '-').replace(/[^0-9a-z-]/gi, '-').replace(/--/g, '-')
   return encodeURIComponent(s);
 }
@@ -14,8 +17,8 @@ function asUrl(s) {
 function watchAnime(originalTitle, synonyms, chapter, malId) {
   function getUrl(title) {
     if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}`;
-    else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title)}-${chapter}`;
-    else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title)}-${chapter}-sub-espanol/`;
+    else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
+    else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, `${chapter}-sub-espanol`)}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
   }
   synonyms = synonyms.split('; ').filter(s => s != null && s.trim() != "" && s.trim() != originalTitle);
