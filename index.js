@@ -38,8 +38,11 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
 }
 
 function getAnimeFigure(title, synonyms, chapter, image, malId) {
+  function escape(s) {
+    return s.replace("'", "\\'");
+  }
   return `<article>\
-    <a href="#" onclick="watchAnime('${title}', '${synonyms}', ${chapter}, ${malId})">\
+    <a href="#" onclick="watchAnime('${escape(title)}', '${escape(synonyms)}', ${chapter}, ${malId})">\
       <header>${title} #${chapter}</header>\
       <figure>\
         <img src="${image}" class="cover" alt="${title}" width="225" height="313">\
