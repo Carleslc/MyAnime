@@ -15,23 +15,6 @@ function asUrl(s, append) {
   return encodeURIComponent(s);
 }
 
-function existsUrl(url) {
-    var request = false;
-    if (window.XMLHttpRequest) {
-      request = new XMLHttpRequest;
-    } else if (window.ActiveXObject) {
-      request = new ActiveXObject("Microsoft.XMLHttp");
-    }
-    if (request) {
-      request.open("GET", url);
-      console.log(request.status);
-      if (request.status === 200) {
-        return true;
-      }
-    }
-    return false;
-}
-
 function watchAnime(originalTitle, synonyms, chapter, malId) {
   function getUrl(title) {
     if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}`;
@@ -51,14 +34,19 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
   function openAnime(title) {
     let url = getUrl(title);
     console.log(url);
-    if (existsUrl(url)) {
+    $.get(url, function(response) {
       console.log("OK");
       //window.open(url, "_self");
-    } else if (synonyms.length > 0) {
-      openAnime(synonyms.pop());
-    } else {
-      //window.open(getUrl(originalTitle), "_self");
-    }
+    }).fail(function(jqXHR, textStatus) {
+      console.log(jqXHR.status);
+      console.log(jqXHR.responseText);
+      else if (synonyms.length > 0) {
+        openAnime(synonyms.pop());
+      } else {
+        console.log("Failed, redirect to original");
+        //window.open(getUrl(originalTitle), "_self");
+      }
+    });
   }
   openAnime(originalTitle);
 }
