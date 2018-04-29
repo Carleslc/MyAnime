@@ -38,23 +38,13 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
       if (synonyms.length > 0) {
         openAnime(synonyms.pop());
       } else {
-        //window.open(url, "_self");
+        window.open(url, "_self");
       }
     }
-    $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(response, textStatus, xhr) {
-          console.log(xhr.status);
-          let finalUrl = xhr.responseURL;
-          console.log("Redirect: " + finalUrl);
-          if (provider == "animeid" && finalUrl != undefined && finalUrl.includes("?404")) {
-            failed();
-          } else {
-            console.log("OK");
-            //window.open(finalUrl, "_self");
-          }
-        }
+    $.get(function(response, textStatus, xhr) {
+      if (xhr.status == 200) {
+        window.open(finalUrl, "_self");
+      } else failed();
     }).fail(function(xhr, textStatus, errorThrown) {
       console.log("Failed");
       console.log(xhr.status);
