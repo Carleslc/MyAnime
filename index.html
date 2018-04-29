@@ -22,26 +22,26 @@
         <div class="row align-items-center">
           <div class="col-auto">
             <a href="https://myanimelist.net/" id="profile-link">
-            <img src="mal.jpg" width="64" height="64" id="profile-icon">
-          </a>
+              <img src="mal.jpg" width="64" height="64" id="profile-icon">
+            </a>
           </div>
           <div class="col-auto">
-            <div class="input-group">
+            <form action="#" onsubmit="searchUser()" class="input-group" id="search-user-form">
               <div class="input-group-prepend">
                 <span class="input-group-text" data-toggle="tooltip" data-placement="right" title="https://myanimelist.net/profile/" id="user-addon">@</span>
               </div>
               <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon3" id="search-user">
               <div class="input-group-append">
-                <a href="#" onclick="searchUser()" class="btn btn-success" role="button">Search</a></a>
+                <a href="#" id="submitBtn" onclick="searchUser()" class="btn btn-success" role="button">Search</a>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
       <div class="col-auto">
         <div class="form-row align-items-center">
           <div class="col-auto">
-            <label class="mr-sm-2 selector-title" for="provider-selector">Provider</label>
+            <label class="mr-sm-2 selector-title" for="provider-selector" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Select which provider must be opened when clicking over a chapter, either in Spanish (ES) or English (EN).<br><br>Feeling Lucky options are based on search engine, trying to get a proper streamer, but it doesn't mean it always work.<br><br>If selected provider cannot find a chapter try to use alternative titles, or change the provider.">Provider</label>
           </div>
           <div class="col-auto">
             <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="provider-selector">
@@ -60,7 +60,7 @@
         </div>
       </div>
       <div class="col-auto">
-        <label class="mr-sm-2 selector-title" for="alternatives">Alternative Titles</label>
+        <label class="mr-sm-2 selector-title" for="alternatives" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Sometimes enabling alternative titles the chapters are recognized by providers that identify the required anime by an alternative title.<br><br>Example: 'Mushi-Shi' in AnimeID instead of 'Mushishi', the original title from MyAnimeList.">Alternative Titles</label>
         <input type="checkbox" value="" id="alternatives">
       </div>
       <div class="col-auto">

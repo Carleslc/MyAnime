@@ -1,24 +1,82 @@
+let storage = typeof(Storage) !== "undefined" ? {
+  get: function(tag) {
+    return localStorage.getItem(tag);
+  },
+  with: function(tag, callback) {
+    let value = this.get(tag);
+    if (value !== null) {
+      callback(value);
+    }
+  },
+  set: function(tag, value) {
+    localStorage.setItem(tag, value);
+  },
+  remove: function(tag) {
+    localStorage.removeItem(tag);
+  }
+} : {
+  get: function(tag) { return null; },
+  with: function(tag, callback) {},
+  set: function(tag, value) {},
+  remove: function(tag) {}
+};
+
 let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
-var provider = $('#provider-selector').val();
-var useAlternativeTitles = $('#alternatives').is(':checked');
+var provider;
+var filter;
+var useAlternativeTitles;
 var animes = [];
 
-$('#provider-selector').on('change', function() { provider = $(this).val(); });
-$('#filter-selector').on('change', parseAnime);
-$('#alternatives').on('change', alternativesChange);
+$(document).ready(function() {
+  (function loadSettings() {
+    // Provider
+    storage.with("provider", function(provider) {
+      $('#provider-selector').val(provider).change();
+    });
+    provider = $('#provider-selector').val();
 
-function alternativesChange() {
-  useAlternativeTitles = $('#alternatives').is(':checked');
-  parseAnime();
-}
+    $('#provider-selector').on('change', function() {
+      provider = $(this).val();
+      storage.set("provider", provider);
+    });
+
+    // Filter
+    storage.with("filter", function(filter) {
+      $('#filter-selector').val(filter).change();
+    });
+    filter = parseInt($('#filter-selector').val());
+
+    $('#filter-selector').on('change', function() {
+      filter = parseInt($('#filter-selector').val());
+      storage.set("filter", filter);
+      parseAnime();
+    });
+
+    // Alternative Titles
+    storage.with("alternatives", function(alternatives) {
+      $('#alternatives').prop('checked', alternatives == 'true');
+    });
+    useAlternativeTitles = $('#alternatives').is(':checked');
+
+    $('#alternatives').on('change', function() {
+      useAlternativeTitles = $('#alternatives').is(':checked');
+      storage.set("alternatives", useAlternativeTitles);
+      parseAnime();
+    });
+
+    // User
+    storage.with("user", function(user) {
+      $('#search-user').val(user).change();
+      searchUser();
+    });
+  })();
+});
 
 function getTitle(originalTitle, synonymsRaw) {
   if (useAlternativeTitles && synonymsRaw) {
-    console.log(originalTitle);
     let synonyms = synonymsRaw.split('; ').filter(s => s != null && s.trim() != "" && s.trim() != originalTitle);
-    console.log("Synonyms: " + synonyms);
     if (synonyms.length > 0) {
       let alt = synonyms[synonyms.length - 1];
       if (alt.length > 3) return alt;
@@ -76,7 +134,6 @@ function emptyAnime() {
 
 function parseAnime() {
   emptyAnime();
-  let filter = parseInt($('#filter-selector').val());
   for (anime of animes) {
     let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
     if (status != 2 && status != 4) {
@@ -110,6 +167,7 @@ function changeProfile(id, user) {
   } else {
     icon = `https://myanimelist.cdn-dena.com/images/userimages/${id}.jpg`;
     $("#profile-link").attr("href", `https://myanimelist.net/profile/${user}`);
+    storage.set("user", user);
   }
   $("#profile-icon").attr("src", icon);
 }
@@ -131,4 +189,9 @@ function searchUser() {
       }
     });
   }
+  return false;
 }
+
+$("#search-user-form").submit(function(e) {
+    e.preventDefault(); // Don't reload
+});
