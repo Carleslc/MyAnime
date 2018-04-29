@@ -51,11 +51,12 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
     let url = getUrl(title);
     console.log(url);
     if (existsUrl(url)) {
-      window.open(url, "_self");
+      console.log("OK");
+      //window.open(url, "_self");
     } else if (synonyms.length > 0) {
       openAnime(synonyms.pop());
     } else {
-      window.open(getUrl(originalTitle), "_self");
+      //window.open(getUrl(originalTitle), "_self");
     }
   }
   openAnime(originalTitle);
