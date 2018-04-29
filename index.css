@@ -552,8 +552,8 @@ aside#sky .a160x600.fix {
 }
 
 #user-pic {
-  width: 24px;
-  height: 24px;
+  width: 64px;
+  height: 64px;
   position: relative;
   top: 6px;
   border-radius: 3px;
