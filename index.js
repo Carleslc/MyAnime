@@ -37,7 +37,7 @@ function asUrl(s, append) {
 
 function watchAnime(title, chapter, malId) {
   function getUrl() {
-    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}`;
+    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/-/video`;
     else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} inurl:${chapter} online español`)
     else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} inurl:${chapter} online english`)
     else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
