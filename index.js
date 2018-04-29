@@ -100,14 +100,17 @@ function asUrl(s, append) {
   return encodeURIComponent(s);
 }
 
-function watchAnime(title, chapter, malId) {
+function watchAnime(title, chapter, malId, movie) {
+  function chapterIfNotMovie() {
+    return movie ? '' : `${chapter}-`;
+  }
   function getUrl() {
     if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/-/video`;
     else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} ${chapter} online español -english`);
     else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} episode ${chapter} online english anime -español`);
     else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
     else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net inurl:` + asUrl(title, chapter));
-    else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, `${chapter}-sub-espanol`)}/`;
+    else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, chapterIfNotMovie() + "sub-espanol")}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
     else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
     else if (provider == "crunchyroll") return `https://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
@@ -118,13 +121,13 @@ function watchAnime(title, chapter, malId) {
   window.open(url);
 }
 
-function getAnimeFigure(title, synonyms, chapter, image, malId) {
+function getAnimeFigure(title, synonyms, chapter, image, malId, movie) {
   function escape(s) {
     return s ? s.replace(/'/g, "\\'") : '';
   }
   title = getTitle(title, synonyms);
   return `<article>\
-    <a href="#" onclick="watchAnime('${escape(title)}', ${chapter}, ${malId})">\
+    <a href="#" onclick="watchAnime('${escape(title)}', ${chapter}, ${malId}, ${movie})">\
       <header>${title} #${chapter}</header>\
       <figure>\
         <img src="${image}" class="cover" alt="${title}" width="225" height="313">\
@@ -158,7 +161,7 @@ function parseAnime() {
           section = planToWatch;
         }
         if (section) {
-          section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, anime.series_image, anime.series_animedb_id));
+          section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, anime.series_image, anime.series_animedb_id, type == 3));
         }
       }
     }
