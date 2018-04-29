@@ -551,31 +551,15 @@ aside#sky .a160x600.fix {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, .3)
 }
 
-#user-pic {
+#profile-icon {
   width: 64px;
   height: 64px;
   position: relative;
-  top: 6px;
   border-radius: 3px;
   box-shadow: 0 1px 1px #222;
   display: inline-block;
   border: 0;
   background-color: rgba(255, 255, 255, .2)
-}
-
-#user-link {
-  display: inline-block;
-  position: relative;
-  height: 37px;
-  vertical-align: top;
-  text-transform: none;
-  padding-left: 6px;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 11px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  max-width: 200px
 }
 
 #logout,
