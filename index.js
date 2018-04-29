@@ -5,6 +5,7 @@ var provider = $('#provider-selector').val();
 var animes = [];
 
 $('#provider-selector').on('change', function() { provider = $(this).val(); });
+$('#filter-selector').on('change', parseAnime);
 
 function asUrl(s, append) {
   if (append) {
@@ -14,35 +15,55 @@ function asUrl(s, append) {
   return encodeURIComponent(s);
 }
 
+function existsUrl(url) {
+    var request = false;
+    if (window.XMLHttpRequest) {
+      request = new XMLHttpRequest;
+    } else if (window.ActiveXObject) {
+      request = new ActiveXObject("Microsoft.XMLHttp");
+    }
+    if (request) {
+      request.open("GET", url);
+      if (request.status == 200) {
+        return true;
+      }
+    }
+    return false;
+}
+
 function watchAnime(originalTitle, synonyms, chapter, malId) {
   function getUrl(title) {
     if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}`;
     else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
+    else if (provider == "animeflv") {
+      //return `https://www.google.com/search?q=${encodeURI(`site:animeflv.net ${title} inurl:${chapter}`)}&btnI`;
+      return "https://duckduckgo.com/?q=!ducky+" + encodeURI(`site:animeflv.net ${title} inurl:${chapter}`)
+      //return `https://animeflv.net/browse?q=${encodeURI(`${title} ${chapter}`)}`;
+    }
     else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, `${chapter}-sub-espanol`)}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
+    else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
+    else if (provider == "crunchyroll") return `http://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
+    else if (provider == "netflix") return `https://www.netflix.com/search?q=${encodeURI(title)}`;
   }
   synonyms = synonyms.split('; ').filter(s => s != null && s.trim() != "" && s.trim() != originalTitle);
   function openAnime(title) {
     let url = getUrl(title);
-    console.log(`Url: ${url}`);
-    $.get(url, function(response) {
-      console.log(response);
-      //window.open(getUrl(), "_self");
-    }).fail(function() {
-      console.log('Failed');
-      if (synonyms.length > 0) {
-        openAnime(synonyms.pop());
-      } else {
-        //window.open(getUrl(originalTitle), "_self");
-      }
-    });
+    console.log(url);
+    if (existsUrl(url)) {
+      window.open(url, "_self");
+    } else if (synonyms.length > 0) {
+      openAnime(synonyms.pop());
+    } else {
+      window.open(getUrl(originalTitle), "_self");
+    }
   }
   openAnime(originalTitle);
 }
 
 function getAnimeFigure(title, synonyms, chapter, image, malId) {
   function escape(s) {
-    return s ? s.replace("'", "\\'") : '';
+    return s ? s.replace(/'/g, "\\'") : '';
   }
   return `<article>\
     <a href="#" onclick="watchAnime('${escape(title)}', '${escape(synonyms)}', ${chapter}, ${malId})">\
@@ -54,14 +75,23 @@ function getAnimeFigure(title, synonyms, chapter, image, malId) {
   </article>`;
 }
 
+function emptyAnime() {
+  watching.empty();
+  onHold.empty();
+  planToWatch.empty();
+}
+
 function parseAnime() {
+  emptyAnime();
+  let filter = parseInt($('#filter-selector').val());
   for (anime of animes) {
     let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
     if (status != 2 && status != 4) {
       let animeStatus = anime.series_status; // 1 - Currently Airing, 2 - Finished, 3 - Not yet aired
+      let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special
       let episodes = parseInt(anime.series_episodes);
       let nextChapter = parseInt(anime.my_watched_episodes) + 1;
-      if (animeStatus != 3 && (episodes == 0 || nextChapter <= episodes)) {
+      if (animeStatus != 3 && (episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == type)) {
         var section;
         if (status == 1) {
           section = watching;
@@ -76,12 +106,6 @@ function parseAnime() {
       }
     }
   }
-}
-
-function emptyAnime() {
-  watching.empty();
-  onHold.empty();
-  planToWatch.empty();
 }
 
 function changeProfile(id, user) {
@@ -101,7 +125,6 @@ function searchUser() {
   let user = $("#search-user").val();
   if (user) {
     changeProfile();
-    emptyAnime();
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
     $.get(`https://kuristina.herokuapp.com/anime/${user}.json`, function(response) {
       let mal = response.myanimelist;
