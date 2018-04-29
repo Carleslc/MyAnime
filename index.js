@@ -50,7 +50,7 @@ function watchAnime(title, chapter, malId) {
   }
   let url = getUrl();
   console.log(url);
-  window.open(url, "_self");
+  window.open(url);
 }
 
 function getAnimeFigure(title, synonyms, chapter, image, malId) {
