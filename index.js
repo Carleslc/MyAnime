@@ -2,10 +2,30 @@ let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
 var provider = $('#provider-selector').val();
+var useAlternativeTitles = $('#alternatives').is(':checked');
 var animes = [];
 
 $('#provider-selector').on('change', function() { provider = $(this).val(); });
 $('#filter-selector').on('change', parseAnime);
+$('#alternatives').on('change', alternativesChange);
+
+function alternativesChange() {
+  useAlternativeTitles = $('#alternatives').is(':checked');
+  parseAnime();
+}
+
+function getTitle(originalTitle, synonymsRaw) {
+  if (useAlternativeTitles && synonymsRaw) {
+    console.log(originalTitle);
+    let synonyms = synonymsRaw.split('; ').filter(s => s != null && s.trim() != "" && s.trim() != originalTitle);
+    console.log("Synonyms: " + synonyms);
+    if (synonyms.length > 0) {
+      let alt = synonyms[synonyms.length - 1];
+      if (alt.length > 3) return alt;
+    }
+  }
+  return originalTitle;
+}
 
 function asUrl(s, append) {
   if (append) {
@@ -15,8 +35,8 @@ function asUrl(s, append) {
   return encodeURIComponent(s);
 }
 
-function watchAnime(originalTitle, synonyms, chapter, malId) {
-  function getUrl(title) {
+function watchAnime(title, chapter, malId) {
+  function getUrl() {
     if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}`;
     else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} inurl:${chapter} online español`)
     else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} inurl:${chapter} online english`)
@@ -28,39 +48,18 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
     else if (provider == "crunchyroll") return `http://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
     else if (provider == "netflix") return `https://www.netflix.com/search?q=${encodeURI(title)}`;
   }
-  synonyms = synonyms.split('; ').filter(s => s != null && s.trim() != "" && s.trim() != originalTitle);
-  console.log("Synonyms: " + synonyms);
-  function openAnime(title) {
-    let url = getUrl(title);
-    console.log(url);
-    function failed(status) {
-      console.log("Failed");
-      console.log(status);
-      if (synonyms.length > 0) {
-        openAnime(synonyms.pop());
-      } else {
-        console.log("Open " + url);
-        //window.open(url, "_self");
-      }
-    }
-    $.get(url, function(response, textStatus, xhr) {
-      if (xhr.status == 200) {
-        console.log("OK");
-        //window.open(finalUrl, "_self");
-      } else failed(xhr.status);
-    }).fail(function(xhr, textStatus, errorThrown) {
-      failed(xhr.status);
-    });
-  }
-  openAnime(originalTitle);
+  let url = getUrl();
+  console.log(url);
+  window.open(url, "_self");
 }
 
 function getAnimeFigure(title, synonyms, chapter, image, malId) {
   function escape(s) {
     return s ? s.replace(/'/g, "\\'") : '';
   }
+  title = getTitle(title, synonyms);
   return `<article>\
-    <a href="#" onclick="watchAnime('${escape(title)}', '${escape(synonyms)}', ${chapter}, ${malId})">\
+    <a href="#" onclick="watchAnime('${escape(title)}', ${chapter}, ${malId})">\
       <header>${title} #${chapter}</header>\
       <figure>\
         <img src="${image}" class="cover" alt="${title}" width="225" height="313">\
