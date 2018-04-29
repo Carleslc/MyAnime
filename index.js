@@ -47,7 +47,7 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
         type: 'GET',
         xhr: function() {
           return xhr;
-        }
+        },
         success: function(response) {
           console.log(xhr.status);
           let finalUrl = xhr.responseURL;
