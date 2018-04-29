@@ -18,9 +18,10 @@ function asUrl(s, append) {
 function watchAnime(originalTitle, synonyms, chapter, malId) {
   function getUrl(title) {
     if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}`;
-    else if (provider == "lucky") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter}`)
+    else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} inurl:${chapter} online español`)
+    else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} inurl:${chapter} online english`)
     else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
-    else if (provider == "animeflv") return `https://animeflv.net/browse?q=${encodeURI(`${title} ${chapter}`)}`;
+    else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter}`)
     else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, `${chapter}-sub-espanol`)}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
     else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
