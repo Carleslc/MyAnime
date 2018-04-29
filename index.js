@@ -18,12 +18,9 @@ function asUrl(s, append) {
 function watchAnime(originalTitle, synonyms, chapter, malId) {
   function getUrl(title) {
     if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}`;
+    else if (provider == "lucky") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter}`)
     else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
-    else if (provider == "animeflv") {
-      //return `https://www.google.com/search?q=${encodeURI(`site:animeflv.net ${title} inurl:${chapter}`)}&btnI`;
-      return "https://duckduckgo.com/?q=!ducky+" + encodeURI(`site:animeflv.net ${title} inurl:${chapter}`)
-      //return `https://animeflv.net/browse?q=${encodeURI(`${title} ${chapter}`)}`;
-    }
+    else if (provider == "animeflv") return `https://animeflv.net/browse?q=${encodeURI(`${title} ${chapter}`)}`;
     else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, `${chapter}-sub-espanol`)}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
     else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
@@ -31,6 +28,7 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
     else if (provider == "netflix") return `https://www.netflix.com/search?q=${encodeURI(title)}`;
   }
   synonyms = synonyms.split('; ').filter(s => s != null && s.trim() != "" && s.trim() != originalTitle);
+  console.log("Synonyms: " + synonyms);
   function openAnime(title) {
     let url = getUrl(title);
     console.log(url);
