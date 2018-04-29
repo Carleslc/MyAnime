@@ -45,24 +45,24 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
     $.ajax({
         url: url,
         type: 'GET',
-        success: function(response, textStatus, xhr) {
+        xhr: function() {
+          return xhr;
+        }
+        success: function(response) {
           console.log(xhr.status);
-          console.log(xhr.responseText);
           let finalUrl = xhr.responseURL;
           console.log("Redirect: " + finalUrl);
-          if (provider == "animeid" && finalUrl.includes("?404")) {
+          if (provider == "animeid" && finalUrl != undefined && finalUrl.includes("?404")) {
             failed();
           } else {
             console.log("OK");
             //window.open(finalUrl, "_self");
           }
-        },
-        error: function(xhr, textStatus, errorThrown) {
-          console.log("Failed");
-          console.log(xhr.status);
-          console.log(xhr.responseText);
-          failed();
         }
+    }).fail(function(xhr, textStatus, errorThrown) {
+      console.log("Failed");
+      console.log(xhr.status);
+      failed();
     });
   }
   openAnime(originalTitle);
