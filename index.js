@@ -38,12 +38,14 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
       if (synonyms.length > 0) {
         openAnime(synonyms.pop());
       } else {
-        window.open(url, "_self");
+        console.log("Open " + url);
+        //window.open(url, "_self");
       }
     }
     $.get(function(response, textStatus, xhr) {
       if (xhr.status == 200) {
-        window.open(finalUrl, "_self");
+        console.log("OK");
+        //window.open(finalUrl, "_self");
       } else failed();
     }).fail(function(xhr, textStatus, errorThrown) {
       console.log("Failed");
