@@ -103,7 +103,7 @@ function watchAnime(title, chapter, malId) {
     else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, `${chapter}-sub-espanol`)}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
     else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
-    else if (provider == "crunchyroll") return `http://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
+    else if (provider == "crunchyroll") return `https://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
     else if (provider == "netflix") return `https://www.netflix.com/search?q=${encodeURI(title)}`;
   }
   let url = getUrl();
