@@ -34,7 +34,9 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
   function openAnime(title) {
     let url = getUrl(title);
     console.log(url);
-    function failed() {
+    function failed(status) {
+      console.log("Failed");
+      console.log(status);
       if (synonyms.length > 0) {
         openAnime(synonyms.pop());
       } else {
@@ -42,15 +44,13 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
         //window.open(url, "_self");
       }
     }
-    $.get(function(response, textStatus, xhr) {
+    $.get(url, function(response, textStatus, xhr) {
       if (xhr.status == 200) {
         console.log("OK");
         //window.open(finalUrl, "_self");
-      } else failed();
+      } else failed(xhr.status);
     }).fail(function(xhr, textStatus, errorThrown) {
-      console.log("Failed");
-      console.log(xhr.status);
-      failed();
+      failed(xhr.status);
     });
   }
   openAnime(originalTitle);
