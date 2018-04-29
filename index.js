@@ -31,6 +31,13 @@ var animes = [];
 
 $(document).ready(function() {
   (function loadSettings() {
+    // Information
+    let recurrentUser = storage.get("recurrentUser");
+    if (!recurrentUser) {
+      $('#info').modal('show');
+      storage.set("recurrentUser", true);
+    }
+
     // Provider
     storage.with("provider", function(provider) {
       $('#provider-selector').val(provider).change();
