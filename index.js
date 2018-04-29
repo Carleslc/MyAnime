@@ -24,7 +24,8 @@ function existsUrl(url) {
     }
     if (request) {
       request.open("GET", url);
-      if (request.status == 200) {
+      console.log(request.status);
+      if (request.status === 200) {
         return true;
       }
     }
