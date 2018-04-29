@@ -38,17 +38,13 @@ function watchAnime(originalTitle, synonyms, chapter, malId) {
       if (synonyms.length > 0) {
         openAnime(synonyms.pop());
       } else {
-        console.log("Redirect to original");
-        //window.open(getUrl(originalTitle), "_self");
+        //window.open(url, "_self");
       }
     }
     $.ajax({
         url: url,
         type: 'GET',
-        xhr: function() {
-          return xhr;
-        },
-        success: function(response) {
+        success: function(response, textStatus, xhr) {
           console.log(xhr.status);
           let finalUrl = xhr.responseURL;
           console.log("Redirect: " + finalUrl);
