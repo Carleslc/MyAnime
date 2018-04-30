@@ -226,14 +226,18 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
     };
     $("#set-password").modal('show');
   } else {
+    $.support.cors = true;
     $.ajax({
-      url: `https://myanimelist.net/api/animelist/update/${malId}.xml`,
+      url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`,
       cache: false,
       type: 'POST',
       data: `<?xml version="1.0" encoding="UTF-8"?><entry><episode>${chapter}</episode></entry>`,
+      contentType: "application/xml",
+      crossDomain: true,
       password: password,
       xhrFields: { withCredentials: true },
       beforeSend: function(xhr) {
+        xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
       },
       success: function(response, textStatus, xhr) {
