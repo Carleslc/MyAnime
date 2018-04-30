@@ -55,6 +55,8 @@ var useAlternativeTitles;
 var animes = [];
 
 $(document).ready(function() {
+  $.support.cors = true;
+
   (function loadSettings() {
     // Information
     let recurrentUser = storage.get("recurrentUser");
@@ -197,6 +199,13 @@ function parseAnime() {
   }
 }
 
+function addBasicHeaders(xhr) {
+  xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+  xhr.setRequestHeader("User-Agent", "('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) '\
+            'AppleWebKit/537.36 (KHTML, like Gecko) '\
+            'Chrome/34.0.1847.116 Safari/537.36')");
+}
+
 function changeProfile(id, user) {
   var icon;
   if (id == undefined) {
@@ -217,15 +226,25 @@ function searchUser() {
     changeProfile();
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
-    $.get(`https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`, function(data, textStatus, xhr) {
-      response = fromXML(xhr.responseText);
-      let mal = response.myanimelist;
-      if (mal) {
-        animes = mal.anime || [];
-        parseAnime();
-        changeProfile(mal.myinfo.user_id, user);
-      } else {
-        alert(`User ${user} does not exists.`);
+    $.ajax({
+      url: `https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`,
+      type: 'GET',
+      cache: false,
+      crossDomain: true,
+      beforeSend: addBasicHeaders,
+      success: function(data, textStatus, xhr) {
+        response = fromXML(xhr.responseText);
+        let mal = response.myanimelist;
+        if (mal) {
+          animes = mal.anime || [];
+          parseAnime();
+          changeProfile(mal.myinfo.user_id, user);
+        } else {
+          alert(`User ${user} does not exists.`);
+          changeProfile(0);
+        }
+      },
+      error: function(xhr) {
         changeProfile(0);
       }
     });
@@ -280,7 +299,6 @@ function updateChapter(event, title, chapter, maxChapter, score, malId) {
       entry.date_finished = formatToday();
     }
 
-    $.support.cors = true;
     $.ajax({
       url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`,
       cache: false,
@@ -291,11 +309,8 @@ function updateChapter(event, title, chapter, maxChapter, score, malId) {
       //password: password,
       //xhrFields: { withCredentials: true },
       beforeSend: function(xhr) {
-        xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+        addBasicHeaders(xhr);
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
-        xhr.setRequestHeader("User-Agent", "('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) '\
-                  'AppleWebKit/537.36 (KHTML, like Gecko) '\
-                  'Chrome/34.0.1847.116 Safari/537.36')");
       },
       success: function(response, textStatus, xhr) {
         if (!response.toLowerCase().includes('error')) {
