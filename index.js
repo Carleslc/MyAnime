@@ -257,11 +257,15 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    $.get('https://myanimelist.net/api/account/verify_credentials.xml', function(data, status, xhr) {
-      storage.set('password', password);
-      $("#set-password").modal('hide');
-      checkpoint();
-    }).failed(function(xhr) {
+    $.get('https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/account/verify_credentials.xml', function(data, status, xhr) {
+      if (xhr.status == 200) {
+        storage.set('password', password);
+        $("#set-password").modal('hide');
+        checkpoint();
+      } else {
+        alert('Invalid Credentials');
+      }
+    }).fail(function(xhr) {
       alert('Invalid Credentials');
     });
   }
