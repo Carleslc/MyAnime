@@ -260,6 +260,7 @@ function updatePassword() {
     $.ajax({
       url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/account/verify_credentials.xml`,
       type: 'GET',
+      cache: false,
       crossDomain: true,
       beforeSend: addBasicHeaders,
       success: function(data, textStatus, xhr) {
@@ -272,7 +273,7 @@ function updatePassword() {
         }
       },
       error: function(xhr) {
-        alert('Invalid Password');
+        alert(xhr.responseText);
       }
     });
   }
