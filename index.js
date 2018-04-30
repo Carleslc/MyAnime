@@ -227,7 +227,7 @@ function searchUser() {
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
     $.ajax({
-      url: `https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`,
+      url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`,
       type: 'GET',
       cache: false,
       crossDomain: true,
