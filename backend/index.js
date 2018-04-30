@@ -1,5 +1,6 @@
 const express = require('express')
 const httpRequest = require("request")
+const cors = require('cors')
 const app = express()
 const port = 8082
 
@@ -10,6 +11,8 @@ const popura = require('popura')
 var bodyParser = require('body-parser')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cors())
 
 function auth(request, response, next) {
     function unauthorized(msg) {
