@@ -48,14 +48,14 @@
           </div>
           <div class="col-auto">
             <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="provider-selector">
-              <option value="myanimelist" selected>MyAnimeList</option>
+              <option value="myanimelist">MyAnimeList</option>
               <option value="lucky-es">Voy a tener suerte (ES)</option>
               <option value="animeflv">AnimeFlv (ES)</option>
               <option value="animemovil">AnimeMovil (ES)</option>
               <option value="animeid">AnimeID (ES)</option>
               <option value="jkanime">jkanime (ES)</option>
               <option value="lucky-en">I'm Feeling Lucky (EN)</option>
-              <option value="twist">Twist (EN)</option>
+              <option value="twist" selected>Twist (EN)</option>
               <option value="gogoanime">GogoAnime (EN)</option>
               <option value="crunchyroll">Crunchyroll</option>
               <option value="netflix">Netflix</option>
@@ -86,9 +86,18 @@
         </div>
       </div>
       <div class="col-auto">
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#info" aria-label="Info">
-          <i class="fas fa-info-circle"></i>
-        </a>
+        <div class="row align-items-center">
+          <div class="col-6">
+            <a href="https://notify.moe/calendar" target="_blank" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Do you have some episodes in your Watching list that are not aired yet? See here when they will be available.">
+              <i class="fas fa-calendar"></i>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#info" aria-label="Info">
+              <i class="fas fa-info-circle"></i>
+            </a>
+          </div>
+        </div>
         <div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="infoTitle" aria-hidden="true">
           <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -97,17 +106,15 @@
               </div>
               <div class="modal-body">
                 <!-- BEGIN INFORMATION -->
-                <p>Watch your favourite animes with your usual provider, synchronized with <a href="https://myanimelist.net/">MyAnimeList</a>.</p>
+                <p>Watch your favourite animes with your usual provider, synchronized with <a href="https://myanimelist.net/" target="_blank">MyAnimeList</a>.</p>
                 <h4 id="why-to-use-">Why to use?</h4>
                 <p>This is a shortcut to access your preferred anime series with your preferred providers, all in sync with the selected animes in your MyAnimeList profile.</p>
                 <p>Avoid surfing the internet or the providers looking for your episodes, just seat in and enjoy. </p>
                 <p>With this single page you can test several providers and update your MyAnimeList episodes easily. It also skips some advertising from providers&#39; home sites, because you&#39;ll access to the episode page directly.</p>
                 <h4 id="how-to-use">How to use</h4>
-                <p>Enter your MyAnimeList username <em>(<a href="https://myanimelist.net/profile/USERNAME">https://myanimelist.net/profile/USERNAME</a>)</em> and choose one of your animes to watch, select the provider and enjoy your episode.</p>
+                <p>Enter your MyAnimeList username <em>(https://myanimelist.net/profile/USERNAME)</em> and choose one of your animes to watch, select the provider and enjoy your episode.</p>
                 <p>When updating your watched episodes in MyAnimeList then the next episode will be shown, waiting for you to be watched.</p>
                 <p>Click on &quot;Next&quot; at the top right corner of an episode to mark it as watched in your MyAnimeList profile.</p>
-                <h5 id="calendar">Calendar</h4>
-                <p><em>Do you have some episodes in your Watching list that are not aired yet? See <a href="https://notify.moe/calendar">here</a> when they will be available.</em></p>
                 <h4 id="features">Features</h4>
                 <ul>
                   <li>Cover images and links for the series in which you are interested.</li>
@@ -119,22 +126,22 @@
                 </ul>
                 <h4 id="supported-providers">Supported providers</h4>
                 <ul>
-                  <li><a href="https://myanimelist.net/">MyAnimeList</a></li>
+                  <li><a href="https://myanimelist.net/" target="_blank">MyAnimeList</a></li>
                   <li>🇪🇸 Voy a tener suerte</li>
-                  <li>🇪🇸 <a href="https://www.animeflv.net">AnimeFlv</a></li>
-                  <li>🇪🇸 <a href="https://animemovil.com/">AnimeMovil</a></li>
-                  <li>🇪🇸 <a href="https://www.animeid.tv/">AnimeID</a></li>
-                  <li>🇪🇸 <a href="http://jkanime.net/">jkanime</a></li>
+                  <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>
+                  <li>🇪🇸 <a href="https://animemovil.com/" target="_blank">AnimeMovil</a></li>
+                  <li>🇪🇸 <a href="https://www.animeid.tv/" target="_blank">AnimeID</a></li>
+                  <li>🇪🇸 <a href="http://jkanime.net/" target="_blank">jkanime</a></li>
                   <li>🇬🇧 I&#39;m Feeling Lucky</li>
-                  <li>🇬🇧 <a href="https://twist.moe/">Twist</a></li>
-                  <li>🇬🇧 <a href="https://www2.gogoanime.se/">GogoAnime</a></li>
-                  <li><a href="https://www.crunchyroll.com/">Crunchyroll</a></li>
-                  <li><a href="https://www.netflix.com/">Netflix</a></li>
+                  <li>🇬🇧 <a href="https://twist.moe/" target="_blank">Twist</a></li>
+                  <li>🇬🇧 <a href="https://www2.gogoanime.se/" target="_blank">GogoAnime</a></li>
+                  <li><a href="https://www.crunchyroll.com/" target="_blank">Crunchyroll</a></li>
+                  <li><a href="https://www.netflix.com/" target="_blank">Netflix</a></li>
                 </ul>
                 <p>Providers without language indicator are locale based.</p>
-                <p>Feeling Lucky options are based on search engine (<em><a href="https://duckduckgo.com/">DuckDuckGo</a> I&#39;m Feeling Ducky</em>), trying to get a proper streamer, but it doesn&#39;t mean it always work. Sometimes it redirects to a non-related page, or it is in another language.</p>
+                <p>Feeling Lucky options are based on search engine (<em><a href="https://duckduckgo.com/" target="_blank">DuckDuckGo</a> I&#39;m Feeling Ducky</em>), trying to get a proper streamer, but it doesn&#39;t mean it always work. Sometimes it redirects to a non-related page, or it is in another language.</p>
                 <p>If selected provider cannot find a episode try to use alternative titles option, or change the provider.</p>
-                <p><em>Your favourite provider isn&#39;t listed here? Please, open an issue <a href="http://github.com/Carleslc/MyAnime/issues">here</a> and we will add it!</em></p>
+                <p><em>Your favourite provider isn&#39;t listed here? Please, open an issue <a href="http://github.com/Carleslc/MyAnime/issues" target="_blank">here</a> and we will add it!</em></p>
                 <h3 id="disclaimer">Disclaimer</h3>
                 <p>This webpage does not host any video, it is a client-side website, just linking and sharing content from external providers. Official and legal providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.</p>
                 <!-- END INFORMATION -->
