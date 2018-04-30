@@ -291,7 +291,7 @@ function updateChapter(event, title, chapter, maxChapter, score, malId) {
       //password: password,
       //xhrFields: { withCredentials: true },
       beforeSend: function(xhr) {
-        //xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
         xhr.setRequestHeader("User-Agent", "('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) '\
                   'AppleWebKit/537.36 (KHTML, like Gecko) '\
