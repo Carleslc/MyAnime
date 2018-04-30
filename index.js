@@ -226,6 +226,9 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
     };
     $("#set-password").modal('show');
   } else {
+    function completeAnime() {
+      // TODO
+    }
     $.support.cors = true;
     $.ajax({
       url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`,
@@ -244,7 +247,7 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
         alert(`Updated ${title} to episode ${chapter}.`);
         console.log(response);
         if (chapter == maxChapter) {
-          // TODO: Complete anime
+          completeAnime();
         }
       },
       error: function(xhr, textStatus, errorThrown) {
