@@ -2,7 +2,7 @@ const express = require('express')
 const httpRequest = require("request")
 const cors = require('cors')
 const app = express()
-const port = 1337 // proxy to 8082
+const port = 8080
 
 const basicAuth = require('basic-auth')
 

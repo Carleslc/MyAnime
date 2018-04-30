@@ -320,7 +320,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     loading(true);
 
     $.ajax({
-      url: `http://139.59.158.246/update`,
+      url: `https://myanime-app.appspot.com/update`,
       cache: false,
       type: 'POST',
       data: JSON.stringify(entry),
@@ -336,13 +336,13 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         } else {
           alert(response);
         }
-        loading(false);
       },
       error: function(xhr, textStatus, errorThrown) {
         alert(`Cannot update episode, reason: ${xhr.responseText}`);
         storage.remove('password');
-        loading(false);
       }
+    }).always(function() {
+      loading(false);
     });
   }
   event.stopPropagation(); // Inner trigger
