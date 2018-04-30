@@ -124,10 +124,11 @@ function asUrl(s, append) {
   if (append) {
     s = `${s}-${append}`;
   }
-  s = s.toLowerCase()
-          .replace(/[;!?.]/, '')
-          .replace(/[^-a-z0-9]+/g, '-')
-          .replace(/-{2,}/, '-');
+  s = s.toLowerCase();
+  if (provider in ["animemovil", "gogoanime"]) {
+    s = s.replace(/[;]/g, '');
+  }
+  s = s.replace(/[^-a-z0-9]+/g, '-').replace(/-{2,}/, '-');
   return encodeURIComponent(s);
 }
 
@@ -155,7 +156,7 @@ function watchAnime(title, chapter, malId, movie) {
 
 function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
   function escape(s) {
-    s = "'" + (s ? s.replace(/"/g, "''") : '') + "'";
+    s = "'" + (s ? s.replace(/"/g, "__") : '') + "'";
     return s;
   }
   title = getTitle(title, synonyms);
@@ -335,7 +336,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
           if (completed) {
             $(`#anime-${malId}`).remove();
           } else {
-            $(`#anime-${malId}`).replaceWith(getAnimeFigure(title.replace(/''/g, '"'), synonyms, chapter + 1, maxChapter, image, malId, movie));
+            $(`#anime-${malId}`).replaceWith(getAnimeFigure(title.replace(/__/g, '"'), synonyms, chapter + 1, maxChapter, image, malId, movie));
           }
           alert(completed ? `Hooray! You've completed ${title}!` : `Updated ${title} to episode ${chapter}.`);
         } else {
