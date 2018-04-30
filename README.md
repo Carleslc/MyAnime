@@ -12,7 +12,7 @@ Select MyAnimeList provider to go to the anime's page for easy updating.
 ## Features
 - Cover images and links for the series in which you are interested.
 - Easy access to your outstanding chapters of MyAnimeList lists Watching, On Hold and Plan to Watch, with several providers of streaming/downloading to choose.
-- Filter chapters by TV, Movie, OVA or Specials.
+- Filter chapters by TV, Movie, OVA, Special, ONA or Music.
 - Some series have title synonyms, choose between original or alternative title.
 - Your preferences are saved in the browser, so you only need to change them when you need it. User is automatically retrieved based on the last user used.
 

@@ -3,6 +3,7 @@
 
 <head>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <meta name="csrf_token" content="5e0e31f8aae017311013361360a6cb7136fb98c8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>My Anime</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
@@ -17,8 +18,9 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
   <script src="https://rawgit.com/kawanet/from-xml/master/dist/from-xml.min.js"></script>
+  <script src="xml2json.js"></script>
   <script src="https://use.fontawesome.com/0f16775bdf.js"></script>
-  
+
   <section class="lastcap">
     <div class="user-header row justify-content-between align-items-center">
       <div class="col-auto">
@@ -78,6 +80,8 @@
               <option value="2">OVA</option>
               <option value="3">Movie</option>
               <option value="4">Special</option>
+              <option value="5">ONA</option>
+              <option value="6">Music</option>
             </select>
           </div>
         </div>
@@ -103,7 +107,7 @@
                 <ul>
                   <li>Cover images and links for the series in which you are interested.</li>
                   <li>Easy access to your outstanding episodes of MyAnimeList lists Watching, On Hold and Plan to Watch, with several providers of streaming/downloading to choose.</li>
-                  <li>Filter episodes by TV, Movie, OVA or Specials.</li>
+                  <li>Filter episodes by TV, Movie, OVA, Special, ONA or Music.</li>
                   <li>Some series have title synonyms, choose between original or alternative title.</li>
                   <li>Your preferences are saved in the browser, so you only need to change them when you need it. User is automatically retrieved based on the last user used.</li>
                 </ul>

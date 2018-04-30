@@ -1,3 +1,5 @@
+// Utils
+
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
     return localStorage.getItem(tag);
@@ -21,7 +23,28 @@ let storage = typeof(Storage) !== "undefined" ? {
   remove: function(tag) {}
 };
 
-let parser = new DOMParser();
+function pad(n, size) {
+  let s = String(n);
+  while (s.length < (size || 2)) {
+    s = "0" + s;
+  }
+  return s;
+}
+
+function formatToday() {
+  let now = new Date();
+  return `${pad(now.getMonth() + 1)}${pad(now.getDate())}${now.getFullYear()}`;
+}
+
+var serializer;
+function toXML(o) {
+  serializer = serializer || new X2JS();
+  return serializer.json2xml_str(o);
+}
+
+// Settings
+
+let csrf_token = $('meta[name=csrf_token]').attr('content');
 let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
@@ -83,6 +106,8 @@ $(document).ready(function() {
   })();
 });
 
+// API
+
 function getTitle(originalTitle, synonymsRaw) {
   if (useAlternativeTitles && synonymsRaw) {
     let synonyms = synonymsRaw.split('; ').filter(s => s != null && s.trim() != "" && s.trim() != originalTitle);
@@ -123,7 +148,7 @@ function watchAnime(title, chapter, malId, movie) {
   window.open(url);
 }
 
-function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
+function getAnimeFigure(title, synonyms, chapter, maxChapter, score, image, malId, movie) {
   function escape(s) {
     return s ? s.replace(/'/g, "\\'") : '';
   }
@@ -136,7 +161,7 @@ function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movi
         <img src="${image}" class="cover" alt='${escapedTitle}' width="225" height="313">
       </figure>
       <aside>
-        <span class="p" onclick="updateChapter(event, '${escapedTitle}', ${chapter}, ${maxChapter}, ${malId})">Next</span>
+        <span class="p" onclick="updateChapter(event, '${escapedTitle}', ${chapter}, ${maxChapter}, ${score}, ${malId})">Next</span>
       </aside>
     </div>
   </article>`;
@@ -153,7 +178,7 @@ function parseAnime() {
   for (anime of animes) {
     let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
     let animeStatus = anime.series_status; // 1 - Currently Airing, 2 - Finished, 3 - Not yet aired
-    let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special
+    let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special, 5 - ONA, 6 - Music
     let episodes = parseInt(anime.series_episodes);
     let nextChapter = parseInt(anime.my_watched_episodes) + 1;
     if (animeStatus != 3 && (episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == type)) {
@@ -166,7 +191,7 @@ function parseAnime() {
         section = planToWatch;
       }
       if (section) {
-        section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3));
+        section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.my_score, anime.series_image, anime.series_animedb_id, type == 3));
       }
     }
   }
@@ -213,13 +238,14 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
+    // TODO: Verify credentials
     storage.set('password', password);
     $("#set-password").modal('hide');
     checkpoint();
   }
 }
 
-function updateChapter(event, title, chapter, maxChapter, malId) {
+function updateChapter(event, title, chapter, maxChapter, score, malId) {
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
@@ -227,31 +253,55 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
     };
     $("#set-password").modal('show');
   } else {
-    function completeAnime() {
-      // TODO
+    /*$.ajax({
+      url: 'https://myanimelist.net/ownlist/anime/edit.json',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        'anime_id': malId,
+        'num_watched_episodes': chapter
+      }),
+      dataType: 'json',
+      contentType:"application/x-www-form-urlencoded; charset=UTF-8"
+    });*/
+
+    let entry = {
+      episode: chapter,
+      score: score
+    };
+
+    if (chapter == 1) {
+      entry.status = 1;
+      entry.date_start = formatToday();
     }
-    $.support.cors = true;
+
+    if (chapter == maxChapter) {
+      entry.status = 2;
+      entry.date_finished = formatToday();
+    }
+
+    //$.support.cors = true;
     $.ajax({
-      url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`,
+      url: /*https://cors-anywhere.herokuapp.com/*/`https://myanimelist.net/api/animelist/update/${malId}.xml`,
       cache: false,
       type: 'POST',
-      data: `<?xml version="1.0" encoding="UTF-8"?><entry><episode>${chapter}</episode></entry>`,
+      data: `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`,
       contentType: "application/xml",
-      crossDomain: true,
-      password: password,
+      //crossDomain: true,
+      //password: password,
       //xhrFields: { withCredentials: true },
       beforeSend: function(xhr) {
-        xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+        //xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
+        xhr.setRequestHeader("User-Agent", "('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) '\
+                  'AppleWebKit/537.36 (KHTML, like Gecko) '\
+                  'Chrome/34.0.1847.116 Safari/537.36')");
       },
       success: function(response, textStatus, xhr) {
         if (!response.toLowerCase().includes('error')) {
           alert(`Updated ${title} to episode ${chapter}.`);
         } else {
           alert(response);
-        }
-        if (chapter == maxChapter) {
-          completeAnime();
         }
       },
       error: function(xhr, textStatus, errorThrown) {
