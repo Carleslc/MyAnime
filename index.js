@@ -44,7 +44,6 @@ function toXML(o) {
 
 // Settings
 
-let csrf_token = $('meta[name=csrf_token]').attr('content');
 let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
@@ -155,7 +154,7 @@ function watchAnime(title, chapter, malId, movie) {
 
 function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
   function escape(s) {
-    s = "'" + (s ? s.replace(/"/g, '\\"') : '') + "'";
+    s = "'" + (s ? s.replace(/"/g, '') : '') + "'";
     console.log(s);
     return s;
   }
