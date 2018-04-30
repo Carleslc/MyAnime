@@ -334,7 +334,7 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
     });*/
 
     $.ajax({
-      url: `http://localhost:8082/update`,
+      url: `https://524f3c54.ngrok.io/update`,
       cache: false,
       type: 'POST',
       data: JSON.stringify(entry),
