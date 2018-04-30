@@ -47,7 +47,7 @@ function toXML(o) {
 let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
-var user;
+var user, userId;
 var provider;
 var filter;
 var useAlternativeTitles;
@@ -154,20 +154,20 @@ function watchAnime(title, chapter, malId, movie) {
 
 function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
   function escape(s) {
-    s = "'" + (s ? s.replace(/"/g, '$') : '') + "'";
+    s = "'" + (s ? s.replace(/"/g, "''") : '') + "'";
     console.log(s);
     return s;
   }
   title = getTitle(title, synonyms);
   escapedTitle = escape(title);
-  return `<article>
-    <div id="anime-${malId}" onclick="watchAnime(${escapedTitle}, ${chapter}, ${malId}, ${movie})">
+  return `<article id="anime-${malId}">
+    <div onclick="watchAnime(${escapedTitle}, ${chapter}, ${malId}, ${movie})">
       <header>${title} #${chapter}</header>
       <figure>
         <img src="${image}" class="cover" alt=${escapedTitle} width="225" height="313">
       </figure>
       <aside>
-        <span class="p" onclick="updateChapter(event, ${escapedTitle}, ${chapter}, ${maxChapter}, ${malId})">Next</span>
+        <span class="p" onclick="updateChapter(event, ${escapedTitle}, ${synonyms}, ${chapter}, ${maxChapter}, ${image}, ${malId}, ${movie})">Next</span>
       </aside>
     </div>
   </article>`;
@@ -207,7 +207,7 @@ function allowOrigin(xhr) {
   xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
 }
 
-function changeProfile(id, user) {
+function changeProfile(id) {
   var icon;
   if (id == undefined) {
     icon = "load-fig.gif";
@@ -221,10 +221,14 @@ function changeProfile(id, user) {
   $("#profile-icon").attr("src", icon);
 }
 
+function loading(enabled) {
+  changeProfile(enabled ? undefined : userId || 0);
+}
+
 function searchUser() {
   user = $("#search-user").val();
   if (user) {
-    changeProfile();
+    loading(true);
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
     $.ajax({
@@ -239,14 +243,15 @@ function searchUser() {
         if (mal) {
           animes = mal.anime || [];
           parseAnime();
-          changeProfile(mal.myinfo.user_id, user);
+          userId = mal.myinfo.user_id;
+          changeProfile(userId);
         } else {
           alert(`User ${user} does not exists.`);
-          changeProfile(0);
+          loading(false);
         }
       },
       error: function(xhr) {
-        changeProfile(0);
+        loading(false);
       }
     });
   }
@@ -264,11 +269,11 @@ function updatePassword() {
   }
 }
 
-function updateChapter(event, title, chapter, maxChapter, malId) {
+function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie) {
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
-      updateChapter(event, title, chapter, maxChapter, malId);
+      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie);
     };
     $("#set-password").modal('show');
   } else {
@@ -313,8 +318,10 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
       }
     });*/
 
+    loading(true);
+
     $.ajax({
-      url: `https://eb024509.ngrok.io/update`,
+      url: `http://139.59.158.246:8082/update`,
       cache: false,
       type: 'POST',
       data: JSON.stringify(entry),
@@ -325,15 +332,17 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
       success: function(response, textStatus, xhr) {
         console.log(response);
         if (!response.toLowerCase().includes('error')) {
-          $("#set-password").modal('hide');
+          $(`#anime-${malId}`).replaceWith(getAnimeFigure(title.replace(/''/g, '"'), synonyms, chapter + 1, maxChapter, image, malId, movie));
           alert(`Updated ${title} to episode ${chapter}.`);
         } else {
           alert(response);
         }
+        loading(false);
       },
       error: function(xhr, textStatus, errorThrown) {
         alert(`Cannot update episode, reason: ${xhr.responseText}`);
         storage.remove('password');
+        loading(false);
       }
     });
   }
