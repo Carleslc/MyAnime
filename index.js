@@ -125,8 +125,11 @@ function asUrl(s, append) {
   if (append) {
     s = `${s}-${append}`;
   }
-  s = s.toLowerCase().replace(/\s/g, '-').replace(/[^0-9a-z-]/gi, '-').replace(/--/g, '-')
-  return encodeURIComponent(s);
+  s = s.toLowerCase()
+          .replace(/[;:!?.]/, '')
+          .replace(/[^-a-z0-9]+/g, '-')
+          .replace(/-{2,}/, '-');
+  return encodeURIComponent(idify(s));
 }
 
 function watchAnime(title, chapter, malId, movie) {
