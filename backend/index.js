@@ -25,18 +25,16 @@ function auth(request, response, next) {
         return unauthorized();
     }
 
-    next(popura(user.name, user.pass))
-    return;
-    httpRequest({
-        url: 'https://myanimelist.net/api/account/verify_credentials.xml',
-    }, function (error, res, body) {
+    const mal = popura(user.name, user.pass);
+
+    httpRequest({ url: `https://${user.name}:${user.pass}@myanimelist.net/api/account/verify_credentials.xml` },
+      function (error, res, body) {
         if (!error && res.statusCode === 200) {
-            console.log(body)
-            next(popura(user.name, user.pass))
+          next(popura(user.name, user.pass))
         } else {
           unauthorized(body || error)
         }
-    })
+      })
 }
 
 app.get('/', (request, response) => {
@@ -54,7 +52,7 @@ app.post('/update', (request, response) => {
         date_start: request.body.date_start,
         date_finish: request.body.date_finish
       }).then(res => response.send(res))
-        .catch(err => response.send(err))
+        .catch(err => response.status(err.statusCode).send(err.statusMessage))
     }
   })
 })
