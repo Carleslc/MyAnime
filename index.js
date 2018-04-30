@@ -235,7 +235,7 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
       contentType: "application/xml",
       crossDomain: true,
       password: password,
-      xhrFields: { withCredentials: true },
+      //xhrFields: { withCredentials: true },
       beforeSend: function(xhr) {
         xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
