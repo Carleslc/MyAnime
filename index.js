@@ -126,7 +126,7 @@ function asUrl(s, append) {
     s = `${s}-${append}`;
   }
   s = s.toLowerCase()
-          .replace(/[;:!?.]/, '')
+          .replace(/[;!?.]/, '')
           .replace(/[^-a-z0-9]+/g, '-')
           .replace(/-{2,}/, '-');
   return encodeURIComponent(s);
@@ -155,18 +155,18 @@ function watchAnime(title, chapter, malId, movie) {
 
 function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
   function escape(s) {
-    return s ? s.replace(/'/g, "\\'") : '';
+    return '\\"' + (s ? s.replace(/"/g, '\\"') : '') + '\\"';
   }
   title = getTitle(title, synonyms);
   escapedTitle = escape(title);
   return `<article>
-    <div id="anime-${malId}" onclick="watchAnime('${escapedTitle}', ${chapter}, ${malId}, ${movie})">
+    <div id="anime-${malId}" onclick="watchAnime(${escapedTitle}, ${chapter}, ${malId}, ${movie})">
       <header>${title} #${chapter}</header>
       <figure>
-        <img src="${image}" class="cover" alt='${escapedTitle}' width="225" height="313">
+        <img src="${image}" class="cover" alt=${escapedTitle} width="225" height="313">
       </figure>
       <aside>
-        <span class="p" onclick="updateChapter(event, '${escapedTitle}', ${chapter}, ${maxChapter}, ${malId})">Next</span>
+        <span class="p" onclick="updateChapter(event, ${escapedTitle}, ${chapter}, ${maxChapter}, ${malId})">Next</span>
       </aside>
     </div>
   </article>`;
