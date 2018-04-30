@@ -319,6 +319,7 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
       },
       success: function(response, textStatus, xhr) {
+        console.log(response);
         if (!response.toLowerCase().includes('error')) {
           $("#set-password").modal('hide');
           alert(`Updated ${title} to episode ${chapter}.`);
