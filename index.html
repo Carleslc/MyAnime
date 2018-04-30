@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="index.css"/>
+  <link rel="stylesheet" type="text/css" href="index.css" />
 </head>
 
 <body>
@@ -19,7 +19,6 @@
   <script src="https://rawgit.com/kawanet/from-xml/master/dist/from-xml.min.js"></script>
   <script src="xml2json.js"></script>
   <script src="https://use.fontawesome.com/0f16775bdf.js"></script>
-
   <section class="lastcap">
     <div class="user-header row justify-content-between align-items-center">
       <div class="col-auto">
@@ -56,6 +55,7 @@
               <option value="animeid">AnimeID (ES)</option>
               <option value="jkanime">jkanime (ES)</option>
               <option value="lucky-en">I'm Feeling Lucky (EN)</option>
+              <option value="twist">Twist (EN)</option>
               <option value="gogoanime">GogoAnime (EN)</option>
               <option value="crunchyroll">Crunchyroll</option>
               <option value="netflix">Netflix</option>
@@ -98,19 +98,26 @@
               <div class="modal-body">
                 <!-- BEGIN INFORMATION -->
                 <p>Watch your favourite animes with your usual provider, synchronized with <a href="https://myanimelist.net/">MyAnimeList</a>.</p>
-                <h4 id="why-to-use-">Why to use?</h4>
-                <p>This is a shortcut to access your preferred anime series with your preferred providers, all in sync with the selected animes in your MyAnimeList profile. Avoid surfing the internet or the providers looking for your episodes, just seat in and enjoy. With this single page you can test several providers and update your MyAnimeList episodes easily. It also skips some advertising from providers&#39; home sites, because you&#39;ll access to the episode page directly.</p>
-                <h4 id="how-to-use">How to use</h4>
-                <p>Enter your MyAnimeList username <em>(<a href="https://myanimelist.net/profile/USERNAME">https://myanimelist.net/profile/USERNAME</a>)</em> and choose one of your animes to watch, select the provider and enjoy your episode. When updating your watched episodes in MyAnimeList then the next episode will be shown, waiting for you to be watched. Select MyAnimeList provider to go to the anime&#39;s page for easy updating.</p>
-                <h4 id="features">Features</h4>
+                <h2 id="why-to-use-">Why to use?</h2>
+                <p>This is a shortcut to access your preferred anime series with your preferred providers, all in sync with the selected animes in your MyAnimeList profile.</p>
+                <p>Avoid surfing the internet or the providers looking for your episodes, just seat in and enjoy. </p>
+                <p>With this single page you can test several providers and update your MyAnimeList episodes easily. It also skips some advertising from providers&#39; home sites, because you&#39;ll access to the episode page directly.</p>
+                <h2 id="how-to-use">How to use</h2>
+                <p>Enter your MyAnimeList username <em>(<a href="https://myanimelist.net/profile/USERNAME">https://myanimelist.net/profile/USERNAME</a>)</em> and choose one of your animes to watch, select the provider and enjoy your episode.</p>
+                <p>When updating your watched episodes in MyAnimeList then the next episode will be shown, waiting for you to be watched.</p>
+                <p>Click on &quot;Next&quot; at the top right corner of an episode to mark it as watched in your MyAnimeList profile.</p>
+                <h4 id="calendar">Calendar</h4>
+                <p><em>Do you have some episodes in your Watching list that are not aired yet? See <a href="https://notify.moe/calendar">here</a> when they will be available.</em></p>
+                <h2 id="features">Features</h2>
                 <ul>
                   <li>Cover images and links for the series in which you are interested.</li>
                   <li>Easy access to your outstanding episodes of MyAnimeList lists Watching, On Hold and Plan to Watch, with several providers of streaming/downloading to choose.</li>
                   <li>Filter episodes by TV, Movie, OVA, Special, ONA or Music.</li>
                   <li>Some series have title synonyms, choose between original or alternative title.</li>
                   <li>Your preferences are saved in the browser, so you only need to change them when you need it. User is automatically retrieved based on the last user used.</li>
+                  <li>Update your watched episodes in your MyAnimeList profile directly within this page.</li>
                 </ul>
-                <h4 id="supported-providers">Supported providers</h4>
+                <h2 id="supported-providers">Supported providers</h2>
                 <ul>
                   <li><a href="https://myanimelist.net/">MyAnimeList</a></li>
                   <li>🇪🇸 Voy a tener suerte</li>
@@ -119,14 +126,16 @@
                   <li>🇪🇸 <a href="https://www.animeid.tv/">AnimeID</a></li>
                   <li>🇪🇸 <a href="http://jkanime.net/">jkanime</a></li>
                   <li>🇬🇧 I&#39;m Feeling Lucky</li>
+                  <li>🇬🇧 <a href="https://twist.moe/">Twist</a></li>
                   <li>🇬🇧 <a href="https://www2.gogoanime.se/">GogoAnime</a></li>
                   <li><a href="https://www.crunchyroll.com/">Crunchyroll</a></li>
                   <li><a href="https://www.netflix.com/">Netflix</a></li>
                 </ul>
                 <p>Providers without language indicator are locale based.</p>
-                <p>Feeling Lucky options are based on search engine (<em><a href="https://duckduckgo.com/">https://duckduckgo.com/</a> I&#39;m Feeling Ducky</em>), trying to get a proper streamer, but it doesn&#39;t mean it always work. Sometimes it redirects to a non-related page, or it is in another language. If selected provider cannot find a episode try to use alternative titles option, or change the provider.</p>
-                <p><em>Your favourite provider isn&#39;t listed here? Please, open an issue <a href="https://github.com/Carleslc/MyAnime/issues">here</a> and we will add it!</em></p>
-                <h5 id="disclaimer">Disclaimer</h5>
+                <p>Feeling Lucky options are based on search engine (<em><a href="https://duckduckgo.com/">DuckDuckGo</a> I&#39;m Feeling Ducky</em>), trying to get a proper streamer, but it doesn&#39;t mean it always work. Sometimes it redirects to a non-related page, or it is in another language.</p>
+                <p>If selected provider cannot find a episode try to use alternative titles option, or change the provider.</p>
+                <p><em>Your favourite provider isn&#39;t listed here? Please, open an issue and we will add it!</em></p>
+                <h3 id="disclaimer">Disclaimer</h3>
                 <p>This webpage does not host any video, it is a client-side website, just linking and sharing content from external providers. Official and legal providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.</p>
                 <!-- END INFORMATION -->
               </div>
@@ -145,7 +154,7 @@
     <div class="animes" id="on-hold"></div>
     <div class="title">Plan to Watch</div>
     <div class="animes" id="plan-to-watch"></div>
-
+    
     <div class="modal fade" id="set-password" tabindex="-1" role="dialog" aria-labelledby="setPasswordTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -153,11 +162,11 @@
             <h3 class="modal-title" id="setPasswordTitle">Set password</h3>
           </div>
           <div class="modal-body">
-            <div class="alert alert-warning">
-              <p class="alert-content center" style="font-size: 14px">This feature is experimental. It's use is not recommended yet.
-            </div>
-            <b>This feature allows you to update your watched episode in your MyAnimeList profile directly within this page.</b><br><br>
-            For this reason we need your credentials to perform this action. Please, set your password below.<br><br>
+            <b>This feature allows you to update your watched episode in your MyAnimeList profile directly within this page.</b>
+            <br>
+            <br> For this reason we need your credentials to perform this action. Please, set your password below.
+            <br>
+            <br>
             <i>If your account has no password because it uses social media SNS Connection like Facebook, Twitter or Google go to <a href="https://myanimelist.net/editprofile.php?go=myoptions" target="_blank">Account Settings -> Account</a> and set a password for your MyAnimeList account first.</i>
           </div>
           <form>

@@ -143,6 +143,7 @@ function watchAnime(title, chapter, malId, movie) {
     else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
     else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, chapterIfNotMovie() + "sub-espanol")}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
+    else if (provider == "twist") return `https://twist.moe/a/${asUrl(title)}/${chapter}`;
     else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
     else if (provider == "crunchyroll") return `https://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
     else if (provider == "netflix") return `https://www.netflix.com/search?q=${encodeURI(title)}`;
@@ -166,7 +167,7 @@ function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movi
         <img src="${image}" class="cover" alt=${escapedTitle} width="225" height="313">
       </figure>
       <aside>
-        <span class="p" onclick="updateChapter(event, ${escapedTitle}, '${synonyms}', ${chapter}, ${maxChapter}, '${image}', ${malId}, ${movie})">Next</span>
+        <span class="p" onclick="updateChapter(event, ${escapedTitle}, '${synonyms}', ${chapter}, ${maxChapter}, '${image}', ${malId}, ${movie})" data-toggle="tooltip" data-placement="top" title="Mark this episode as watched in your MyAnimeList profile.">Next</span>
       </aside>
     </div>
   </article>`;
@@ -286,7 +287,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       entry.date_start = formatToday();
     }
 
-    if (chapter == maxChapter) {
+    let completed = chapter == maxChapter;
+    if (completed) {
       entry.status = 2;
       entry.date_finished = formatToday();
     }
@@ -329,10 +331,13 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
       },
       success: function(response, textStatus, xhr) {
-        console.log(response);
         if (!response.toLowerCase().includes('error')) {
-          $(`#anime-${malId}`).replaceWith(getAnimeFigure(title.replace(/''/g, '"'), synonyms, chapter + 1, maxChapter, image, malId, movie));
-          alert(`Updated ${title} to episode ${chapter}.`);
+          if (completed) {
+            $(`#anime-${malId}`).remove();
+          } else {
+            $(`#anime-${malId}`).replaceWith(getAnimeFigure(title.replace(/''/g, '"'), synonyms, chapter + 1, maxChapter, image, malId, movie));
+          }
+          alert(completed ? `Hooray! You've completed ${title}!` : `Updated ${title} to episode ${chapter}.`);
         } else {
           alert(response);
         }
