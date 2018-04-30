@@ -294,6 +294,19 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       entry.date_finished = formatToday();
     }
 
+    function updateAnime() {
+      let index = animes.findIndex(anime => anime.series_animedb_id === malId);
+      if (completed) {
+        $(`#anime-${malId}`).remove();
+        animes.splice(index);
+      } else {
+        $(`#anime-${malId}`).replaceWith(getAnimeFigure(title.replace(/__/g, '"'), synonyms, chapter + 1, maxChapter, image, malId, movie));
+        let anime = animes[index];
+        anime.my_status = entry.status || anime.my_status;
+        anime.my_watched_episodes = chapter;
+      }
+    }
+
     /*$.ajax({
       url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`,
       cache: false,
@@ -332,12 +345,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
       },
       success: function(response, textStatus, xhr) {
-        if (!response.toLowerCase().includes('error')) {
-          if (completed) {
-            $(`#anime-${malId}`).remove();
-          } else {
-            $(`#anime-${malId}`).replaceWith(getAnimeFigure(title.replace(/__/g, '"'), synonyms, chapter + 1, maxChapter, image, malId, movie));
-          }
+        if (xhr.responseText === 'Updated') {
+          updateAnime();
           alert(completed ? `Hooray! You've completed ${title}!` : `Updated ${title} to episode ${chapter}.`);
         } else {
           alert(response);
