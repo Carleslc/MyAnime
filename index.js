@@ -244,8 +244,12 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
       },
       success: function(response, textStatus, xhr) {
-        alert(`Updated ${title} to episode ${chapter}.`);
-        console.log(response);
+        if (!response.includes('Error')) {
+          alert(`Updated ${title} to episode ${chapter}.`);
+          console.log(response);
+        } else {
+          alert(response);
+        }
         if (chapter == maxChapter) {
           completeAnime();
         }
