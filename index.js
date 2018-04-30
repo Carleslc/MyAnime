@@ -21,6 +21,7 @@ let storage = typeof(Storage) !== "undefined" ? {
   remove: function(tag) {}
 };
 
+let parser = new DOMParser();
 let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
@@ -151,23 +152,21 @@ function parseAnime() {
   emptyAnime();
   for (anime of animes) {
     let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
-    if (status != 2 && status != 4) {
-      let animeStatus = anime.series_status; // 1 - Currently Airing, 2 - Finished, 3 - Not yet aired
-      let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special
-      let episodes = parseInt(anime.series_episodes);
-      let nextChapter = parseInt(anime.my_watched_episodes) + 1;
-      if (animeStatus != 3 && (episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == type)) {
-        var section;
-        if (status == 1) {
-          section = watching;
-        } else if (status == 3) {
-          section = onHold;
-        } else if (status == 6) {
-          section = planToWatch;
-        }
-        if (section) {
-          section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3));
-        }
+    let animeStatus = anime.series_status; // 1 - Currently Airing, 2 - Finished, 3 - Not yet aired
+    let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special
+    let episodes = parseInt(anime.series_episodes);
+    let nextChapter = parseInt(anime.my_watched_episodes) + 1;
+    if (animeStatus != 3 && (episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == type)) {
+      var section;
+      if (status == 1) {
+        section = watching;
+      } else if (status == 3) {
+        section = onHold;
+      } else if (status == 6) {
+        section = planToWatch;
+      }
+      if (section) {
+        section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3));
       }
     }
   }
@@ -191,11 +190,13 @@ function searchUser() {
   user = $("#search-user").val();
   if (user) {
     changeProfile();
+    // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
-    $.get(`https://kuristina.herokuapp.com/anime/${user}.json`, function(response) {
+    $.get(`https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`, function(data, textStatus, xhr) {
+      response = fromXML(xhr.responseText);
       let mal = response.myanimelist;
       if (mal) {
-        animes = mal.anime;
+        animes = mal.anime || [];
         parseAnime();
         changeProfile(mal.myinfo.user_id, user);
       } else {
