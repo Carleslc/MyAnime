@@ -155,7 +155,6 @@ function watchAnime(title, chapter, malId, movie) {
 function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
   function escape(s) {
     s = "'" + (s ? s.replace(/"/g, "''") : '') + "'";
-    console.log(s);
     return s;
   }
   title = getTitle(title, synonyms);
@@ -167,7 +166,7 @@ function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movi
         <img src="${image}" class="cover" alt=${escapedTitle} width="225" height="313">
       </figure>
       <aside>
-        <span class="p" onclick="updateChapter(event, ${escapedTitle}, ${synonyms}, ${chapter}, ${maxChapter}, ${image}, ${malId}, ${movie})">Next</span>
+        <span class="p" onclick="updateChapter(event, ${escapedTitle}, '${synonyms}', ${chapter}, ${maxChapter}, '${image}', ${malId}, ${movie})">Next</span>
       </aside>
     </div>
   </article>`;
