@@ -257,16 +257,23 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    $.get('https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/account/verify_credentials.xml', function(data, status, xhr) {
-      if (xhr.status == 200) {
-        storage.set('password', password);
-        $("#set-password").modal('hide');
-        checkpoint();
-      } else {
-        alert('Invalid Credentials');
+    $.ajax({
+      url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/account/verify_credentials.xml`,
+      type: 'GET',
+      crossDomain: true,
+      beforeSend: addBasicHeaders,
+      success: function(data, textStatus, xhr) {
+        if (xhr.status == 200) {
+          storage.set('password', password);
+          $("#set-password").modal('hide');
+          checkpoint();
+        } else {
+          alert('Invalid Password');
+        }
+      },
+      error: function(xhr) {
+        alert('Invalid Password');
       }
-    }).fail(function(xhr) {
-      alert('Invalid Credentials');
     });
   }
 }
