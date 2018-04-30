@@ -24,6 +24,7 @@ let storage = typeof(Storage) !== "undefined" ? {
 let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
+var user;
 var provider;
 var filter;
 var useAlternativeTitles;
@@ -31,6 +32,8 @@ var animes = [];
 
 $(document).ready(function() {
   (function loadSettings() {
+    storage.remove('password');
+
     // Information
     let recurrentUser = storage.get("recurrentUser");
     if (!recurrentUser) {
@@ -109,7 +112,7 @@ function watchAnime(title, chapter, malId, movie) {
     else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} ${chapter} online español -english`);
     else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} episode ${chapter} online english anime -español`);
     else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
-    else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net inurl:` + asUrl(title, chapter));
+    else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
     else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, chapterIfNotMovie() + "sub-espanol")}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
     else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
@@ -121,18 +124,22 @@ function watchAnime(title, chapter, malId, movie) {
   window.open(url);
 }
 
-function getAnimeFigure(title, synonyms, chapter, image, malId, movie) {
+function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
   function escape(s) {
     return s ? s.replace(/'/g, "\\'") : '';
   }
   title = getTitle(title, synonyms);
-  return `<article>\
-    <a href="#" onclick="watchAnime('${escape(title)}', ${chapter}, ${malId}, ${movie})">\
-      <header>${title} #${chapter}</header>\
-      <figure>\
-        <img src="${image}" class="cover" alt="${title}" width="225" height="313">\
-      </figure>\
-    </a>\
+  escapedTitle = escape(title);
+  return `<article>
+    <div id="anime-${malId}" onclick="watchAnime('${escapedTitle}', ${chapter}, ${malId}, ${movie})">
+      <header>${title} #${chapter}</header>
+      <figure>
+        <img src="${image}" class="cover" alt='${escapedTitle}' width="225" height="313">
+      </figure>
+      <aside>
+        <span class="p" onclick="updateChapter(event, '${escapedTitle}', ${chapter}, ${maxChapter}, ${malId})">Next</span>
+      </aside>
+    </div>
   </article>`;
 }
 
@@ -161,7 +168,7 @@ function parseAnime() {
           section = planToWatch;
         }
         if (section) {
-          section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, anime.series_image, anime.series_animedb_id, type == 3));
+          section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3));
         }
       }
     }
@@ -183,7 +190,7 @@ function changeProfile(id, user) {
 }
 
 function searchUser() {
-  let user = $("#search-user").val();
+  user = $("#search-user").val();
   if (user) {
     changeProfile();
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
@@ -200,6 +207,50 @@ function searchUser() {
     });
   }
   return false;
+}
+
+var checkpoint;
+
+function updatePassword() {
+  let password = $("#password").val().trim();
+  if (password != '') {
+    storage.set('password', password);
+    $("#set-password").modal('hide');
+    checkpoint();
+  }
+}
+
+function updateChapter(event, title, chapter, maxChapter, malId) {
+  let password = storage.get('password');
+  if (password == null) {
+    checkpoint = function() {
+      updateChapter(event, title, chapter, maxChapter, malId);
+    };
+    $("#set-password").modal('show');
+  } else {
+    $.ajax({
+      url: `https://myanimelist.net/api/animelist/update/${malId}.xml`,
+      cache: false,
+      type: 'POST',
+      data: `<?xml version="1.0" encoding="UTF-8"?><entry><episode>${chapter}</episode></entry>`,
+      password: password,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader ("Authorization", "Basic " + btoa(user + ":" + password));
+      },
+      success: function(response, textStatus, xhr) {
+        alert(`Updated ${title} to episode ${chapter}.`);
+        console.log(response);
+        if (chapter == maxChapter) {
+          // TODO: Complete anime
+        }
+      },
+      error: function(xhr, textStatus, errorThrown) {
+        alert('Cannot update episode, reason: ' + xhr.responseText);
+        storage.remove('password');
+      }
+    });
+  }
+  event.stopPropagation(); // Inner trigger
 }
 
 $("#search-user-form").submit(function(e) {

@@ -625,7 +625,7 @@ aside#sky .a160x600.fix {
   border-radius: 4px
 }
 
-.lastcap article a {
+.lastcap article div {
   display: block;
   position: relative;
   width: 225px;
@@ -633,11 +633,12 @@ aside#sky .a160x600.fix {
   text-decoration: none
 }
 
-.lastcap article a:visited figure img {
+.lastcap article div:visited figure img {
   -webkit-filter: grayscale(80%)
 }
 
-.lastcap article a:hover header {
+.lastcap article div:hover header {
+  cursor: pointer;
   opacity: 1;
   -webkit-transition: all 200ms ease-in-out;
   -moz-transition: all 200ms ease-in-out;
@@ -646,7 +647,7 @@ aside#sky .a160x600.fix {
   transition: all 200ms ease-in-out
 }
 
-.lastcap article a header {
+.lastcap article div header {
   width: 225px;
   height: 313px;
   display: table-cell;
@@ -672,7 +673,7 @@ aside#sky .a160x600.fix {
   font-style: italic
 }
 
-.lastcap article a figure {
+.lastcap article div figure {
   position: absolute;
   top: 0;
   left: 0;
@@ -685,7 +686,7 @@ aside#sky .a160x600.fix {
   background-repeat: no-repeat
 }
 
-.lastcap article a figure img {
+.lastcap article div figure img {
   width: 225px;
   height: 313px;
   border: 0;
@@ -699,7 +700,7 @@ aside#sky .a160x600.fix {
   -ms-interpolation-mode: nearest-neighbor
 }
 
-.lastcap article a aside {
+.lastcap article div aside {
   position: absolute;
   right: 10px;
   top: 10px;
@@ -708,38 +709,44 @@ aside#sky .a160x600.fix {
   font-size: 10px;
   padding: 3px 5px;
   border-radius: 5px;
-  z-index: 9;
+  z-index: 11;
   text-shadow: 0 1px 0 #000;
   line-height: 9px
 }
 
-.lastcap article a aside span {
+.lastcap article div aside span {
+  cursor: pointer;
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAcCAYAAABcSP4GAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNXG14zYAAAAWdEVYdENyZWF0aW9uIFRpbWUAMTIvMDUvMTKFI1aIAAABVklEQVQoke3SMU4CQRQG4H+ADYOFFlhtogdYLUiWyspOE1sTD2BjtvAU9ISQGAsu4BGobelI2HaDYAibzQBhnWyY8bdhQRK0s3Oql/99kzfJPJAEyRrJDskzkufrukYSguSF1vrJGHPiOM4QAFar1anjOG9SykBMJpOXcrl8pbX+LJVKBABjjKhUKoUsy7qFIAj6cRxrKWXRWiustUJKWYzjWAdB0AcA1/f9ZhRF0yRJFkmSLKIomvq+3wTggiQAVD3Pa4VhOArDcOR5XgtANX8kAEAIcViv1x8AoNfrPZNcANiCNToAAJIfm+w72HcKv3b/wV+A5XL5rpTq/AiMMUdZlt0CeBwOh1ux3moopVKlVKq1Tkje5/nmu2ezWZpf0Fpr13WPd0bM53NYayGEQLvd7u8dMR6P00aj8QrgMs83YDAYpN1udwDgOs92AIA7ADffmyTxBTUY/wivySsnAAAAAElFTkSuQmCC) no-repeat;
   display: inline-block;
   margin: 0 2px;
   text-indent: 10px
 }
 
-.lastcap article a aside span.p {
+.lastcap article div aside span.p {
   background-position: 0 -19px
 }
 
-.lastcap article a aside span.f {
+.lastcap article div aside span.f {
   background-position: 0 1px;
   margin-left: 5px
 }
 
-.lastcap article a aside span strong {
+.lastcap article div aside span strong {
   display: none
 }
 
-.lastcap article a .mask {
+.lastcap article div .mask {
   position: absolute;
   top: 0;
   left: 0;
   width: 225px;
   height: 313px;
-  z-index: 11
+  z-index: 11;
+}
+
+.input-password {
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .title {
