@@ -155,7 +155,7 @@ function watchAnime(title, chapter, malId, movie) {
 
 function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
   function escape(s) {
-    return '\\"' + (s ? s.replace(/"/g, '\\"') : '') + '\\"';
+    return '\"' + (s ? s.replace(/"/g, '\\"') : '') + '\"';
   }
   title = getTitle(title, synonyms);
   escapedTitle = escape(title);
