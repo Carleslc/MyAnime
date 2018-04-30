@@ -32,8 +32,6 @@ var animes = [];
 
 $(document).ready(function() {
   (function loadSettings() {
-    storage.remove('password');
-
     // Information
     let recurrentUser = storage.get("recurrentUser");
     if (!recurrentUser) {
@@ -234,8 +232,9 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
       type: 'POST',
       data: `<?xml version="1.0" encoding="UTF-8"?><entry><episode>${chapter}</episode></entry>`,
       password: password,
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader ("Authorization", "Basic " + btoa(user + ":" + password));
+      xhrFields: { withCredentials: true },
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
       },
       success: function(response, textStatus, xhr) {
         alert(`Updated ${title} to episode ${chapter}.`);
