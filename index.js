@@ -321,7 +321,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     loading(true);
 
     $.ajax({
-      url: `http://139.59.158.246:8082/update`,
+      url: `http://139.59.158.246/update`,
       cache: false,
       type: 'POST',
       data: JSON.stringify(entry),
