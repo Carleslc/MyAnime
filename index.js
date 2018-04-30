@@ -150,7 +150,7 @@ function watchAnime(title, chapter, malId, movie) {
   window.open(url);
 }
 
-function getAnimeFigure(title, synonyms, chapter, maxChapter, score, image, malId, movie) {
+function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
   function escape(s) {
     return s ? s.replace(/'/g, "\\'") : '';
   }
@@ -163,7 +163,7 @@ function getAnimeFigure(title, synonyms, chapter, maxChapter, score, image, malI
         <img src="${image}" class="cover" alt='${escapedTitle}' width="225" height="313">
       </figure>
       <aside>
-        <span class="p" onclick="updateChapter(event, '${escapedTitle}', ${chapter}, ${maxChapter}, ${score}, ${malId})">Next</span>
+        <span class="p" onclick="updateChapter(event, '${escapedTitle}', ${chapter}, ${maxChapter}, ${malId})">Next</span>
       </aside>
     </div>
   </article>`;
@@ -193,7 +193,7 @@ function parseAnime() {
         section = planToWatch;
       }
       if (section) {
-        section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.my_score, anime.series_image, anime.series_animedb_id, type == 3));
+        section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3));
       }
     }
   }
@@ -257,19 +257,21 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    // TODO: Verify credentials
-    storage.set('password', password);
-    $("#set-password").modal('hide');
-    checkpoint();
+    $.get('https://myanimelist.net/api/account/verify_credentials.xml', function(data, status, xhr) {
+      storage.set('password', password);
+      $("#set-password").modal('hide');
+      checkpoint();
+    }).failed(function(xhr) {
+      alert('Invalid Credentials');
+    });
   }
 }
 
-function updateChapter(event, title, chapter, maxChapter, score, malId) {
-  console.log(malId);
+function updateChapter(event, title, chapter, maxChapter, malId) {
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
-      updateChapter(event, title, chapter, maxChapter, score, malId);
+      updateChapter(event, title, chapter, maxChapter, malId);
     };
     $("#set-password").modal('show');
   } else {
@@ -285,10 +287,7 @@ function updateChapter(event, title, chapter, maxChapter, score, malId) {
       contentType:"application/x-www-form-urlencoded; charset=UTF-8"
     });*/
 
-    let entry = {
-      episode: chapter,
-      score: score
-    };
+    let entry = { episode: chapter };
 
     if (chapter == 1) {
       entry.status = 1;
