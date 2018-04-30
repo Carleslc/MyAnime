@@ -295,10 +295,10 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }
 
     function updateAnime() {
-      let index = animes.findIndex(anime => anime.series_animedb_id === malId);
+      let index = animes.findIndex(anime => anime.series_animedb_id == malId);
       if (completed) {
         $(`#anime-${malId}`).remove();
-        animes.splice(index);
+        animes.splice(index, 1);
       } else {
         $(`#anime-${malId}`).replaceWith(getAnimeFigure(title.replace(/__/g, '"'), synonyms, chapter + 1, maxChapter, image, malId, movie));
         let anime = animes[index];
