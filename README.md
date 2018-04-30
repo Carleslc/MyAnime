@@ -46,7 +46,7 @@ Feeling Lucky options are based on search engine (_[DuckDuckGo](https://duckduck
 
 If selected provider cannot find a episode try to use alternative titles option, or change the provider.
 
-_Your favourite provider isn't listed here? Please, open an issue and we will add it!_
+_Your favourite provider isn't listed here? Please, open an issue [here](http://github.com/Carleslc/MyAnime/issues) and we will add it!_
 
 ### Disclaimer
 This webpage does not host any video, it is a client-side website, just linking and sharing content from external providers. Official and legal providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.
