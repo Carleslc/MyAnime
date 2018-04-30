@@ -280,14 +280,14 @@ function updateChapter(event, title, chapter, maxChapter, score, malId) {
       entry.date_finished = formatToday();
     }
 
-    //$.support.cors = true;
+    $.support.cors = true;
     $.ajax({
       url: /*https://cors-anywhere.herokuapp.com/*/`https://myanimelist.net/api/animelist/update/${malId}.xml`,
       cache: false,
       type: 'POST',
       data: `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`,
       contentType: "application/xml",
-      //crossDomain: true,
+      crossDomain: true,
       //password: password,
       //xhrFields: { withCredentials: true },
       beforeSend: function(xhr) {
