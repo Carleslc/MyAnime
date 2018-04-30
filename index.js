@@ -265,6 +265,7 @@ function updatePassword() {
 }
 
 function updateChapter(event, title, chapter, maxChapter, score, malId) {
+  console.log(malId);
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
