@@ -251,7 +251,7 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
         }
       },
       error: function(xhr, textStatus, errorThrown) {
-        alert('Cannot update episode, reason: ' + xhr.responseText);
+        alert(`Cannot update episode, reason: ${xhr.responseText} [${textStatus}]`);
         storage.remove('password');
       }
     });
