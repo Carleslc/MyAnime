@@ -269,7 +269,7 @@ function updateChapter(event, title, chapter, maxChapter, score, malId) {
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
-      updateChapter(event, title, chapter, maxChapter, malId);
+      updateChapter(event, title, chapter, maxChapter, score, malId);
     };
     $("#set-password").modal('show');
   } else {
