@@ -199,11 +199,8 @@ function parseAnime() {
   }
 }
 
-function addBasicHeaders(xhr) {
+function allowOrigin(xhr) {
   xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-  xhr.setRequestHeader("User-Agent", "('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) '\
-            'AppleWebKit/537.36 (KHTML, like Gecko) '\
-            'Chrome/34.0.1847.116 Safari/537.36')");
 }
 
 function changeProfile(id, user) {
@@ -231,7 +228,7 @@ function searchUser() {
       type: 'GET',
       cache: false,
       crossDomain: true,
-      beforeSend: addBasicHeaders,
+      beforeSend: allowOrigin,
       success: function(data, textStatus, xhr) {
         response = fromXML(xhr.responseText);
         let mal = response.myanimelist;
@@ -262,7 +259,7 @@ function updatePassword() {
       type: 'GET',
       cache: false,
       crossDomain: true,
-      beforeSend: addBasicHeaders,
+      beforeSend: allowOrigin,
       success: function(data, textStatus, xhr) {
         if (xhr.status == 200) {
           storage.set('password', password);
@@ -290,7 +287,6 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
     /*$.ajax({
       url: 'https://myanimelist.net/ownlist/anime/edit.json',
       type: 'POST',
-      contentType: 'application/json',
       data: JSON.stringify({
         'anime_id': malId,
         'num_watched_episodes': chapter
@@ -311,17 +307,39 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
       entry.date_finished = formatToday();
     }
 
-    $.ajax({
+    /*$.ajax({
       url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`,
       cache: false,
       type: 'POST',
       data: `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`,
-      contentType: "application/xml",
+      contentType: "application/x-www-form-urlencoded",
       crossDomain: true,
       //password: password,
       //xhrFields: { withCredentials: true },
       beforeSend: function(xhr) {
-        addBasicHeaders(xhr);
+        allowOrigin(xhr);
+        xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
+      },
+      success: function(response, textStatus, xhr) {
+        if (!response.toLowerCase().includes('error')) {
+          alert(`Updated ${title} to episode ${chapter}.`);
+        } else {
+          alert(response);
+        }
+      },
+      error: function(xhr, textStatus, errorThrown) {
+        alert(`Cannot update episode, reason: ${xhr.responseText} [${textStatus}]`);
+        storage.remove('password');
+      }
+    });*/
+
+    $.ajax({
+      url: `http://localhost:8082/update`,
+      cache: false,
+      type: 'POST',
+      data: JSON.stringify(entry),
+      contentType: "application/json",
+      beforeSend: function(xhr) {
         xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
       },
       success: function(response, textStatus, xhr) {
