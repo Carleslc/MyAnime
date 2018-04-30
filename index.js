@@ -268,18 +268,10 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
     };
     $("#set-password").modal('show');
   } else {
-    /*$.ajax({
-      url: 'https://myanimelist.net/ownlist/anime/edit.json',
-      type: 'POST',
-      data: JSON.stringify({
-        'anime_id': malId,
-        'num_watched_episodes': chapter
-      }),
-      dataType: 'json',
-      contentType:"application/x-www-form-urlencoded; charset=UTF-8"
-    });*/
-
-    let entry = { episode: chapter };
+    let entry = {
+      id: malId,
+      episode: chapter
+    };
 
     if (chapter == 1) {
       entry.status = 1;
@@ -328,13 +320,14 @@ function updateChapter(event, title, chapter, maxChapter, malId) {
       },
       success: function(response, textStatus, xhr) {
         if (!response.toLowerCase().includes('error')) {
+          $("#set-password").modal('hide');
           alert(`Updated ${title} to episode ${chapter}.`);
         } else {
           alert(response);
         }
       },
       error: function(xhr, textStatus, errorThrown) {
-        alert(`Cannot update episode, reason: ${xhr.responseText} [${textStatus}]`);
+        alert(`Cannot update episode, reason: ${xhr.responseText}`);
         storage.remove('password');
       }
     });

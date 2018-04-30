@@ -25,6 +25,8 @@ function auth(request, response, next) {
         return unauthorized();
     }
 
+    next(popura(user.name, user.pass))
+    return;
     httpRequest({
         url: 'https://myanimelist.net/api/account/verify_credentials.xml',
     }, function (error, res, body) {
@@ -43,14 +45,14 @@ app.get('/', (request, response) => {
 
 app.post('/update', (request, response) => {
   auth(request, response, (mal) => {
-    if (!req.body.id) {
-      response.send(400)
+    if (!request.body.id) {
+      response.sendStatus(400)
     } else {
-      mal.updateAnime(req.body.id, {
-        episode: req.body.episode,
-        status: req.body.status,
-        date_start: req.body.date_start,
-        date_finish: req.body.date_finish
+      mal.updateAnime(request.body.id, {
+        episode: request.body.episode,
+        status: request.body.status,
+        date_start: request.body.date_start,
+        date_finish: request.body.date_finish
       }).then(res => response.send(res))
         .catch(err => response.send(err))
     }
