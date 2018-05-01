@@ -177,11 +177,8 @@ $(document).ready(function() {
       $('#search-user').val(user).change();
     });
 
-    // Calendar
-    fetchCalendar();
-
     // Load contents
-    searchUser();
+    fetchCalendar().then(searchUser).catch((error) => alert(error));
   })();
 });
 
@@ -453,63 +450,68 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 }
 
 function fetchCalendar() {
-  let luxon = require('luxon');
-  let cheerio = require('cheerio');
-  let jsonframe = require('jsonframe-cheerio');
+  return new Promise(function(resolve, reject) {
+      let luxon = require('luxon');
+      let cheerio = require('cheerio');
+      let jsonframe = require('jsonframe-cheerio');
 
-  GET_CORS("https://notify.moe/calendar", parseCalendar, (body, status) => alert(`Cannot get calendar, reason: ${body} (Status ${status})`));
+      GET_CORS("https://notify.moe/calendar", parseCalendar, (body, status) => reject(Error(`Cannot get calendar, reason: ${body} (Status ${status})`)));
 
-  function parseCalendar(html) {
-    let _ = cheerio.load(html);
-    jsonframe(_);
+      function parseCalendar(html) {
+        let _ = cheerio.load(html);
+        jsonframe(_);
 
-    var frame = {
-      airingAnimes: {
-        _s: ".calendar-entry",
-        _d: [{
-          title: ".calendar-entry-title",
-          episode: ".calendar-entry-episode | number",
-          date: ".calendar-entry-time @ data-date"
-        }]
+        var frame = {
+          airingAnimes: {
+            _s: ".calendar-entry",
+            _d: [{
+              title: ".calendar-entry-title",
+              episode: ".calendar-entry-episode | number",
+              date: ".calendar-entry-time @ data-date"
+            }]
+          }
+        };
+
+        var animeCalendar = _('.week').scrape(frame);
+
+        /*
+          airingAnimes: [
+            {
+              title: "One Piece",
+              episode: "835",
+              date: "2018-05-06T00:30:00Z"
+            },
+            ...
+          ]
+        */
+
+        for (anime of animeCalendar.airingAnimes) {
+          let date = new Date(anime.date);
+          let luxonDate = luxon.DateTime.fromJSDate(date);
+          airingAnimes[idify(anime.title)] = {
+            episode: anime.episode,
+            airingDate: date,
+            weekday: luxonDate.weekdayLong,
+            date: luxonDate.toLocaleString(luxon.DateTime.DATE_FULL),
+            time: luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
+          };
+        }
+
+        /*
+          {
+            "one-piece": {
+              episode: "835",
+              airingDate: 2018-05-06T00:30:00Z (Date),
+              weekday: "Sunday",
+              date: "May 6, 2018"
+              time: "02:30"
+            },
+            ...
+          }
+        */
+
+        resolve();
       }
-    };
-
-    var animeCalendar = _('.week').scrape(frame);
-
-    /*
-      airingAnimes: [
-        {
-          title: "One Piece",
-          episode: "835",
-          date: "2018-05-06T00:30:00Z"
-        },
-        ...
-      ]
-    */
-
-    for (anime of animeCalendar.airingAnimes) {
-      let date = new Date(anime.date);
-      let luxonDate = luxon.DateTime.fromJSDate(date);
-      airingAnimes[idify(anime.title)] = {
-        episode: anime.episode,
-        airingDate: date,
-        weekday: luxonDate.weekdayLong,
-        date: luxonDate.toLocaleString(luxon.DateTime.DATE_FULL),
-        time: luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
-      };
-    }
-
-    /*
-      {
-        "one-piece": {
-          episode: "835",
-          airingDate: 2018-05-06T00:30:00Z (Date),
-          weekday: "Sunday",
-          date: "May 6, 2018"
-          time: "02:30"
-        },
-        ...
-      }
-    */
+    });
   }
 }
