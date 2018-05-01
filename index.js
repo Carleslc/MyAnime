@@ -443,13 +443,13 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       if (body === 'Updated') {
         updateAnime();
       } else {
-        loading(false);
         cannotUpdate(body);
       }
+      loading(false);
     }, function error(body, status) {
       storage.remove('password');
-      loading(false);
       cannotUpdate(body);
+      loading(false);
     }, auth(user, password));
   }
   event.stopPropagation(); // Inner trigger
