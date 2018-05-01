@@ -43,7 +43,6 @@ function toXML(o) {
 }
 
 function FETCH(method, url, success, error, opts) {
-  loading(true);
   let sendOpts = {
     url: url,
     type: method,
@@ -60,9 +59,7 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
-  $.ajax(sendOpts).always(function() {
-    loading(false);
-  });
+  $.ajax(sendOpts);
 }
 
 function GET(url, success, error, opts) {
@@ -323,6 +320,7 @@ function loading(enabled) {
 function searchUser() {
   user = $("#search-user").val();
   if (user) {
+    loading(true);
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
     GET_CORS(`https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`, (body, status) => {
@@ -335,7 +333,8 @@ function searchUser() {
       } else {
         alert(`User ${user} does not exists.`);
       }
-    });
+      loading(false);
+    }, (body, status) => loading(false));
   }
   return false;
 }
@@ -368,6 +367,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     };
     $("#set-password").modal('show');
   } else {
+    loading(true);
+
     let entry = {
       id: malId,
       episode: chapter
@@ -442,10 +443,12 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       if (body === 'Updated') {
         updateAnime();
       } else {
+        loading(false);
         cannotUpdate(body);
       }
     }, function error(body, status) {
       storage.remove('password');
+      loading(false);
       cannotUpdate(body);
     }, auth(user, password));
   }
@@ -457,6 +460,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
   let cheerio = require('cheerio');
   let jsonframe = require('jsonframe-cheerio');
 
+  loading(true);
   GET_CORS("https://notify.moe/calendar", parseCalendar, (body, status) => alert(`Cannot get calendar, reason: ${body} (Status ${status})`));
 
   function parseCalendar(html) {
@@ -501,9 +505,12 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       };
     }
 
-    storage.with("user", function(user) {
+    let user = storage.get("user");
+    if (user == null) {
+      loading(false);
+    } else {
       $('#search-user').val(user).change();
       searchUser();
-    });
+    }
   }
 })();
