@@ -411,6 +411,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         alert(body);
       }
     }, function error(body, status) {
+      console.log(body);
       alert(`Cannot update episode, reason: ${body}`);
       storage.remove('password');
     }, auth(user, password));
