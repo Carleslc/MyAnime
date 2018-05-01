@@ -32773,12 +32773,8 @@ function extend() {
 (function (global){
 // Utils
 
-const popura = require('popura')
-
-// popura dependency
-global.setImmediate = require('timers').setImmediate;
-//require('smtpconnection');
-//
+const popura = require('popura') // mal library
+global.setImmediate = require('timers').setImmediate; // popura dependency
 
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
@@ -33221,7 +33217,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       loading(false);
     }).catch(err => {
       storage.remove('password');
-      console.log(err);
+      console.log("Error: " + err);
       cannotUpdate(err.statusMessage);
       loading(false);
     });
