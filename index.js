@@ -42,6 +42,14 @@ function toXML(o) {
   return serializer.json2xml_str(o);
 }
 
+// CORS
+
+let allowOriginHeader = new Headers({"Access-Control-Allow-Origin": "*"});
+
+function allowOrigin(xhr) {
+  xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+}
+
 // Settings
 
 let watching = $("#watching");
@@ -203,10 +211,6 @@ function parseAnime() {
       }
     }
   }
-}
-
-function allowOrigin(xhr) {
-  xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
 }
 
 function changeProfile(id) {
@@ -373,7 +377,12 @@ $("#search-user-form").submit(function(e) {
   let jsonframe = require('jsonframe-cheerio');
   let luxon = require('luxon');
 
-  fetch("https://notify.moe/calendar").then(parseCalendar);
+  fetch("https://cors-anywhere.herokuapp.com/https://notify.moe/calendar", {
+      method: 'GET',
+      headers: allowOriginHeader,
+      mode: 'cors',
+      cache: 'default'
+    }).then(parseCalendar);
 
   function parseCalendar(html) {
     let _ = cheerio.load(html);
