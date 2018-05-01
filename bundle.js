@@ -99216,7 +99216,7 @@ function request(authToken) {
 	var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
 	debug('Requesting ' + url + ' with. Use auth: ' + Boolean(authToken) + '. Query', opts.query);
-	return (0, _got2.default)('https://myanimelist.net' + url, Object.assign(opts, {
+	return (0, _got2.default)('https://cors-anywhere.herokuapp.com/https://myanimelist.net' + url, Object.assign(opts, {
 		headers: {
 			Authorization: 'Basic ' + authToken,
 			'User-Agent': userAgent,
