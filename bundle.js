@@ -32755,6 +32755,7 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
+  console.log(sendOpts);
   $.ajax(sendOpts).always(function() {
     loading(false);
   });
