@@ -32988,7 +32988,7 @@ function parseAnime() {
         section = planToWatch;
       }
       let title = anime.series_title;
-      if (section && isAired(title, animeStatus)) {
+      if (section && isAired(title, nextChapter, animeStatus)) {
         getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3, animeStatus, function(figure) {
           section.append(figure);
         });
