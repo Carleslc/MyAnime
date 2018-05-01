@@ -33099,7 +33099,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         let airingAnime = airingAnimes[idify(title)];
         alert(`Updated ${title} to episode ${chapter}. Next episode will be available next ${airingAnime.weekday} (${airingAnime.date}) about ${airingAnime.time}h.`);
       } else {
-        getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, function(figure) {
+        getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, function(figure) {
           $(`#anime-${malId}`).replaceWith(figure);
         });
         let anime = animes[index];

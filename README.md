@@ -15,10 +15,6 @@ When updating your watched episodes in MyAnimeList then the next episode will be
 
 Click on "Next" at the top right corner of an episode to mark it as watched in your MyAnimeList profile.
 
-#### Calendar
-
-_Do you have some episodes in your Watching list that are not aired yet? See [here](https://notify.moe/calendar) when they will be available._
-
 ## Features
 - Cover images and links for the series in which you are interested.
 - Easy access to your outstanding episodes of MyAnimeList lists Watching, On Hold and Plan to Watch, with several providers of streaming/downloading to choose.
