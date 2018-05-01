@@ -1,11 +1,5 @@
 // Utils
 
-let luxon = require('luxon');
-
-function now() {
-  return luxon.DateTime.fromJSDate(new Date());
-}
-
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
     return localStorage.getItem(tag);
@@ -179,12 +173,6 @@ $(document).ready(function() {
       storage.set("alternatives", useAlternativeTitles);
       parseAnime();
     });
-
-    // User
-    storage.with("user", function(user) {
-      $('#search-user').val(user).change();
-      searchUser();
-    });
   })();
 });
 
@@ -262,7 +250,12 @@ function isAired(title, chapter, animeStatus) {
   var aired;
   if (animeStatus == 1) {
     if (title in airingAnimes) {
-      aired = airingAnimes[title].airingDate < currentDate;
+      let anime = airingAnimes[title];
+      if (anime.episode > chapter) {
+        aired = true;
+      } else {
+        aired = anime.episode == chapter && anime.airingDate < new Date();
+      }
     } else {
       aired = true;
     }
@@ -279,8 +272,6 @@ function parseAnime() {
   console.log('Parse ' + animes.length + ' animes');
 
   emptyAnime();
-
-  let currentDate = now();
 
   for (anime of animes) {
     let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
@@ -459,10 +450,11 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 }
 
 (function fetchCalendar() {
+  let luxon = require('luxon');
   let cheerio = require('cheerio');
   let jsonframe = require('jsonframe-cheerio');
 
-  GET_CORS("https://notify.moe/calendar", parseCalendar);
+  GET_CORS("https://notify.moe/calendar", parseCalendar, (body, status) => alert(`Cannot get calendar, reason: ${body} (Status ${status})`));
 
   function parseCalendar(html) {
     let _ = cheerio.load(html);
@@ -506,6 +498,9 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       };
     }
 
-    console.log(airingAnimes);
+    storage.with("user", function(user) {
+      $('#search-user').val(user).change();
+      searchUser();
+    });
   }
 })();
