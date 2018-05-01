@@ -33080,6 +33080,7 @@ $("#search-user-form").submit(function(e) {
     }).then(parseCalendar);
 
   function parseCalendar(html) {
+    console.log(html);
     let _ = cheerio.load(html);
     jsonframe(_);
 
