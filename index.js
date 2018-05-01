@@ -229,24 +229,21 @@ function watchAnime(title, chapter, malId, movie) {
   window.open(url);
 }
 
-function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie) {
-  function escape(s) {
-    s = "'" + (s ? s.replace(/"/g, "__") : '') + "'";
-    return s;
-  }
+function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie, callback) {
   title = getTitle(title, synonyms);
-  escapedTitle = escape(title);
-  return `<article id="anime-${malId}">
-    <div onclick="watchAnime(${escapedTitle}, ${chapter}, ${malId}, ${movie})">
+  callback(`<article id="anime-${malId}">
+    <div>
       <header>${title} #${chapter}</header>
       <figure>
-        <img src="${image}" class="cover" alt=${escapedTitle} width="225" height="313">
+        <img src="${image}" class="cover" width="225" height="313">
       </figure>
       <aside>
-        <span class="p" onclick="updateChapter(event, ${escapedTitle}, '${synonyms}', ${chapter}, ${maxChapter}, '${image}', ${malId}, ${movie})" data-toggle="tooltip" data-placement="top" title="Mark this episode as watched in your MyAnimeList profile.">Next</span>
+        <span id="next-${malId}" class="p" data-toggle="tooltip" data-placement="top" title="Mark this episode as watched in your MyAnimeList profile.">Next</span>
       </aside>
     </div>
-  </article>`;
+  </article>`);
+  $(`#anime-${malId} div`).click(watchAnime(title, chapter, malId, movie));
+  $(`#next-${malId}`).click(updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie));
 }
 
 function emptyAnime() {
@@ -273,7 +270,9 @@ function parseAnime() {
         section = planToWatch;
       }
       if (section) {
-        section.append(getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3));
+        getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3, function(figure) {
+          section.append(figure);
+        });
       }
     }
   }
@@ -367,7 +366,9 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         $(`#anime-${malId}`).remove();
         animes.splice(index, 1);
       } else {
-        $(`#anime-${malId}`).replaceWith(getAnimeFigure(title.replace(/__/g, '"'), synonyms, chapter + 1, maxChapter, image, malId, movie));
+        getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, function(figure) {
+          $(`#anime-${malId}`).replaceWith(figure);
+        });
         let anime = animes[index];
         anime.my_status = entry.status || anime.my_status;
         anime.my_watched_episodes = chapter;
