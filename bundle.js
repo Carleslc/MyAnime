@@ -32980,7 +32980,9 @@ function watchAnime(title, chapter, malId, movie) {
   function getUrl() {
     if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/-/video`;
     else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} ${chapter} online español -english`);
+    else if (provider == "google-es") return 'https://www.google.com/search?btnI&q=' + encodeURIComponent(`${title} ${chapter} online español -english`);
     else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} episode ${chapter} online english anime -español`);
+    else if (provider == "google-en") return 'https://www.google.com/search?btnI&q=' + encodeURIComponent(`${title} ${chapter} online english`);
     else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
     else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
     else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, chapterIfNotMovie() + "sub-espanol")}/`;
