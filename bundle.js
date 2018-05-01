@@ -32937,8 +32937,8 @@ function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movi
       </aside>
     </div>
   </article>`);
-  $(`#anime-${malId} div`).click(watchAnime(title, chapter, malId, movie));
-  $(`#next-${malId}`).click(updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie));
+  $(`#anime-${malId} div`).click(function() { watchAnime(title, chapter, malId, movie) });
+  $(`#next-${malId}`).click(function() { updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie) });
 }
 
 function emptyAnime() {
