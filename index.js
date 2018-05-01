@@ -253,32 +253,25 @@ function emptyAnime() {
 function isAired(title, chapter, animeStatus) {
   var aired;
   title = idify(title);
-  console.log(`Is ${title} ${chapter} aired?`);
   if (animeStatus == 1) {
-    console.log('Currently Airing');
     if (title in airingAnimes) {
-      console.log('In Calendar');
       let anime = airingAnimes[title];
       if (anime.episode > chapter) {
-        console.log(`Episode ${anime.episode} is > ${chapter}`);
         aired = true;
       } else {
-        console.log(`Episode ${anime.episode} is <= ${chapter}, airing ${anime.airingDate} and now ${new Date()}`);
         aired = anime.episode == chapter && anime.airingDate < new Date();
       }
     } else {
       aired = true;
     }
   } else {
-    console.log(`Anime Status: ${animeStatus}`);
     aired = animeStatus == 2;
   }
-  console.log(aired ? 'Yes' : 'No');
   return aired;
 }
 
 function parseAnime() {
-  console.log('Parse ' + animes.length + ' animes');
+  loading(true);
 
   emptyAnime();
 
@@ -305,6 +298,8 @@ function parseAnime() {
       }
     }
   }
+
+  loading(false);
 }
 
 function changeProfile(id) {
@@ -328,7 +323,6 @@ function loading(enabled) {
 function searchUser() {
   user = $("#search-user").val();
   if (user) {
-    console.log('Search User');
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
     GET_CORS(`https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`, (body, status) => {
@@ -506,8 +500,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         time: luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
       };
     }
-
-    console.log(airingAnimes);
 
     storage.with("user", function(user) {
       $('#search-user').val(user).change();
