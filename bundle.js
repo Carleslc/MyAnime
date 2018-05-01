@@ -32853,7 +32853,6 @@ function CORS(method, url, success, error, opts) {
       xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
       console.log('Before Send, CORS');
       console.log(opts);
-      console.log(opts.beforeSend);
       if (opts && opts.beforeSend) {
         console.log('Call beforeSend custom');
         opts.beforeSend(xhr);
