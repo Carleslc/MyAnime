@@ -33121,6 +33121,7 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
+    loading(true);
     GET_CORS('https://myanimelist.net/api/account/verify_credentials.xml', (body, status) => {
       if (status === 200) {
         storage.set('password', password);
@@ -33130,7 +33131,12 @@ function updatePassword() {
       } else {
         alert(body);
       }
-    }, (body, status) => alert(body), auth(user, password));
+      loading(false);
+    }, (body, status) => {
+      alert(body);
+      loading(false);
+    },
+    auth(user, password));
   }
 }
 
