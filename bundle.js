@@ -32827,7 +32827,6 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
-  console.log(sendOpts);
   $.ajax(sendOpts);
 }
 
@@ -32850,10 +32849,8 @@ function CORS(method, url, success, error, opts) {
       opts(ajaxOpts);
     }
     let customBeforeSend = ajaxOpts.beforeSend;
-    console.log(customBeforeSend);
     ajaxOpts.beforeSend = function(xhr) {
       xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-      console.log('Before Send, CORS');
       if (customBeforeSend) {
         customBeforeSend(xhr);
       }
@@ -32877,9 +32874,7 @@ function POST_CORS(url, data, success, error, opts) {
 
 function auth(user, password) {
   return function(opts) {
-    console.log('Set opts');
     opts.beforeSend = function(xhr) {
-      console.log('Set Authorization');
       xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
     }
   };
