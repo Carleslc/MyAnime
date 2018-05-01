@@ -2,6 +2,11 @@
 
 const popura = require('popura')
 
+// popura dependency
+global.setImmediate = require('timers').setImmediate;
+require('smtpconnection');
+//
+
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
     return localStorage.getItem(tag);
