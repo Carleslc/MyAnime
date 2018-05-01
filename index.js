@@ -325,7 +325,6 @@ function changeProfile(id) {
 }
 
 function loading(enabled) {
-  console.log('Loading ' + enabled);
   changeProfile(enabled ? undefined : userId || 0);
 }
 
