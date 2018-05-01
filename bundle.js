@@ -32766,7 +32766,7 @@ function GET(url, success, error, opts) {
 }
 
 function POST(url, data, success, error, opts) {
-  FETCH('POST', url, data, success, error, function(ajaxOpts) {
+  FETCH('POST', url, success, error, function(ajaxOpts) {
     if (opts) {
       opts(ajaxOpts);
     }
@@ -32805,7 +32805,6 @@ function POST_CORS(url, data, success, error, opts) {
 function auth(user, password) {
   return function(opts) {
     opts.beforeSend = function(xhr) {
-      console.log("Set Authorization");
       xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
     }
   };
