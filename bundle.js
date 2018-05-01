@@ -33096,7 +33096,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       }
     });*/
 
-    POST(`https://myanime-app.appspot.com/update`, (body, status) => {
+    POST(`https://myanime-app.appspot.com/update`, entry, (body, status) => {
       if (body === 'Updated') {
         updateAnime();
         alert(completed ? `Hooray! You've completed ${title}!` : `Updated ${title} to episode ${chapter}.`);
