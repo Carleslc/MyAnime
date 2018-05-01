@@ -32827,6 +32827,7 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
+  console.log(sendOpts);
   $.ajax(sendOpts);
 }
 
@@ -32873,7 +32874,9 @@ function POST_CORS(url, data, success, error, opts) {
 
 function auth(user, password) {
   return function(opts) {
+    console.log('Set opts');
     opts.beforeSend = function(xhr) {
+      console.log('Set Authorization');
       xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
     }
   };
@@ -32984,6 +32987,7 @@ function watchAnime(title, chapter, malId, movie) {
     else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
     else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, chapterIfNotMovie() + "sub-espanol")}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
+    else if (provider == "tvanime") return `http://tvanime.org/ver/${asUrl(title, chapter)}`;
     else if (provider == "twist") return `https://twist.moe/a/${asUrl(title)}/${chapter}`;
     else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
     else if (provider == "crunchyroll") return `https://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
