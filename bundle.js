@@ -33194,7 +33194,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       airingAnimes[idify(anime.title)] = {
         episode: anime.episode,
         airingDate: date,
-        weekday: date.weekdayLong,
+        weekday: luxonDate.weekdayLong,
         date: luxonDate.toLocaleString(luxon.DateTime.DATE_FULL),
         time: luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
       };
