@@ -29,13 +29,13 @@
             </a>
           </div>
           <div class="col-auto">
-            <form action="#" onsubmit="searchUser()" class="input-group" id="search-user-form">
+            <form action="#" class="input-group" id="search-user-form">
               <div class="input-group-prepend">
                 <span class="input-group-text" data-toggle="tooltip" data-placement="right" title="https://myanimelist.net/profile/" id="user-addon">@</span>
               </div>
               <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon3" id="search-user">
               <div class="input-group-append">
-                <a href="#" id="submitBtn" onclick="searchUser()" class="btn btn-success" role="button">Search</a>
+                <a href="#" id="submitBtn" class="btn btn-success" role="button">Search</a>
               </div>
             </form>
           </div>
@@ -190,15 +190,12 @@
           </div>
           <div class="modal-footer">
             <a href="#" class="btn btn-secondary" data-dismiss="modal">Close</a>
-            <a href="#" onclick="updatePassword()" class="btn btn-primary">Update</a>
+            <a href="#" id="update-password-btn" class="btn btn-primary">Update</a>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <script type="text/javascript">
-  $('[data-toggle="tooltip"]').tooltip();
-  </script>
   <script src="bundle.js"></script>
 </body>
 

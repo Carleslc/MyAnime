@@ -42,12 +42,76 @@ function toXML(o) {
   return serializer.json2xml_str(o);
 }
 
-// CORS
+function FETCH(method, url, success, error, opts) {
+  loading(true);
+  let sendOpts = {
+    url: url,
+    type: method,
+    cache: false,
+    success: function(response, textStatus, xhr) {
+      success(xhr.responseText, xhr.status);
+    },
+    error: function(xhr, textStatus, errorThrown) {
+      if (error) {
+        error(xhr.responseText, xhr.status);
+      }
+    }
+  };
+  if (opts) {
+    opts(sendOpts);
+  }
+  $.ajax(sendOpts).always(function() {
+    loading(false);
+  });
+}
 
-let allowOriginHeader = new Headers({"Access-Control-Allow-Origin": "*"});
+function GET(url, success, error, opts) {
+  FETCH('GET', url, success, error, opts);
+}
 
-function allowOrigin(xhr) {
-  xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+function POST(url, data, success, error, opts) {
+  FETCH('POST', url, data, success, error, function(ajaxOpts) {
+    if (opts) {
+      opts(ajaxOpts);
+    }
+    ajaxOpts.data = data;
+  });
+}
+
+function CORS(method, url, success, error, opts) {
+  FETCH(method, `https://cors-anywhere.herokuapp.com/${url}`, success, error, function(ajaxOpts) {
+    if (opts) {
+      opts(ajaxOpts);
+    }
+    ajaxOpts.beforeSend = function(xhr) {
+      xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+      if (opts && opts.beforeSend) {
+        opts.beforeSend(xhr);
+      }
+    };
+    ajaxOpts.crossDomain = true;
+  });
+}
+
+function GET_CORS(url, success, error, opts) {
+  CORS('GET', url, success, error, opts);
+}
+
+function POST_CORS(url, data, success, error, opts) {
+  CORS('POST', url, success, error, function(ajaxOpts) {
+    if (opts) {
+      opts(ajaxOpts);
+    }
+    ajaxOpts.data = data;
+  });
+}
+
+function auth(user, password) {
+  return function(opts) {
+    opts.beforeSend = function(xhr) {
+      xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
+    }
+  };
 }
 
 // Settings
@@ -63,6 +127,8 @@ var airingAnimes = {};
 var animes = [];
 
 $(document).ready(function() {
+  $('[data-toggle="tooltip"]').tooltip();
+
   $.support.cors = true;
 
   (function loadSettings() {
@@ -234,35 +300,29 @@ function loading(enabled) {
 function searchUser() {
   user = $("#search-user").val();
   if (user) {
-    loading(true);
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
-    $.ajax({
-      url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`,
-      type: 'GET',
-      cache: false,
-      crossDomain: true,
-      beforeSend: allowOrigin,
-      success: function(data, textStatus, xhr) {
-        response = fromXML(xhr.responseText);
-        let mal = response.myanimelist;
-        if (mal) {
-          animes = mal.anime || [];
-          parseAnime();
-          userId = mal.myinfo.user_id;
-          changeProfile(userId);
-        } else {
-          alert(`User ${user} does not exists.`);
-          loading(false);
-        }
-      },
-      error: function(xhr) {
-        loading(false);
+    GET_CORS(`https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`, (body, status) => {
+      let mal = fromXML(body).myanimelist;
+      if (mal) {
+        animes = mal.anime || [];
+        parseAnime();
+        userId = mal.myinfo.user_id;
+        changeProfile(userId);
+      } else {
+        alert(`User ${user} does not exists.`);
       }
     });
   }
   return false;
 }
+
+$("#search-user-form").submit(function(e) {
+  searchUser();
+  e.preventDefault(); // Don't reload
+});
+
+$("#submitBtn").click(searchUser);
 
 var checkpoint;
 
@@ -274,6 +334,8 @@ function updatePassword() {
     checkpoint();
   }
 }
+
+$("#update-password-btn").click(updatePassword);
 
 function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie) {
   let password = storage.get('password');
@@ -338,54 +400,29 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       }
     });*/
 
-    loading(true);
-
-    $.ajax({
-      url: `https://myanime-app.appspot.com/update`,
-      cache: false,
-      type: 'POST',
-      data: JSON.stringify(entry),
-      contentType: "application/json",
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
-      },
-      success: function(response, textStatus, xhr) {
-        if (xhr.responseText === 'Updated') {
-          updateAnime();
-          alert(completed ? `Hooray! You've completed ${title}!` : `Updated ${title} to episode ${chapter}.`);
-        } else {
-          alert(response);
-        }
-      },
-      error: function(xhr, textStatus, errorThrown) {
-        alert(`Cannot update episode, reason: ${xhr.responseText}`);
-        storage.remove('password');
+    POST(`https://myanime-app.appspot.com/update`, (body, status) => {
+      if (body === 'Updated') {
+        updateAnime();
+        alert(completed ? `Hooray! You've completed ${title}!` : `Updated ${title} to episode ${chapter}.`);
+      } else {
+        alert(response);
       }
-    }).always(function() {
-      loading(false);
-    });
+    }, function error(body, status) {
+      alert(`Cannot update episode, reason: ${body}`);
+      storage.remove('password');
+    }, auth(user, password));
   }
   event.stopPropagation(); // Inner trigger
 }
-
-$("#search-user-form").submit(function(e) {
-    e.preventDefault(); // Don't reload
-});
 
 (function fetchCalendar() {
   let cheerio = require('cheerio');
   let jsonframe = require('jsonframe-cheerio');
   let luxon = require('luxon');
 
-  fetch("https://cors-anywhere.herokuapp.com/https://notify.moe/calendar", {
-      method: 'GET',
-      headers: allowOriginHeader,
-      mode: 'cors',
-      cache: 'default'
-    }).then(parseCalendar);
+  GET_CORS("https://notify.moe/calendar", parseCalendar);
 
   function parseCalendar(html) {
-    console.log(html);
     let _ = cheerio.load(html);
     jsonframe(_);
 
