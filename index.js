@@ -110,6 +110,7 @@ function POST_CORS(url, data, success, error, opts) {
 function auth(user, password) {
   return function(opts) {
     opts.beforeSend = function(xhr) {
+      console.log("Set Authorization");
       xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
     }
   };
