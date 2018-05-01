@@ -33101,7 +33101,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         updateAnime();
         alert(completed ? `Hooray! You've completed ${title}!` : `Updated ${title} to episode ${chapter}.`);
       } else {
-        alert(response);
+        alert(body);
       }
     }, function error(body, status) {
       alert(`Cannot update episode, reason: ${body}`);
