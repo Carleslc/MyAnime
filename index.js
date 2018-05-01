@@ -189,16 +189,20 @@ function getTitle(originalTitle, synonymsRaw) {
   return originalTitle;
 }
 
-function asUrl(s, append) {
+function asUrl(s, append, prov) {
   if (append) {
     s = `${s}-${append}`;
   }
   s = s.toLowerCase();
-  if (provider in ["animemovil", "gogoanime"]) {
+  if ((prov || provider) in ["animemovil", "gogoanime"]) {
     s = s.replace(/[;]/g, '');
   }
   s = s.replace(/[^-a-z0-9]+/g, '-').replace(/-{2,}/, '-');
   return encodeURIComponent(s);
+}
+
+function idify(s) {
+  return asUrl(s, null, '');
 }
 
 function watchAnime(title, chapter, malId, movie) {
@@ -248,6 +252,7 @@ function emptyAnime() {
 
 function isAired(title, chapter, animeStatus) {
   var aired;
+  title = idify(title);
   console.log(`Is ${title} ${chapter} aired?`);
   if (animeStatus == 1) {
     console.log('Currently Airing');
@@ -396,7 +401,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         alert(`Hooray! You've completed ${title}!`);
       } else if (!isAired(title, chapter + 1, animeStatus)) {
         removeFigure();
-        let airingAnime = airingAnimes[title];
+        let airingAnime = airingAnimes[idify(title)];
         alert(`Updated ${title} to episode ${chapter}. Next episode will be available next ${airingAnime.weekday} (${airingAnime.date}) about ${airingAnime.time}h.`);
       } else {
         getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, function(figure) {
@@ -493,7 +498,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     for (anime of animeCalendar.airingAnimes) {
       let date = new Date(anime.date);
       let luxonDate = luxon.DateTime.fromJSDate(date);
-      airingAnimes[anime.title] = {
+      airingAnimes[idify(anime.title)] = {
         episode: anime.episode,
         airingDate: date,
         weekday: date.weekdayLong,
