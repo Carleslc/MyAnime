@@ -32695,6 +32695,12 @@ function extend() {
 },{}],187:[function(require,module,exports){
 // Utils
 
+let luxon = require('luxon');
+
+function now() {
+  return luxon.DateTime.fromJSDate(new Date());
+}
+
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
     return localStorage.getItem(tag);
@@ -32924,7 +32930,7 @@ function watchAnime(title, chapter, malId, movie) {
   window.open(url);
 }
 
-function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie, callback) {
+function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, callback) {
   title = getTitle(title, synonyms);
   callback(`<article id="anime-${malId}">
     <div>
@@ -32938,7 +32944,7 @@ function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movi
     </div>
   </article>`);
   $(`#anime-${malId} div`).click(function() { watchAnime(title, chapter, malId, movie) });
-  $(`#next-${malId}`).click(function() { updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie) });
+  $(`#next-${malId}`).click(function() { updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) });
 }
 
 function emptyAnime() {
@@ -32947,15 +32953,37 @@ function emptyAnime() {
   planToWatch.empty();
 }
 
+function isAired(title, chapter, animeStatus) {
+  var aired;
+  if (animeStatus == 1) {
+    if (title in airingAnimes) {
+      aired = airingAnimes[title].airingDate < currentDate;
+    } else {
+      aired = true;
+    }
+  } else {
+    aired = animeStatus == 2;
+  }
+  if (!aired) {
+    console.log(`${title} not yet aired`);
+  }
+  return aired;
+}
+
 function parseAnime() {
+  console.log('Parse ' + animes.length + ' animes');
+
   emptyAnime();
+
+  let currentDate = now();
+
   for (anime of animes) {
     let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
     let animeStatus = anime.series_status; // 1 - Currently Airing, 2 - Finished, 3 - Not yet aired
     let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special, 5 - ONA, 6 - Music
     let episodes = parseInt(anime.series_episodes);
     let nextChapter = parseInt(anime.my_watched_episodes) + 1;
-    if (animeStatus != 3 && (episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == type)) {
+    if ((episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == type)) {
       var section;
       if (status == 1) {
         section = watching;
@@ -32964,8 +32992,9 @@ function parseAnime() {
       } else if (status == 6) {
         section = planToWatch;
       }
-      if (section) {
-        getAnimeFigure(anime.series_title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3, function(figure) {
+      let title = anime.series_title;
+      if (section && isAired(title, animeStatus)) {
+        getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3, animeStatus, function(figure) {
           section.append(figure);
         });
       }
@@ -32994,6 +33023,7 @@ function loading(enabled) {
 function searchUser() {
   user = $("#search-user").val();
   if (user) {
+    console.log('Search User');
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
     GET_CORS(`https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime`, (body, status) => {
@@ -33031,7 +33061,7 @@ function updatePassword() {
 
 $("#update-password-btn").click(updatePassword);
 
-function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie) {
+function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) {
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
@@ -33057,9 +33087,17 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
     function updateAnime() {
       let index = animes.findIndex(anime => anime.series_animedb_id == malId);
-      if (completed) {
+      function removeFigure() {
         $(`#anime-${malId}`).remove();
         animes.splice(index, 1);
+      }
+      if (completed) {
+        removeFigure();
+        alert(`Hooray! You've completed ${title}!`);
+      } else if (!isAired(title, chapter + 1, animeStatus)) {
+        removeFigure();
+        let airingAnime = airingAnimes[title];
+        alert(`Updated ${title} to episode ${chapter}. Next episode will be available next ${airingAnime.weekday} (${airingAnime.date}) about ${airingAnime.time}h.`);
       } else {
         getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, function(figure) {
           $(`#anime-${malId}`).replaceWith(figure);
@@ -33067,6 +33105,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         let anime = animes[index];
         anime.my_status = entry.status || anime.my_status;
         anime.my_watched_episodes = chapter;
+        alert(`Updated ${title} to episode ${chapter}.`);
       }
     }
 
@@ -33103,7 +33142,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     POST(`https://myanime-app.appspot.com/update`, entry, (body, status) => {
       if (body === 'Updated') {
         updateAnime();
-        alert(completed ? `Hooray! You've completed ${title}!` : `Updated ${title} to episode ${chapter}.`);
       } else {
         cannotUpdate(body);
       }
@@ -33118,7 +33156,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 (function fetchCalendar() {
   let cheerio = require('cheerio');
   let jsonframe = require('jsonframe-cheerio');
-  let luxon = require('luxon');
 
   GET_CORS("https://notify.moe/calendar", parseCalendar);
 
@@ -33153,12 +33190,14 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     */
 
     for (anime of animeCalendar.airingAnimes) {
-      var date = luxon.DateTime.fromJSDate(new Date(anime.date));
+      let date = new Date(anime.date);
+      let luxonDate = luxon.DateTime.fromJSDate(date);
       airingAnimes[anime.title] = {
         episode: anime.episode,
-        date: date.toLocaleString(luxon.DateTime.DATE_FULL),
+        airingDate: date,
         weekday: date.weekdayLong,
-        time: date.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
+        date: luxonDate.toLocaleString(luxon.DateTime.DATE_FULL),
+        time: luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
       };
     }
 
