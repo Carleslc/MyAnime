@@ -79,7 +79,11 @@ function CORS(method, url, success, error, opts) {
     }
     ajaxOpts.beforeSend = function(xhr) {
       xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+      console.log('Before Send, CORS');
+      console.log(opts);
+      console.log(opts.beforeSend);
       if (opts && opts.beforeSend) {
+        console.log('Call beforeSend custom');
         opts.beforeSend(xhr);
       }
     };
