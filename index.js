@@ -349,7 +349,7 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    GET_CORS(`https://${user.name}:${user.pass}@myanimelist.net/api/account/verify_credentials.xml`, (body, status) => {
+    GET_CORS(`https://${user}:${password}@myanimelist.net/api/account/verify_credentials.xml`, (body, status) => {
       if (status === 200) {
         storage.set('password', password);
         $("#set-password").modal('hide');
