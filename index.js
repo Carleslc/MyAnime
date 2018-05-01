@@ -1,5 +1,7 @@
 // Utils
 
+const popura = require('popura')
+
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
     return localStorage.getItem(tag);
@@ -34,12 +36,6 @@ function pad(n, size) {
 function formatToday() {
   let now = new Date();
   return `${pad(now.getMonth() + 1)}${pad(now.getDate())}${now.getFullYear()}`;
-}
-
-var serializer;
-function toXML(o) {
-  serializer = serializer || new X2JS();
-  return serializer.json2xml_str(o);
 }
 
 function FETCH(method, url, success, error, opts) {
@@ -116,6 +112,8 @@ function auth(user, password) {
 let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
+
+var mal;
 var user, userId;
 var provider;
 var filter;
@@ -351,9 +349,16 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    storage.set('password', password);
-    $("#set-password").modal('hide');
-    checkpoint();
+    GET(`https://${user.name}:${user.pass}@myanimelist.net/api/account/verify_credentials.xml`, (body, status) => {
+      if (status === 200) {
+        storage.set('password', password);
+        $("#set-password").modal('hide');
+        mal = popura(user, password);
+        checkpoint();
+      } else {
+        alert(body);
+      }
+    }, (body, status) => alert(body));
   }
 }
 
@@ -370,7 +375,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     loading(true);
 
     let entry = {
-      id: malId,
       episode: chapter
     };
 
@@ -409,48 +413,22 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       }
     }
 
-    /*$.ajax({
-      url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`,
-      cache: false,
-      type: 'POST',
-      data: `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`,
-      contentType: "application/x-www-form-urlencoded",
-      crossDomain: true,
-      //password: password,
-      //xhrFields: { withCredentials: true },
-      beforeSend: function(xhr) {
-        allowOrigin(xhr);
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
-      },
-      success: function(response, textStatus, xhr) {
-        if (!response.toLowerCase().includes('error')) {
-          alert(`Updated ${title} to episode ${chapter}.`);
-        } else {
-          alert(response);
-        }
-      },
-      error: function(xhr, textStatus, errorThrown) {
-        alert(`Cannot update episode, reason: ${xhr.responseText} [${textStatus}]`);
-        storage.remove('password');
-      }
-    });*/
-
     function cannotUpdate(reason) {
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
-    POST(`https://myanime-app.appspot.com/update`, entry, (body, status) => {
-      if (body === 'Updated') {
+    mal.updateAnime(malId, entry).then(res => {
+      if (res === 'Updated') {
         updateAnime();
       } else {
-        cannotUpdate(body);
+        cannotUpdate(res);
       }
       loading(false);
-    }, function error(body, status) {
+    }).catch(err => {
       storage.remove('password');
-      cannotUpdate(body);
+      cannotUpdate(err.statusMessage);
       loading(false);
-    }, auth(user, password));
+    });
   }
   event.stopPropagation(); // Inner trigger
 }
@@ -485,9 +463,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         {
           title: "One Piece",
           episode: "835",
-          weekday: "Sunday",
-          date: "2018-05-06T00:30:00Z",
-          localTime: "02:30"
+          date: "2018-05-06T00:30:00Z"
         },
         ...
       ]
@@ -504,6 +480,19 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         time: luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
       };
     }
+
+    /*
+      {
+        "one-piece": {
+          episode: "835",
+          airingDate: 2018-05-06T00:30:00Z (Date),
+          weekday: "Sunday",
+          date: "May 6, 2018"
+          time: "02:30"
+        },
+        ...
+      }
+    */
 
     let user = storage.get("user");
     if (user == null) {
