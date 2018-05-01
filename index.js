@@ -51,6 +51,7 @@ var user, userId;
 var provider;
 var filter;
 var useAlternativeTitles;
+var airingAnimes = {};
 var animes = [];
 
 $(document).ready(function() {
@@ -366,3 +367,54 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 $("#search-user-form").submit(function(e) {
     e.preventDefault(); // Don't reload
 });
+
+(function fetchCalendar() {
+  let cheerio = require('cheerio');
+  let jsonframe = require('jsonframe-cheerio');
+  let luxon = require('luxon');
+
+  fetch("https://notify.moe/calendar").then(parseCalendar);
+
+  function parseCalendar(html) {
+    let _ = cheerio.load(html);
+    jsonframe(_);
+
+    var frame = {
+      airingAnimes: {
+        _s: ".calendar-entry",
+        _d: [{
+          title: ".calendar-entry-title",
+          episode: ".calendar-entry-episode | number",
+          date: ".calendar-entry-time @ data-date"
+        }]
+      }
+    };
+
+    var animeCalendar = _('.week').scrape(frame);
+
+    /*
+      airingAnimes: [
+        {
+          title: "One Piece",
+          episode: "835",
+          weekday: "Sunday",
+          date: "2018-05-06T00:30:00Z",
+          localTime: "02:30"
+        },
+        ...
+      ]
+    */
+
+    for (anime of animeCalendar.airingAnimes) {
+      var date = luxon.DateTime.fromJSDate(new Date(anime.date));
+      airingAnimes[anime.title] = {
+        episode: anime.episode,
+        date: date.toLocaleString(luxon.DateTime.DATE_FULL),
+        weekday: date.weekdayLong,
+        time: date.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
+      };
+    }
+
+    console.log(airingAnimes);
+  }
+})();
