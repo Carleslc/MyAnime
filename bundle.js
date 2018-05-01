@@ -33206,6 +33206,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }
 
     mal.updateAnime(malId, entry).then(res => {
+      console.log("OK: " + res);
       if (res === 'Updated') {
         updateAnime();
       } else {
@@ -33214,6 +33215,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       loading(false);
     }).catch(err => {
       storage.remove('password');
+      console.log(err);
       cannotUpdate(err.statusMessage);
       loading(false);
     });
