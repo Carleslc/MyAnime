@@ -232,7 +232,7 @@ function watchAnime(title, chapter, malId, movie) {
 function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie, callback) {
   title = getTitle(title, synonyms);
   callback(`<article id="anime-${malId}">
-    <div id="anime-${malId}-div">
+    <div>
       <header>${title} #${chapter}</header>
       <figure>
         <img src="${image}" class="cover" width="225" height="313">
@@ -242,7 +242,7 @@ function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movi
       </aside>
     </div>
   </article>`);
-  $(`#anime-${malId}-div`).click(watchAnime(title, chapter, malId, movie));
+  $(`#anime-${malId} div`).click(watchAnime(title, chapter, malId, movie));
   $(`#next-${malId}`).click(updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie));
 }
 
