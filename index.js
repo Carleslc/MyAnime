@@ -77,11 +77,13 @@ function CORS(method, url, success, error, opts) {
     if (opts) {
       opts(ajaxOpts);
     }
+    let customBeforeSend = ajaxOpts.beforeSend;
+    console.log(customBeforeSend);
     ajaxOpts.beforeSend = function(xhr) {
       xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
       console.log('Before Send, CORS');
-      if (ajaxOpts.beforeSend) {
-        ajaxOpts.beforeSend(xhr);
+      if (customBeforeSend) {
+        customBeforeSend(xhr);
       }
     };
     ajaxOpts.crossDomain = true;
