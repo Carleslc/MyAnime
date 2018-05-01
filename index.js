@@ -60,7 +60,6 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
-  console.log(sendOpts);
   $.ajax(sendOpts).always(function() {
     loading(false);
   });
@@ -402,17 +401,20 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       }
     });*/
 
+    function cannotUpdate(reason) {
+      alert(`Cannot update episode, reason: ${reason}`);
+    }
+
     POST(`https://myanime-app.appspot.com/update`, entry, (body, status) => {
       if (body === 'Updated') {
         updateAnime();
         alert(completed ? `Hooray! You've completed ${title}!` : `Updated ${title} to episode ${chapter}.`);
       } else {
-        alert(body);
+        cannotUpdate(body);
       }
     }, function error(body, status) {
-      console.log(body);
-      alert(`Cannot update episode, reason: ${body}`);
       storage.remove('password');
+      cannotUpdate(body);
     }, auth(user, password));
   }
   event.stopPropagation(); // Inner trigger
