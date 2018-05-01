@@ -182,8 +182,6 @@ $(document).ready(function() {
 
     // Load contents
     searchUser();
-
-    loading(false);
   })();
 });
 
