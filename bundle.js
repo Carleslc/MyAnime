@@ -32900,6 +32900,8 @@ $(document).ready(function() {
   $.support.cors = true;
 
   (function loadSettings() {
+    loading(true);
+
     // Information
     let recurrentUser = storage.get("recurrentUser");
     if (!recurrentUser) {
@@ -32941,6 +32943,19 @@ $(document).ready(function() {
       storage.set("alternatives", useAlternativeTitles);
       parseAnime();
     });
+
+    // User
+    storage.with("user", function(user) {
+      $('#search-user').val(user).change();
+    });
+
+    // Calendar
+    fetchCalendar();
+
+    // Load contents
+    searchUser();
+
+    loading(false);
   })();
 });
 
@@ -33215,12 +33230,11 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
   event.stopPropagation(); // Inner trigger
 }
 
-(function fetchCalendar() {
+function fetchCalendar() {
   let luxon = require('luxon');
   let cheerio = require('cheerio');
   let jsonframe = require('jsonframe-cheerio');
 
-  loading(true);
   GET_CORS("https://notify.moe/calendar", parseCalendar, (body, status) => alert(`Cannot get calendar, reason: ${body} (Status ${status})`));
 
   function parseCalendar(html) {
@@ -33275,16 +33289,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         ...
       }
     */
-
-    let user = storage.get("user");
-    if (user == null) {
-      loading(false);
-    } else {
-      $('#search-user').val(user).change();
-      searchUser();
-    }
   }
-})();
+}
 },{"cheerio":196,"jsonframe-cheerio":333,"luxon":558,"popura":619}],189:[function(require,module,exports){
 /* jshint node: true */
 'use strict';
