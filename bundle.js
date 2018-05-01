@@ -33057,8 +33057,6 @@ function isAired(title, chapter, animeStatus) {
 }
 
 function parseAnime() {
-  loading(true);
-
   emptyAnime();
 
   for (anime of animes) {
@@ -33084,8 +33082,6 @@ function parseAnime() {
       }
     }
   }
-
-  loading(false);
 }
 
 function changeProfile(id) {
