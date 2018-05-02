@@ -1,7 +1,7 @@
 // Utils
 
-let got = require('got');
-global.setImmediate = require('timers').setImmediate; // got dependency
+//let got = require('got');
+//global.setImmediate = require('timers').setImmediate; // got dependency
 
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
@@ -62,15 +62,15 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
-  $.ajax(sendOpts);
+  return $.ajax(sendOpts);
 }
 
 function GET(url, success, error, opts) {
-  FETCH('GET', url, success, error, opts);
+  return FETCH('GET', url, success, error, opts);
 }
 
 function POST(url, data, success, error, opts) {
-  FETCH('POST', url, success, error, function(ajaxOpts) {
+  return FETCH('POST', url, success, error, function(ajaxOpts) {
     if (opts) {
       opts(ajaxOpts);
     }
@@ -79,7 +79,7 @@ function POST(url, data, success, error, opts) {
 }
 
 function CORS(method, url, success, error, opts) {
-  FETCH(method, `https://cors-anywhere.herokuapp.com/${url}`, success, error, function(ajaxOpts) {
+  return FETCH(method, `https://cors-anywhere.herokuapp.com/${url}`, success, error, function(ajaxOpts) {
     if (opts) {
       opts(ajaxOpts);
     }
@@ -95,16 +95,30 @@ function CORS(method, url, success, error, opts) {
 }
 
 function GET_CORS(url, success, error, opts) {
-  CORS('GET', url, success, error, opts);
+  return CORS('GET', url, success, error, opts);
 }
 
 function POST_CORS(url, data, success, error, opts) {
-  CORS('POST', url, success, error, function(ajaxOpts) {
+  return CORS('POST', url, success, error, function(ajaxOpts) {
     if (opts) {
       opts(ajaxOpts);
     }
     ajaxOpts.data = data;
   });
+}
+
+Function.prototype.and = function(fOpts) {
+  let self = this;
+  return function(opts) {
+    self(opts);
+    fOpts(opts);
+  };
+}
+
+function contentType(type) {
+  return function(opts) {
+    opts.setRequestHeader("Content-Type", type);
+  };
 }
 
 // Authorization
@@ -120,7 +134,7 @@ function auth() {
     opts.beforeSend = function(xhr) {
       xhr.setRequestHeader("Authorization", "Basic " + authToken);
     }
-  }
+  };
 }
 
 // Settings
@@ -338,6 +352,7 @@ function changeProfile(id) {
 }
 
 function loading(enabled) {
+  console.log(`${loading.caller}: Loading ${enabled}`);
   changeProfile(enabled ? undefined : userId || 0);
 }
 
@@ -451,9 +466,10 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
-    let data = `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`;
+    // data=%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Centry%3E%3Cepisode%3E9%3C%2Fepisode%3E%3C%2Fentry%3E
+    let data = encodeURI(`data=<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`);
 
-    got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
+    /*got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
       method: 'POST',
       headers: { Authorization: "Basic " + authToken },
       body: { data: data }
@@ -463,24 +479,20 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       } else {
         cannotUpdate(body);
       }
-      loading(false);
     }).catch(err => {
       cannotUpdate(err);
-      loading(false);
-    });
+    }).then(() => loading(false));*/
 
-    /*POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
+    POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
       if (body === 'Updated') {
         updateAnime();
       } else {
         cannotUpdate(body);
       }
-      loading(false);
     }, (body, status) => {
       storage.remove('password');
       cannotUpdate(body);
-      loading(false);
-    }, auth());*/
+    }, auth().and(contentType("application/x-www-form-urlencoded"))).always() => loading(false);
   }
 
   event.stopPropagation(); // Inner trigger
