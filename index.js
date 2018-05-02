@@ -49,19 +49,22 @@ function finishLoading(name) {
   let f = function() {
     loading(false);
   };
-  f.name = name;
+  Object.defineProperty(f, "name", { value: name });
   return f;
 }
 
 function FETCH(method, url, success, error, opts) {
+  console.log(`${method} ${url}`);
   let sendOpts = {
     url: url,
     type: method,
     cache: false,
     success: function(response, textStatus, xhr) {
+      console.log(`Success (${url})`);
       success(xhr.responseText, xhr.status);
     },
     error: function(xhr, textStatus, errorThrown) {
+      console.log(`Error (${url})`);
       if (error) {
         error(xhr.responseText, xhr.status);
       }
@@ -218,6 +221,7 @@ $(document).ready(function() {
     });
 
     // Load contents
+    console.log('Load contents');
     fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('settingsFinish'));
   })();
 });
@@ -322,6 +326,7 @@ function isAired(title, chapter, animeStatus) {
 }
 
 function parseAnime() {
+  console.log('Parsing anime...');
   emptyAnime();
 
   for (anime of animes) {
@@ -347,6 +352,8 @@ function parseAnime() {
       }
     }
   }
+
+  console.log('Parsed anime');
 }
 
 function changeProfile(id) {
@@ -371,6 +378,7 @@ function loading(enabled) {
 function searchUser() {
   user = $("#search-user").val();
   if (user) {
+    console.log('Searching user...');
     loading(true);
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
@@ -401,6 +409,7 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
+    console.log('Updating password...');
     loading(true);
     
     buildAuthToken(user, password);
@@ -421,6 +430,7 @@ function updatePassword() {
 $("#update-password-btn").click(updatePassword);
 
 function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) {
+  console.log('Updating chapter...');
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
@@ -507,6 +517,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
 function fetchCalendar() {
   return new Promise(function(resolve, reject) {
+    console.log('Fetching calendar...');
     let luxon = require('luxon');
     let cheerio = require('cheerio');
     let jsonframe = require('jsonframe-cheerio');
@@ -566,6 +577,7 @@ function fetchCalendar() {
         }
       */
 
+      console.log('Fetched calendar');
       resolve();
     }
   });
