@@ -32756,7 +32756,7 @@ function FETCH(method, url, success, error, opts) {
     cache: false,
     success: function(response, textStatus, xhr) {
       console.log(`Success (${url})`);
-      success(xhr.responseText, xhr.status);
+      success(xhr.responseText, xhr.status, response);
     },
     error: function(xhr, textStatus, errorThrown) {
       console.log(`Error (${url})`);
@@ -33078,8 +33078,8 @@ function searchUser() {
     // Official API: https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
-    GET(`https://kuristina.herokuapp.com/anime/${user}.json`, (body, status) => {
-      let mal = /*fromXML(body)*/JSON.parse(body).myanimelist;
+    GET(`https://kuristina.herokuapp.com/anime/${user}.json`, (body, status, response) => {
+      let mal = /*fromXML(body)*/response.myanimelist;
       if (mal) {
         animes = mal.anime || [];
         parseAnime();
