@@ -115,9 +115,11 @@ function buildAuthToken(user, password) {
   authToken = btoa(user + ":" + password);
 }
 
-function auth(opts) {
-  opts.beforeSend = function(xhr) {
-    xhr.setRequestHeader("Authorization", "Basic " + authToken);
+function auth() {
+  return function(opts) {
+    opts.beforeSend = function(xhr) {
+      xhr.setRequestHeader("Authorization", "Basic " + authToken);
+    }
   }
 }
 
@@ -385,7 +387,7 @@ function updatePassword() {
       alert(body);
       loading(false);
     },
-    auth);
+    auth());
   }
 }
 
@@ -449,8 +451,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
     let data = `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`;
 
-    console.log('Basic ' + authToken);
-
     got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
       method: 'POST',
       headers: {
@@ -484,7 +484,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       storage.remove('password');
       cannotUpdate(body);
       loading(false);
-    }, auth);*/
+    }, auth());*/
   }
 
   event.stopPropagation(); // Inner trigger
