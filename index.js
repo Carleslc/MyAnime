@@ -118,7 +118,6 @@ function buildAuthToken(user, password) {
 function auth() {
   return function(opts) {
     opts.beforeSend = function(xhr) {
-      console.log('Set Authorization: ' + authToken);
       xhr.setRequestHeader("Authorization", "Basic " + authToken);
     }
   }
@@ -453,26 +452,20 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
     let data = `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`;
 
-    console.log(authToken);
-
     got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
       method: 'POST',
-      headers: {
-        Authorization: "Basic " + authToken,
-        'User-Agent': 'MyAnime',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
+      headers: { Authorization: "Basic " + authToken },
       body: { data: data }
-    }).then(res => {
-      console.log("OK: " + res);
-      if (res === 'Updated') {
+    }).then(res => res.body).then(body => {
+      console.log(body);
+      if (body === 'Updated') {
         updateAnime();
       } else {
-        cannotUpdate(res);
+        cannotUpdate(body);
       }
       loading(false);
     }).catch(err => {
-      console.log("Error: " + err);
+      console.log(err);
       cannotUpdate(err.statusMessage);
       loading(false);
     });
