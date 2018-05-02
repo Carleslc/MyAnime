@@ -39,5 +39,5 @@ var storage;
     };
   }
 
-  storage = typeof(Storage) !== "undefined" new LocalStorage() ? new MemStorage();
+  storage = typeof(Storage) !== "undefined" ? new LocalStorage() : new MemStorage();
 })();
