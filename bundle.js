@@ -33065,7 +33065,6 @@ function isAired(title, chapter, animeStatus) {
   } else {
     aired = animeStatus == 2;
   }
-  console.log(`${title} ${chapter}, status ${animeStatus}, aired ${aired}` + (aired ? ' Aired' : ' Not aired'));
   return aired;
 }
 
@@ -33176,7 +33175,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
-      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie);
+      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus);
     };
     $("#set-password").modal('show');
   } else {
