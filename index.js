@@ -492,7 +492,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }, (body, status) => {
       storage.remove('password');
       cannotUpdate(body);
-    }, auth().and(contentType("application/x-www-form-urlencoded"))).always() => loading(false);
+    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(() => loading(false));
   }
 
   event.stopPropagation(); // Inner trigger
