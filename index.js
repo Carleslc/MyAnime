@@ -223,7 +223,9 @@ $(document).ready(function() {
     });
 
     // Load contents
-    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('Load Settings Finish'));
+    //fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('Load Settings Finish'));
+    searchUser();
+    finishLoading('Load Settings Finish')
   })();
 });
 
@@ -378,13 +380,12 @@ function loading(enabled) {
 function searchUser() {
   user = $("#search-user").val();
   if (user) {
-    console.log('Searching user...');
     loading(true);
-    // Official API: https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime
+    // Official API: https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime (fromXML(body))
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
     GET(`https://kuristina.herokuapp.com/anime/${user}.json`, (body, status, response) => {
-      let mal = /*fromXML(body)*/response.myanimelist;
+      let mal = response.myanimelist;
       if (mal) {
         animes = mal.anime || [];
         parseAnime();
@@ -410,7 +411,6 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    console.log('Updating password...');
     loading(true);
     
     buildAuthToken(user, password);
@@ -431,7 +431,6 @@ function updatePassword() {
 $("#update-password-btn").click(updatePassword);
 
 function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) {
-  console.log('Updating chapter...');
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
@@ -501,9 +500,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
   event.stopPropagation(); // Inner trigger
 }
 
-function fetchCalendar() {
+/*function fetchCalendar() {
   return new Promise(function(resolve, reject) {
-    console.log('Fetching calendar...');
     let luxon = require('luxon');
     let cheerio = require('cheerio');
     let jsonframe = require('jsonframe-cheerio');
@@ -536,7 +534,7 @@ function fetchCalendar() {
           },
           ...
         ]
-      */
+      /
 
       for (anime of animeCalendar.airingAnimes) {
         let date = new Date(anime.date);
@@ -561,10 +559,9 @@ function fetchCalendar() {
           },
           ...
         }
-      */
+      /
 
-      console.log('Fetched calendar');
       resolve();
     }
-  });
+  });*/
 }
