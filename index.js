@@ -118,6 +118,7 @@ function buildAuthToken(user, password) {
 function auth() {
   return function(opts) {
     opts.beforeSend = function(xhr) {
+      console.log('Set Authorization');
       xhr.setRequestHeader("Authorization", "Basic " + authToken);
     }
   }
@@ -322,22 +323,17 @@ function parseAnime() {
 }
 
 function changeProfile(id) {
-  var icon, userProfile;
+  var icon;
   if (id == undefined) {
     icon = "load-fig.gif";
   } else if (id == 0) {
     icon = "mal.jpg";
   } else {
     icon = `https://myanimelist.cdn-dena.com/images/userimages/${id}.jpg`;
-    userProfile = true;
+    $("#profile-link").attr("href", `https://myanimelist.net/profile/${user}`);
+    storage.set("user", user);
   }
-  if ($("#profile-icon").attr("src") != icon) {
-    $("#profile-icon").attr("src", icon);
-    if (userProfile) {
-      $("#profile-link").attr("href", `https://myanimelist.net/profile/${user}`);
-      storage.set("user", user);
-    }
-  }
+  $("#profile-icon").attr("src", icon);
 }
 
 function loading(enabled) {
@@ -455,6 +451,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }
 
     let data = `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`;
+
+    console.log(authToken);
 
     got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
       method: 'POST',
