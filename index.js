@@ -39,11 +39,11 @@ function formatToday() {
   return `${pad(now.getMonth() + 1)}${pad(now.getDate())}${now.getFullYear()}`;
 }
 
-var serializer;
+/*var serializer;
 function toXML(o) {
   serializer = serializer || new X2JS();
   return serializer.json2xml_str(o);
-}
+}*/
 
 function loading(enabled) {
   tasks += enabled ? 1 : -1;
@@ -412,6 +412,13 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
+    storage.set('password', password);
+    $("#set-password").modal('hide');
+    checkpoint();
+  }
+
+  /*let password = $("#password").val().trim();
+  if (password != '') {
     loading(true);
     
     buildAuthToken(user, password);
@@ -426,7 +433,7 @@ function updatePassword() {
       }
     }, (body, status) => alert(body),
     auth()).always(finishLoading('Update Password Finish'));
-  }
+  }*/
 }
 
 $("#update-password-btn").click(updatePassword);
@@ -441,9 +448,10 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
   } else {
     loading(true);
 
-    buildAuthToken(user, password);
-
-    let entry = { episode: chapter };
+    let entry = {
+      id: malId,
+      episode: chapter
+    };
 
     if (chapter == 1) {
       entry.status = 1;
@@ -484,7 +492,19 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
-    let data = encodeURI(`data=<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`);
+    buildAuthToken(user, password);
+
+    POST('https://myanime-app.appspot.com/update', JSON.stringify(entry), (body, status) => {
+      if (body === 'Updated') {
+        updateAnime();
+      } else {
+        cannotUpdate(body);
+      }
+    }, (body, status) => cannotUpdate(body),
+    auth().and(contentType("application/json")
+    .always(finishLoading('Update Chapter Finish'));
+
+    /*let data = encodeURI(`data=<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`);
 
     POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
       if (body === 'Updated') {
@@ -495,7 +515,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }, (body, status) => {
       storage.remove('password');
       cannotUpdate(body);
-    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(finishLoading('Update Chapter Finish'));
+    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(finishLoading('Update Chapter Finish'));*/
   }
 
   event.stopPropagation(); // Inner trigger
