@@ -33095,17 +33095,22 @@ function parseAnime() {
 }
 
 function changeProfile(id) {
-  var icon;
+  var icon, userProfile;
   if (id == undefined) {
     icon = "load-fig.gif";
   } else if (id == 0) {
     icon = "mal.jpg";
   } else {
     icon = `https://myanimelist.cdn-dena.com/images/userimages/${id}.jpg`;
-    $("#profile-link").attr("href", `https://myanimelist.net/profile/${user}`);
-    storage.set("user", user);
+    userProfile = true;
   }
-  $("#profile-icon").attr("src", icon);
+  if ($("#profile-icon").attr("src") != icon) {
+    $("#profile-icon").attr("src", icon);
+    if (userProfile) {
+      $("#profile-link").attr("href", `https://myanimelist.net/profile/${user}`);
+      storage.set("user", user);
+    }
+  }
 }
 
 function loading(enabled) {
