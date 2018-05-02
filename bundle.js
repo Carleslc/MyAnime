@@ -33071,7 +33071,6 @@ function loading(enabled) {
 function searchUser() {
   user = $("#search-user").val();
   if (user) {
-    console.log('Searching user...');
     loading(true);
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
@@ -33102,7 +33101,6 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    console.log('Updating password...');
     loading(true);
     
     buildAuthToken(user, password);
@@ -33123,7 +33121,6 @@ function updatePassword() {
 $("#update-password-btn").click(updatePassword);
 
 function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) {
-  console.log('Updating chapter...');
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
@@ -33175,7 +33172,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       storage.remove('password');
       alert(`Cannot update episode, reason: ${reason}`);
     }
-    
+
     /*got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
       method: 'POST',
       headers: { Authorization: "Basic " + authToken },
@@ -33209,7 +33206,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
 function fetchCalendar() {
   return new Promise(function(resolve, reject) {
-    console.log('Fetching calendar...');
     let luxon = require('luxon');
     let cheerio = require('cheerio');
     let jsonframe = require('jsonframe-cheerio');
