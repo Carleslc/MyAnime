@@ -32769,7 +32769,7 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
-  console.log(sendOpts);
+  console.log('AJAX');
   return $.ajax(sendOpts);
 }
 
@@ -32823,6 +32823,7 @@ Object.prototype.addRequestHeader = function(name, value) {
       customBeforeSend(xhr);
     }
     console.log(`setRequestHeader ${name} = ${value}`);
+    console.log(xhr);
     xhr.setRequestHeader(name, value);
   };
 }
