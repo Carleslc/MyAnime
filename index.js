@@ -436,6 +436,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }
 
     let data = `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`;
+    console.log(data);
 
     POST_CORS(`https://myanimelist.net/animelist/update/${malId}.xml`, data, (body, status) => {
       if (body === 'Updated') {
