@@ -231,7 +231,7 @@ $(document).ready(function() {
     // Load contents
     //fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('Load Settings Finish'));
     searchUser();
-    load(false);
+    loading(false);
   })();
 });
 
