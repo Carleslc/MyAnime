@@ -32965,7 +32965,7 @@ $(document).ready(function() {
     });
 
     // Load contents
-    fetchCalendar().then(searchUser).catch((error) => alert(error));
+    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(() => loading(false));
   })();
 });
 
