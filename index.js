@@ -384,7 +384,7 @@ function searchUser() {
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
     GET(`https://kuristina.herokuapp.com/anime/${user}.json`, (body, status) => {
-      let mal = /*fromXML(body)*/body.myanimelist;
+      let mal = /*fromXML(body)*/JSON.parse(body).myanimelist;
       if (mal) {
         animes = mal.anime || [];
         parseAnime();
