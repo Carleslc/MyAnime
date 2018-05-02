@@ -1,5 +1,8 @@
 // Utils
 
+let got = require('got');
+global.setImmediate = require('timers').setImmediate; // got dependency
+
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
     return localStorage.getItem(tag);
@@ -38,7 +41,7 @@ function formatToday() {
 
 var serializer;
 function toXML(o) {
-  serializer = serializer || new X2JS();
+  serializer = serializer || new X2JS();
   return serializer.json2xml_str(o);
 }
 
@@ -80,10 +83,11 @@ function CORS(method, url, success, error, opts) {
     if (opts) {
       opts(ajaxOpts);
     }
+    let customBeforeSend = ajaxOpts.beforeSend;
     ajaxOpts.beforeSend = function(xhr) {
       xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-      if (opts && opts.beforeSend) {
-        opts.beforeSend(xhr);
+      if (customBeforeSend) {
+        customBeforeSend(xhr);
       }
     };
     ajaxOpts.crossDomain = true;
@@ -103,12 +107,20 @@ function POST_CORS(url, data, success, error, opts) {
   });
 }
 
-function auth(user, password) {
+// Authorization
+
+var authToken;
+
+function buildAuthToken(user, password) {
+  authToken = authToken || btoa(user + ":" + password);
+}
+
+function auth() {
   return function(opts) {
     opts.beforeSend = function(xhr) {
-      xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
+      xhr.setRequestHeader("Authorization", "Basic " + authToken);
     }
-  };
+  }
 }
 
 // Settings
@@ -116,6 +128,7 @@ function auth(user, password) {
 let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
+
 var user, userId;
 var provider;
 var filter;
@@ -129,6 +142,8 @@ $(document).ready(function() {
   $.support.cors = true;
 
   (function loadSettings() {
+    loading(true);
+
     // Information
     let recurrentUser = storage.get("recurrentUser");
     if (!recurrentUser) {
@@ -170,6 +185,14 @@ $(document).ready(function() {
       storage.set("alternatives", useAlternativeTitles);
       parseAnime();
     });
+
+    // User
+    storage.with("user", function(user) {
+      $('#search-user').val(user).change();
+    });
+
+    // Load contents
+    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(() => loading(false));
   })();
 });
 
@@ -209,11 +232,14 @@ function watchAnime(title, chapter, malId, movie) {
   function getUrl() {
     if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/-/video`;
     else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} ${chapter} online español -english`);
+    else if (provider == "google-es") return 'https://www.google.com/search?btnI&q=' + encodeURIComponent(`${title} ${chapter} online español -english`);
     else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} episode ${chapter} online english anime -español`);
+    else if (provider == "google-en") return 'https://www.google.com/search?btnI&q=' + encodeURIComponent(`${title} ${chapter} online english`);
     else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
     else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
     else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, chapterIfNotMovie() + "sub-espanol")}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
+    else if (provider == "tvanime") return `http://tvanime.org/ver/${asUrl(title, chapter)}`;
     else if (provider == "twist") return `https://twist.moe/a/${asUrl(title)}/${chapter}`;
     else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
     else if (provider == "crunchyroll") return `https://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
@@ -247,17 +273,19 @@ function emptyAnime() {
   planToWatch.empty();
 }
 
+var airingAnime;
+
 function isAired(title, chapter, animeStatus) {
+  airingAnime = undefined;
+  function isAiringAired(anime) {
+    return anime.episode > chapter || (anime.episode == chapter && anime.airingDate < new Date());
+  }
   var aired;
   title = idify(title);
   if (animeStatus == 1) {
     if (title in airingAnimes) {
-      let anime = airingAnimes[title];
-      if (anime.episode > chapter) {
-        aired = true;
-      } else {
-        aired = anime.episode == chapter && anime.airingDate < new Date();
-      }
+      airingAnime = airingAnimes[title];
+      aired = isAiringAired(airingAnime);
     } else {
       aired = true;
     }
@@ -268,8 +296,6 @@ function isAired(title, chapter, animeStatus) {
 }
 
 function parseAnime() {
-  loading(true);
-
   emptyAnime();
 
   for (anime of animes) {
@@ -295,8 +321,6 @@ function parseAnime() {
       }
     }
   }
-
-  loading(false);
 }
 
 function changeProfile(id) {
@@ -351,9 +375,24 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    storage.set('password', password);
-    $("#set-password").modal('hide');
-    checkpoint();
+    loading(true);
+    
+    buildAuthToken(user, password);
+
+    GET_CORS('https://myanimelist.net/api/account/verify_credentials.xml', (body, status) => {
+      if (status === 200) {
+        storage.set('password', password);
+        $("#set-password").modal('hide');
+        checkpoint();
+      } else {
+        alert(body);
+      }
+      loading(false);
+    }, (body, status) => {
+      alert(body);
+      loading(false);
+    },
+    auth());
   }
 }
 
@@ -363,16 +402,15 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
-      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie);
+      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus);
     };
     $("#set-password").modal('show');
   } else {
     loading(true);
 
-    let entry = {
-      id: malId,
-      episode: chapter
-    };
+    buildAuthToken(user, password);
+
+    let entry = { episode: chapter };
 
     if (chapter == 1) {
       entry.status = 1;
@@ -396,7 +434,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         alert(`Hooray! You've completed ${title}!`);
       } else if (!isAired(title, chapter + 1, animeStatus)) {
         removeFigure();
-        let airingAnime = airingAnimes[idify(title)];
         alert(`Updated ${title} to episode ${chapter}. Next episode will be available next ${airingAnime.weekday} (${airingAnime.date}) about ${airingAnime.time}h.`);
       } else {
         getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, function(figure) {
@@ -409,108 +446,108 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       }
     }
 
-    /*$.ajax({
-      url: `https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`,
-      cache: false,
-      type: 'POST',
-      data: `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`,
-      contentType: "application/x-www-form-urlencoded",
-      crossDomain: true,
-      //password: password,
-      //xhrFields: { withCredentials: true },
-      beforeSend: function(xhr) {
-        allowOrigin(xhr);
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
-      },
-      success: function(response, textStatus, xhr) {
-        if (!response.toLowerCase().includes('error')) {
-          alert(`Updated ${title} to episode ${chapter}.`);
-        } else {
-          alert(response);
-        }
-      },
-      error: function(xhr, textStatus, errorThrown) {
-        alert(`Cannot update episode, reason: ${xhr.responseText} [${textStatus}]`);
-        storage.remove('password');
-      }
-    });*/
-
     function cannotUpdate(reason) {
+      storage.remove('password');
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
-    POST(`https://myanime-app.appspot.com/update`, entry, (body, status) => {
+    let data = `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`;
+
+    got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
+      method: 'POST',
+      headers: { Authorization: "Basic " + authToken },
+      body: { data: data }
+    }).then(res => res.body).then(body => {
       if (body === 'Updated') {
         updateAnime();
       } else {
         cannotUpdate(body);
       }
       loading(false);
-    }, function error(body, status) {
+    }).catch(err => {
+      cannotUpdate(err);
+      loading(false);
+    });
+
+    /*POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
+      if (body === 'Updated') {
+        updateAnime();
+      } else {
+        cannotUpdate(body);
+      }
+      loading(false);
+    }, (body, status) => {
       storage.remove('password');
       cannotUpdate(body);
       loading(false);
-    }, auth(user, password));
+    }, auth());*/
   }
+
   event.stopPropagation(); // Inner trigger
 }
 
-(function fetchCalendar() {
-  let luxon = require('luxon');
-  let cheerio = require('cheerio');
-  let jsonframe = require('jsonframe-cheerio');
+function fetchCalendar() {
+  return new Promise(function(resolve, reject) {
+    let luxon = require('luxon');
+    let cheerio = require('cheerio');
+    let jsonframe = require('jsonframe-cheerio');
 
-  loading(true);
-  GET_CORS("https://notify.moe/calendar", parseCalendar, (body, status) => alert(`Cannot get calendar, reason: ${body} (Status ${status})`));
+    GET_CORS("https://notify.moe/calendar", parseCalendar, (body, status) => reject(Error(`Cannot get calendar, reason: ${body} (Status ${status})`)));
 
-  function parseCalendar(html) {
-    let _ = cheerio.load(html);
-    jsonframe(_);
+    function parseCalendar(html) {
+      let _ = cheerio.load(html);
+      jsonframe(_);
 
-    var frame = {
-      airingAnimes: {
-        _s: ".calendar-entry",
-        _d: [{
-          title: ".calendar-entry-title",
-          episode: ".calendar-entry-episode | number",
-          date: ".calendar-entry-time @ data-date"
-        }]
-      }
-    };
-
-    var animeCalendar = _('.week').scrape(frame);
-
-    /*
-      airingAnimes: [
-        {
-          title: "One Piece",
-          episode: "835",
-          weekday: "Sunday",
-          date: "2018-05-06T00:30:00Z",
-          localTime: "02:30"
-        },
-        ...
-      ]
-    */
-
-    for (anime of animeCalendar.airingAnimes) {
-      let date = new Date(anime.date);
-      let luxonDate = luxon.DateTime.fromJSDate(date);
-      airingAnimes[idify(anime.title)] = {
-        episode: anime.episode,
-        airingDate: date,
-        weekday: luxonDate.weekdayLong,
-        date: luxonDate.toLocaleString(luxon.DateTime.DATE_FULL),
-        time: luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
+      var frame = {
+        airingAnimes: {
+          _s: ".calendar-entry",
+          _d: [{
+            title: ".calendar-entry-title",
+            episode: ".calendar-entry-episode | number",
+            date: ".calendar-entry-time @ data-date"
+          }]
+        }
       };
-    }
 
-    let user = storage.get("user");
-    if (user == null) {
-      loading(false);
-    } else {
-      $('#search-user').val(user).change();
-      searchUser();
+      var animeCalendar = _('.week').scrape(frame);
+
+      /*
+        airingAnimes: [
+          {
+            title: "One Piece",
+            episode: "835",
+            date: "2018-05-06T00:30:00Z"
+          },
+          ...
+        ]
+      */
+
+      for (anime of animeCalendar.airingAnimes) {
+        let date = new Date(anime.date);
+        let luxonDate = luxon.DateTime.fromJSDate(date);
+        airingAnimes[idify(anime.title)] = {
+          episode: anime.episode,
+          airingDate: date,
+          weekday: luxonDate.weekdayLong,
+          date: luxonDate.toLocaleString(luxon.DateTime.DATE_FULL),
+          time: luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
+        };
+      }
+
+      /*
+        {
+          "one-piece": {
+            episode: "835",
+            airingDate: 2018-05-06T00:30:00Z (Date),
+            weekday: "Sunday",
+            date: "May 6, 2018"
+            time: "02:30"
+          },
+          ...
+        }
+      */
+
+      resolve();
     }
-  }
-})();
+  });
+}
