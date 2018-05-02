@@ -32769,7 +32769,6 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
-  console.log('AJAX');
   return $.ajax(sendOpts);
 }
 
@@ -32789,7 +32788,7 @@ function POST(url, data, success, error, opts) {
 
 function CORS(method, url, success, error, opts) {
   return FETCH(method, `https://cors-anywhere.herokuapp.com/${url}`, success, error, withOpts(opts, function(ajaxOpts) {
-    ajaxOpts.addRequestHeader("Access-Control-Allow-Origin", "*");
+    addRequestHeader(ajaxOpts, "Access-Control-Allow-Origin", "*");
     ajaxOpts.crossDomain = true;
   }));
 }
@@ -32804,26 +32803,21 @@ function POST_CORS(url, data, success, error, opts) {
 
 function withOpts(opts, fOpts) {
   return function withAjaxOpts(ajaxOpts) {
-    console.log(`${withAjaxOpts.caller.name} withOpts`);
     if (opts) {
-      console.log('opts');
       opts(ajaxOpts);
     }
-    console.log('fOpts');
     fOpts(ajaxOpts);
   };
 }
 
-Object.prototype.addRequestHeader = function(name, value) {
-  console.log(`addRequestHeader called (${name} = ${value})`);
-  let customBeforeSend = this.beforeSend;
-  this.beforeSend = function(xhr) {
+function addRequestHeader(opts, name, value) {
+  let customBeforeSend = opts.beforeSend;
+  opts.beforeSend = function(xhr) {
     if (customBeforeSend) {
-      console.log('Call customBeforeSend');
       customBeforeSend(xhr);
     }
-    console.log(`setRequestHeader ${name} = ${value}`);
-    //xhr.setRequestHeader(name, value);
+    console.log(`${name} = ${value}`);
+    xhr.setRequestHeader(name, value);
   };
 }
 
@@ -32837,8 +32831,7 @@ Function.prototype.and = function(fOpts) {
 
 function contentType(type) {
   return function(opts) {
-    console.log('Add Content-Type');
-    opts.addRequestHeader("Content-Type", type);
+    addRequestHeader(opts, "Content-Type", type);
   };
 }
 
@@ -32852,8 +32845,7 @@ function buildAuthToken(user, password) {
 
 function auth() {
   return function(opts) {
-    console.log('Add Authorization');
-    opts.addRequestHeader("Authorization", "Basic " + authToken);
+    addRequestHeader(opts, "Authorization", "Basic " + authToken);
   };
 }
 
@@ -32863,6 +32855,7 @@ let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
 
+var tasks = 0;
 var user, userId;
 var provider;
 var filter;
@@ -32927,7 +32920,7 @@ $(document).ready(function() {
 
     // Load contents
     console.log('Load contents');
-    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('settingsFinish'));
+    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('loadSettingsFinish'));
   })();
 });
 
@@ -33076,8 +33069,9 @@ function changeProfile(id) {
 }
 
 function loading(enabled) {
-  console.log(`${loading.caller.name}: Loading ${enabled}`);
-  changeProfile(enabled ? undefined : userId || 0);
+  tasks += enabled ? 1 : -1;
+  console.log(`${loading.caller.name}: Tasks ${tasks}`);
+  changeProfile(tasks > 0 ? undefined : userId || 0);
 }
 
 function searchUser() {
@@ -33188,22 +33182,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
-    // data=%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Centry%3E%3Cepisode%3E9%3C%2Fepisode%3E%3C%2Fentry%3E
     let data = encodeURI(`data=<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`);
-
-    /*got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
-      method: 'POST',
-      headers: { Authorization: "Basic " + authToken },
-      body: { data: data }
-    }).then(res => res.body).then(body => {
-      if (body === 'Updated') {
-        updateAnime();
-      } else {
-        cannotUpdate(body);
-      }
-    }).catch(err => {
-      cannotUpdate(err);
-    }).then(finishLoading());*/
 
     POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
       if (body === 'Updated') {
