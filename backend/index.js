@@ -1,18 +1,39 @@
 const express = require('express')
-const httpRequest = require("request")
+const fetch = require('request')
 const cors = require('cors')
 const app = express()
 const port = 8080
 
 const basicAuth = require('basic-auth')
 
-const popura = require('popura')
+const mal = require('popura')
 
-var bodyParser = require('body-parser')
+const calendar = require('./calendar');
+
+const bodyParser = require('body-parser')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors())
+
+function get(url, username, password) {
+  return new Promise(function(resolve, reject) {
+    var options = { url: url }
+    if (username && password) {
+      options.auth = {
+        user: username,
+        password: password
+      }
+    }
+    fetch(options, function(error, res, body) {
+      if (!error && res.statusCode === 200) {
+        resolve(body)
+      } else {
+        reject(body || error, (res && res.statusCode) || 500)
+      }
+    })
+  })
+}
 
 function auth(request, response, next) {
     function unauthorized(msg) {
@@ -25,37 +46,35 @@ function auth(request, response, next) {
         return unauthorized();
     }
 
-    const mal = popura(user.name, user.pass);
-
-    httpRequest({ url: `https://${user.name}:${user.pass}@myanimelist.net/api/account/verify_credentials.xml` },
-      function (error, res, body) {
-        if (!error && res.statusCode === 200) {
-          next(popura(user.name, user.pass), user.name)
-        } else {
-          unauthorized(body || error)
-        }
-      })
+    get('https://myanimelist.net/api/account/verify_credentials.xml', user.name, user.pass)
+      .then(body => next(request, response, mal(user.name, user.pass)))
+      .catch((err, status) => unauthorized(err))
 }
 
-app.get('/', (request, response) => {
-  response.send('MyAnime API')
+app.get('/', (req, res) => {
+  res.send('MyAnime API')
 })
 
-app.post('/update', (request, response) => {
-  auth(request, response, (mal, user) => {
-    if (!request.body.id) {
-      response.sendStatus(400)
-    } else {
-      console.log(`/update ${request.body.id} User ${user}`);
-      mal.updateAnime(request.body.id, {
-        episode: request.body.episode,
-        status: request.body.status,
-        date_start: request.body.date_start,
-        date_finish: request.body.date_finish
-      }).then(res => response.send(res))
-        .catch(err => response.status(err.statusCode).send(err.statusMessage))
-    }
-  })
+app.get('/calendar', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  get('https://notify.moe/calendar')
+    .then(body => res.send(JSON.stringify(calendar(body))))
+    .catch((err, status) => res.status(status).send(err))
+})
+
+app.post('/update', auth, (req, res, mal) => {
+  if (!req.body.id) {
+    res.sendStatus(400)
+  } else {
+    console.log(`/update ${req.body.id} User ${mal.getUser()}`);
+    mal.updateAnime(req.body.id, {
+      episode: req.body.episode,
+      status: req.body.status,
+      date_start: req.body.date_start,
+      date_finish: req.body.date_finish
+    }).then(body => res.send(body))
+      .catch(err => res.status(err.statusCode).send(err.statusMessage))
+  }
 })
 
 app.listen(port, (err) => {
