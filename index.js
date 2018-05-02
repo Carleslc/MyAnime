@@ -501,7 +501,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         cannotUpdate(body);
       }
     }, (body, status) => cannotUpdate(body),
-    auth().and(contentType("application/json")
+    auth()
+    .and(contentType("application/json")))
     .always(finishLoading('Update Chapter Finish'));
 
     /*let data = encodeURI(`data=<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`);
