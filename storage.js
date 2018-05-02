@@ -1,6 +1,7 @@
 var storage;
 
-(function LocalStorage() {
+(function() {
+  function LocalStorage() {
     this.get = function(tag) {
       return localStorage.getItem(tag);
     };
@@ -39,5 +40,4 @@ var storage;
   }
 
   storage = typeof(Storage) !== "undefined" new LocalStorage() ? new MemStorage();
-
-)();
+})();

@@ -51,7 +51,8 @@ function getCors(url, success, error, opts) {
 
 var post, postCors;
 
-(function _post(base, url, data, success, error, opts) {
+(function() {
+  function _post(base, url, data, success, error, opts) {
     return base('POST', url, success, error, new Options(ajaxOpts => {
       ajaxOpts.data = data;
     }).and(opts));
@@ -64,7 +65,7 @@ var post, postCors;
   postCors = function(url, data, success, error, opts) {
     return _post(cors, url, data, success, error, opts);
   }
-)();
+})();
 
 function addRequestHeader(ajaxOpts, name, value) {
   let customBeforeSend = ajaxOpts.beforeSend;
