@@ -1,6 +1,9 @@
 let luxon = require('luxon');
 let cheerio = require('cheerio');
 let jsonframe = require('jsonframe-cheerio');
+let idify = require('../utils');
+
+let defaultProvider = 'any';
 
 module.exports = function parseCalendar(html) {
   let _ = cheerio.load(html);
@@ -35,7 +38,7 @@ module.exports = function parseCalendar(html) {
   for (anime of animeCalendar.airingAnimes) {
     var date = new Date(anime.date);
     var luxonDate = luxon.DateTime.fromJSDate(date);
-    airingAnimes[idify(anime.title)] = {
+    airingAnimes[idify(anime.title, defaultProvider)] = {
       episode: anime.episode,
       airingDate: date,
       weekday: luxonDate.weekdayLong,

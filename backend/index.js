@@ -35,20 +35,29 @@ function get(url, username, password) {
   })
 }
 
-function auth(request, response, next) {
+function auth(next) {
+  return (req, res) => {
     function unauthorized(msg) {
-      return response.status(401).send(msg || 'Invalid credentials');
+      return res.status(401).send(msg || 'Invalid credentials');
     }
  
-    user = basicAuth(request);
+    user = basicAuth(req);
  
     if (!user || !user.name || !user.pass) {
         return unauthorized();
     }
 
     get('https://myanimelist.net/api/account/verify_credentials.xml', user.name, user.pass)
-      .then(body => next(request, response, mal(user.name, user.pass)))
+      .then(body => next(req, res, mal(user.name, user.pass)))
       .catch((err, status) => unauthorized(err))
+  }
+}
+
+function handler(res) {
+  return (err, status) => {
+    console.error(JSON.stringify(err))
+    res.status(status || 500).send(err.message)
+  }
 }
 
 app.get('/', (req, res) => {
@@ -59,10 +68,10 @@ app.get('/calendar', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   get('https://notify.moe/calendar')
     .then(body => res.send(JSON.stringify(calendar(body))))
-    .catch((err, status) => res.status(status).send(err))
+    .catch(handler(res))
 })
 
-app.post('/update', auth, (req, res, mal) => {
+app.post('/update', auth((req, res, mal) => {
   if (!req.body.id) {
     res.sendStatus(400)
   } else {
@@ -75,11 +84,8 @@ app.post('/update', auth, (req, res, mal) => {
     }).then(body => res.send(body))
       .catch(err => res.status(err.statusCode).send(err.statusMessage))
   }
-})
+}))
 
 app.listen(port, (err) => {
-  if (err) {
-    return console.log('Error', err)
-  }
-  console.log(`Server is listening on ${port}`)
+  console.log(err || `Server is listening on ${port}`)
 })

@@ -106,22 +106,6 @@ function getTitle(originalTitle, synonymsRaw) {
   return originalTitle;
 }
 
-function asUrl(s, append, prov) {
-  if (append) {
-    s = `${s}-${append}`;
-  }
-  s = s.toLowerCase();
-  if ((prov || provider) in ["animemovil", "gogoanime"]) {
-    s = s.replace(/[;]/g, '');
-  }
-  s = s.replace(/[^-a-z0-9]+/g, '-').replace(/-{2,}/, '-');
-  return encodeURIComponent(s);
-}
-
-function idify(s) {
-  return asUrl(s, null, '');
-}
-
 function watchAnime(title, chapter, malId, movie) {
   function chapterIfNotMovie() {
     return movie ? '' : `${chapter}-`;
