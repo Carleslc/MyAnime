@@ -33065,7 +33065,7 @@ function isAired(title, chapter, animeStatus) {
   } else {
     aired = animeStatus == 2;
   }
-  console.log(`${title} ${chapter}` + (aired ? 'Aired' : 'Not aired'));
+  console.log(`${title} ${chapter}, status ${animeStatus}, aired ${aired}` + (aired ? ' Aired' : ' Not aired'));
   return aired;
 }
 
