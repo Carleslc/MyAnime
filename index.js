@@ -563,5 +563,5 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
       resolve();
     }
-  });*/
-}
+  });
+}*/
