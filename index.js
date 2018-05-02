@@ -65,6 +65,9 @@ function FETCH(method, url, success, error, opts) {
     },
     error: function(xhr, textStatus, errorThrown) {
       console.log(`Error (${url})`);
+      console.log(xhr);
+      console.log(textStatus);
+      console.log(errorThrown);
       if (error) {
         error(xhr.responseText, xhr.status);
       }
