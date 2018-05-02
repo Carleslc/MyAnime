@@ -285,14 +285,14 @@ function isAired(title, chapter, animeStatus) {
   if (animeStatus == 1) {
     if (title in airingAnimes) {
       airingAnime = airingAnimes[title];
-      airing = isAiringAired(airingAnime);
+      aired = isAiringAired(airingAnime);
     } else {
       aired = true;
     }
   } else {
     aired = animeStatus == 2;
   }
-  console.log(`${title} ${chapter}` + aired ? 'Aired' : 'Not aired');
+  console.log(`${title} ${chapter}` + (aired ? 'Aired' : 'Not aired'));
   return aired;
 }
 
