@@ -1,6 +1,7 @@
 // Utils
 
 let got = require('got');
+global.setImmediate = require('timers').setImmediate; // got dependency
 
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
