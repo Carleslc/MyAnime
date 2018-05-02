@@ -45,6 +45,14 @@ function toXML(o) {
   return serializer.json2xml_str(o);
 }
 
+function finishLoading(name) {
+  let f = function() {
+    loading(false);
+  };
+  f.name = name;
+  return f;
+}
+
 function FETCH(method, url, success, error, opts) {
   let sendOpts = {
     url: url,
@@ -210,10 +218,7 @@ $(document).ready(function() {
     });
 
     // Load contents
-    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(() => {
-      console.log('Load settings finish');
-      loading(false);
-    });
+    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('settingsFinish'));
   })();
 });
 
@@ -379,10 +384,7 @@ function searchUser() {
       } else {
         alert(`User ${user} does not exists.`);
       }
-    }).always(() => {
-      console.log('searchUser finish');
-      loading(false);
-    });
+    }).always(finishLoading('searchUserFinish'));
   }
   return false;
 }
@@ -412,10 +414,7 @@ function updatePassword() {
         alert(body);
       }
     }, (body, status) => alert(body),
-    auth()).always(() => {
-      console.log('updatePassword finish');
-      loading(false);
-    });
+    auth()).always(finishLoading('updatePasswordFinish'));
   }
 }
 
@@ -489,7 +488,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       }
     }).catch(err => {
       cannotUpdate(err);
-    }).then(() => loading(false));*/
+    }).then(finishLoading());*/
 
     POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
       if (body === 'Updated') {
@@ -500,10 +499,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }, (body, status) => {
       storage.remove('password');
       cannotUpdate(body);
-    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(() => {
-      console.log('Update finish');
-      loading(false);
-    });
+    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(finishLoading('updateChapterFinish'));
   }
 
   event.stopPropagation(); // Inner trigger
