@@ -352,7 +352,7 @@ function changeProfile(id) {
 }
 
 function loading(enabled) {
-  console.log(`${loading.caller}: Loading ${enabled}`);
+  console.log(`${loading.caller.name}: Loading ${enabled}`);
   changeProfile(enabled ? undefined : userId || 0);
 }
 
