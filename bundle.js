@@ -32760,8 +32760,6 @@ function FETCH(method, url, success, error, opts) {
     },
     error: function(xhr, textStatus, errorThrown) {
       console.log(`Error (${url})`);
-      console.log(xhr);
-      console.log(textStatus);
       console.log(errorThrown);
       if (error) {
         error(xhr.responseText, xhr.status);
@@ -32813,11 +32811,14 @@ function withOpts(opts, fOpts) {
 }
 
 Object.prototype.addRequestHeader = function(name, value) {
+  console.log('addRequestHeader called (${name} = ${value})');
   let customBeforeSend = this.beforeSend;
   this.beforeSend = function(xhr) {
+    console.log(`Call customBeforeSend`);
     if (customBeforeSend) {
       customBeforeSend(xhr);
     }
+    console.log(`setRequestHeader ${name} = ${value}`);
     xhr.setRequestHeader(name, value);
   };
 }
