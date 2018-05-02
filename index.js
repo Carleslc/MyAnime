@@ -47,7 +47,7 @@ function toXML(o) {
 
 function loading(enabled) {
   tasks += enabled ? 1 : -1;
-  console.log(`${loading.caller.name}, tasks ${tasks}`);
+  //console.log(`${loading.caller.name}, tasks ${tasks}`);
   changeProfile(tasks > 0 ? undefined : userId || 0);
 }
 
@@ -231,7 +231,7 @@ $(document).ready(function() {
     // Load contents
     //fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('Load Settings Finish'));
     searchUser();
-    finishLoading('Load Settings Finish')
+    load(false);
   })();
 });
 
