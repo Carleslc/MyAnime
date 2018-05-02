@@ -32816,7 +32816,6 @@ function addRequestHeader(opts, name, value) {
     if (customBeforeSend) {
       customBeforeSend(xhr);
     }
-    console.log(`${name} = ${value}`);
     xhr.setRequestHeader(name, value);
   };
 }
@@ -32919,8 +32918,7 @@ $(document).ready(function() {
     });
 
     // Load contents
-    console.log('Load contents');
-    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('loadSettingsFinish'));
+    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('Load Settings Finish'));
   })();
 });
 
@@ -33024,7 +33022,6 @@ function isAired(title, chapter, animeStatus) {
 }
 
 function parseAnime() {
-  console.log('Parsing anime...');
   emptyAnime();
 
   for (anime of animes) {
@@ -33050,8 +33047,6 @@ function parseAnime() {
       }
     }
   }
-
-  console.log('Parsed anime');
 }
 
 function changeProfile(id) {
@@ -33070,7 +33065,7 @@ function changeProfile(id) {
 
 function loading(enabled) {
   tasks += enabled ? 1 : -1;
-  console.log(`${loading.caller.name}: Tasks ${tasks}`);
+  console.log(`${loading.caller.name}`);
   changeProfile(tasks > 0 ? undefined : userId || 0);
 }
 
@@ -33091,7 +33086,7 @@ function searchUser() {
       } else {
         alert(`User ${user} does not exists.`);
       }
-    }).always(finishLoading('searchUserFinish'));
+    }).always(finishLoading('Search User Finish'));
   }
   return false;
 }
@@ -33122,7 +33117,7 @@ function updatePassword() {
         alert(body);
       }
     }, (body, status) => alert(body),
-    auth()).always(finishLoading('updatePasswordFinish'));
+    auth()).always(finishLoading('Update Password Finish'));
   }
 }
 
@@ -33193,7 +33188,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }, (body, status) => {
       storage.remove('password');
       cannotUpdate(body);
-    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(finishLoading('updateChapterFinish'));
+    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(finishLoading('Update Chapter Finish'));
   }
 
   event.stopPropagation(); // Inner trigger
