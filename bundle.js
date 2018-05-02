@@ -32888,7 +32888,7 @@ let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
 
-var mal;
+var malAPI;
 var user, userId;
 var provider;
 var filter;
@@ -33138,7 +33138,6 @@ function updatePassword() {
       if (status === 200) {
         storage.set('password', password);
         $("#set-password").modal('hide');
-        mal = popura(user, password);
         checkpoint();
       } else {
         alert(body);
@@ -33163,6 +33162,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     $("#set-password").modal('show');
   } else {
     loading(true);
+
+    malAPI = malAPI || popura(user, password);
 
     let entry = {
       episode: chapter
