@@ -1,8 +1,5 @@
 // Utils
 
-const popura = require('popura') // mal library
-global.setImmediate = require('timers').setImmediate; // popura dependency
-
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
     return localStorage.getItem(tag);
@@ -37,6 +34,12 @@ function pad(n, size) {
 function formatToday() {
   let now = new Date();
   return `${pad(now.getMonth() + 1)}${pad(now.getDate())}${now.getFullYear()}`;
+}
+
+var serializer;
+function toXML(o) {
+  serializer = serializer || new X2JS();
+  return serializer.json2xml_str(o);
 }
 
 function FETCH(method, url, success, error, opts) {
@@ -115,8 +118,8 @@ let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
 
-var malAPI;
 var user, userId;
+var authUser;
 var provider;
 var filter;
 var useAlternativeTitles;
@@ -361,6 +364,7 @@ function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
     loading(true);
+    authUser = auth(user, password);
     GET_CORS('https://myanimelist.net/api/account/verify_credentials.xml', (body, status) => {
       if (status === 200) {
         storage.set('password', password);
@@ -374,7 +378,7 @@ function updatePassword() {
       alert(body);
       loading(false);
     },
-    auth(user, password));
+    authUser);
   }
 }
 
@@ -390,11 +394,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
   } else {
     loading(true);
 
-    malAPI = malAPI || popura(user, password);
-
-    let entry = {
-      episode: chapter
-    };
+    let entry = { episode: chapter };
 
     if (chapter == 1) {
       entry.status = 1;
@@ -435,21 +435,20 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
-    malAPI.updateAnime(malId, entry).then(res => {
-      console.log("OK: " + res);
-      if (res === 'Updated') {
+    POST_CORS(`https://myanimelist.net/animelist/update/${malId}.xml`, { data: toXML(entry) }, (body, status) => {
+      if (body === 'Updated') {
         updateAnime();
       } else {
-        cannotUpdate(res);
+        cannotUpdate(body);
       }
       loading(false);
-    }).catch(err => {
+    }, (body, status) => {
       storage.remove('password');
-      console.log("Error: " + err);
-      cannotUpdate(err.statusMessage);
+      cannotUpdate(body);
       loading(false);
-    });
+    }, authUser);
   }
+
   event.stopPropagation(); // Inner trigger
 }
 
