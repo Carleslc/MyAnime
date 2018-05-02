@@ -33046,23 +33046,26 @@ function emptyAnime() {
   planToWatch.empty();
 }
 
+var airingAnime;
+
 function isAired(title, chapter, animeStatus) {
+  airingAnime = undefined;
+  function isAiringAired(anime) {
+    return anime.episode > chapter || (anime.episode == chapter && anime.airingDate < new Date());
+  }
   var aired;
   title = idify(title);
   if (animeStatus == 1) {
     if (title in airingAnimes) {
-      let anime = airingAnimes[title];
-      if (anime.episode > chapter) {
-        aired = true;
-      } else {
-        aired = anime.episode == chapter && anime.airingDate < new Date();
-      }
+      airingAnime = airingAnimes[title];
+      airing = isAiringAired(airingAnime);
     } else {
       aired = true;
     }
   } else {
     aired = animeStatus == 2;
   }
+  console.log(`${title} ${chapter}` + aired ? 'Aired' : 'Not aired');
   return aired;
 }
 
@@ -33205,7 +33208,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         alert(`Hooray! You've completed ${title}!`);
       } else if (!isAired(title, chapter + 1, animeStatus)) {
         removeFigure();
-        let airingAnime = airingAnimes[idify(title)];
         alert(`Updated ${title} to episode ${chapter}. Next episode will be available next ${airingAnime.weekday} (${airingAnime.date}) about ${airingAnime.time}h.`);
       } else {
         getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, function(figure) {
@@ -33230,7 +33232,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       headers: { Authorization: "Basic " + authToken },
       body: { data: data }
     }).then(res => res.body).then(body => {
-      console.log(body);
       if (body === 'Updated') {
         updateAnime();
       } else {
@@ -33238,8 +33239,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       }
       loading(false);
     }).catch(err => {
-      console.log(err);
-      cannotUpdate(err.statusMessage);
+      cannotUpdate(err);
       loading(false);
     });
 
