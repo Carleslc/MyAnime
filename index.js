@@ -435,7 +435,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
-    POST_CORS(`https://myanimelist.net/animelist/update/${malId}.xml`, { data: toXML(entry) }, (body, status) => {
+    POST_CORS(`https://myanimelist.net/animelist/update/${malId}.xml`, `{ "data": "${toXML(entry)}" }`, (body, status) => {
       if (body === 'Updated') {
         updateAnime();
       } else {
