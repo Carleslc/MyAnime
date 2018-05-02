@@ -116,7 +116,7 @@ function withOpts(opts, fOpts) {
 }
 
 Object.prototype.addRequestHeader = function(name, value) {
-  console.log('addRequestHeader called (${name} = ${value})');
+  console.log(`addRequestHeader called (${name} = ${value})`);
   let customBeforeSend = this.beforeSend;
   this.beforeSend = function(xhr) {
     console.log(`Call customBeforeSend`);
