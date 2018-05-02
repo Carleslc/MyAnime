@@ -25,11 +25,13 @@ Click on "Next" at the top right corner of an episode to mark it as watched in y
 
 ## Supported providers
 - [MyAnimeList](https://myanimelist.net/)
+- 🇪🇸🇬🇧 [Google](https://www.google.com/)
 - 🇪🇸 Voy a tener suerte
 - 🇪🇸 [AnimeFlv](https://www.animeflv.net)
 - 🇪🇸 [AnimeMovil](https://animemovil.com/)
 - 🇪🇸 [AnimeID](https://www.animeid.tv/)
 - 🇪🇸 [jkanime](http://jkanime.net/)
+- 🇪🇸 [TvAnime](http://tvanime.org/)
 - 🇬🇧 I'm Feeling Lucky
 - 🇬🇧 [Twist](https://twist.moe/)
 - 🇬🇧 [GogoAnime](https://www2.gogoanime.se/)

@@ -17,8 +17,9 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
   <script src="https://rawgit.com/kawanet/from-xml/master/dist/from-xml.min.js"></script>
-  <script src="xml2json.js"></script>
   <script src="https://use.fontawesome.com/0f16775bdf.js"></script>
+  <script src="xml2json.js"></script>
+
   <section class="lastcap">
     <div class="user-header row justify-content-between align-items-center">
       <div class="col-auto">
@@ -50,11 +51,14 @@
             <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="provider-selector">
               <option value="myanimelist">MyAnimeList</option>
               <option value="lucky-es">Voy a tener suerte (ES)</option>
+              <option value="google-es">Google (ES)</option>
               <option value="animeflv">AnimeFlv (ES)</option>
               <option value="animemovil">AnimeMovil (ES)</option>
               <option value="animeid">AnimeID (ES)</option>
               <option value="jkanime">jkanime (ES)</option>
+              <option value="tvanime">TvAnime (ES)</option>
               <option value="lucky-en">I'm Feeling Lucky (EN)</option>
+              <option value="google-en">Google (EN)</option>
               <option value="twist" selected>Twist (EN)</option>
               <option value="gogoanime">GogoAnime (EN)</option>
               <option value="crunchyroll">Crunchyroll</option>
@@ -127,11 +131,13 @@
                 <h4 id="supported-providers">Supported providers</h4>
                 <ul>
                   <li><a href="https://myanimelist.net/" target="_blank">MyAnimeList</a></li>
+                  <li>🇪🇸🇬🇧 <a href="https://www.google.com/" target="_blank">Google</a></li>
                   <li>🇪🇸 Voy a tener suerte</li>
                   <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>
                   <li>🇪🇸 <a href="https://animemovil.com/" target="_blank">AnimeMovil</a></li>
                   <li>🇪🇸 <a href="https://www.animeid.tv/" target="_blank">AnimeID</a></li>
                   <li>🇪🇸 <a href="http://jkanime.net/" target="_blank">jkanime</a></li>
+                  <li>🇪🇸 <a href="http://tvanime.org/" target="_blank">TvAnime</a></li>
                   <li>🇬🇧 I&#39;m Feeling Lucky</li>
                   <li>🇬🇧 <a href="https://twist.moe/" target="_blank">Twist</a></li>
                   <li>🇬🇧 <a href="https://www2.gogoanime.se/" target="_blank">GogoAnime</a></li>
@@ -170,11 +176,11 @@
           </div>
           <div class="modal-body">
             <b>This feature allows you to update your watched episode in your MyAnimeList profile directly within this page.</b>
-            <br>
-            <br> For this reason we need your credentials to perform this action. Please, set your password below.
-            <br>
-            <br>
+            <br><br> For this reason we need your credentials to perform this action. Please, set your password below.
+            <br><br>
             <i>If your account has no password because it uses social media SNS Connection like Facebook, Twitter or Google go to <a href="https://myanimelist.net/editprofile.php?go=myoptions" target="_blank">Account Settings -> Account</a> and set a password for your MyAnimeList account first.</i>
+            <br><br>
+            <b>Security notice: </b>The password is only stored in your browser storage so you do not have to enter it again on refresh. We do not store it in any server.
           </div>
           <form>
           </form>
