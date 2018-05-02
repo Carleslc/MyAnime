@@ -32823,8 +32823,7 @@ Object.prototype.addRequestHeader = function(name, value) {
       customBeforeSend(xhr);
     }
     console.log(`setRequestHeader ${name} = ${value}`);
-    console.log(xhr.getAllResponseHeaders());
-    xhr.setRequestHeader(name, value);
+    //xhr.setRequestHeader(name, value);
   };
 }
 
