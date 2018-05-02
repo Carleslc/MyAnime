@@ -489,6 +489,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
     function cannotUpdate(reason) {
       storage.remove('password');
+      authToken = undefined;
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
