@@ -1,5 +1,7 @@
 // Utils
 
+let got = require('got');
+
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
     return localStorage.getItem(tag);
@@ -104,12 +106,18 @@ function POST_CORS(url, data, success, error, opts) {
   });
 }
 
-function auth(user, password) {
-  return function(opts) {
-    opts.beforeSend = function(xhr) {
-      xhr.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + password));
-    }
-  };
+// Authorization
+
+var authToken;
+
+function buildAuthToken(user, password) {
+  authToken = btoa(user + ":" + password);
+}
+
+function auth(opts) {
+  opts.beforeSend = function(xhr) {
+    xhr.setRequestHeader("Authorization", "Basic " + authToken);
+  }
 }
 
 // Settings
@@ -119,7 +127,6 @@ let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
 
 var user, userId;
-var authUser;
 var provider;
 var filter;
 var useAlternativeTitles;
@@ -364,11 +371,11 @@ function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
     loading(true);
-    authUser = auth(user, password);
     GET_CORS('https://myanimelist.net/api/account/verify_credentials.xml', (body, status) => {
       if (status === 200) {
         storage.set('password', password);
         $("#set-password").modal('hide');
+        buildAuthToken(user, password);
         checkpoint();
       } else {
         alert(body);
@@ -378,7 +385,7 @@ function updatePassword() {
       alert(body);
       loading(false);
     },
-    authUser);
+    auth);
   }
 }
 
@@ -436,9 +443,29 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }
 
     let data = `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`;
-    console.log(data);
 
-    POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
+    got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
+      method: 'POST',
+      headers: {
+        Authorization: "Basic " + authToken
+      },
+      body: { data: data }
+    }).then(res => {
+      console.log("OK: " + res);
+      if (res === 'Updated') {
+        updateAnime();
+      } else {
+        cannotUpdate(res);
+      }
+      loading(false);
+    }).catch(err => {
+      storage.remove('password');
+      console.log("Error: " + err);
+      cannotUpdate(err.statusMessage);
+      loading(false);
+    });
+
+    /*POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
       if (body === 'Updated') {
         updateAnime();
       } else {
@@ -449,7 +476,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       storage.remove('password');
       cannotUpdate(body);
       loading(false);
-    }, authUser);
+    }, auth);*/
   }
 
   event.stopPropagation(); // Inner trigger
