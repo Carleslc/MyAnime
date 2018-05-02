@@ -32803,9 +32803,12 @@ function POST_CORS(url, data, success, error, opts) {
 
 function withOpts(opts, fOpts) {
   return function(ajaxOpts) {
+    console.log(`${withOpts.caller.name} withOpts`);
     if (opts) {
+      console.log('opts');
       opts(ajaxOpts);
     }
+    console.log('fOpts');
     fOpts(ajaxOpts);
   };
 }
@@ -32814,8 +32817,8 @@ Object.prototype.addRequestHeader = function(name, value) {
   console.log(`addRequestHeader called (${name} = ${value})`);
   let customBeforeSend = this.beforeSend;
   this.beforeSend = function(xhr) {
-    console.log(`Call customBeforeSend`);
     if (customBeforeSend) {
+      console.log('Call customBeforeSend');
       customBeforeSend(xhr);
     }
     console.log(`setRequestHeader ${name} = ${value}`);
@@ -32833,6 +32836,7 @@ Function.prototype.and = function(fOpts) {
 
 function contentType(type) {
   return function(opts) {
+    console.log('Add Content-Type');
     opts.addRequestHeader("Content-Type", type);
   };
 }
@@ -32847,6 +32851,7 @@ function buildAuthToken(user, password) {
 
 function auth() {
   return function(opts) {
+    console.log('Add Authorization');
     opts.addRequestHeader("Authorization", "Basic " + authToken);
   };
 }
