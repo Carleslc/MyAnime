@@ -72,7 +72,7 @@ function GET(url, success, error, opts) {
 function _POST(base, url, data, success, error, opts) {
   return base('POST', url, success, error, withOpts(opts, function(ajaxOpts) {
     ajaxOpts.data = data;
-  });
+  }));
 }
 
 function POST(url, data, success, error, opts) {
@@ -83,7 +83,7 @@ function CORS(method, url, success, error, opts) {
   return FETCH(method, `https://cors-anywhere.herokuapp.com/${url}`, success, error, withOpts(opts, function(ajaxOpts) {
     ajaxOpts.addRequestHeader("Access-Control-Allow-Origin", "*");
     ajaxOpts.crossDomain = true;
-  });
+  }));
 }
 
 function GET_CORS(url, success, error, opts) {
