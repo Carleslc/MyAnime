@@ -1,7 +1,7 @@
 // Utils
 
-let got = require('got');
-global.setImmediate = require('timers').setImmediate; // got dependency
+//let got = require('got');
+//global.setImmediate = require('timers').setImmediate; // got dependency
 
 let storage = typeof(Storage) !== "undefined" ? {
   get: function(tag) {
@@ -45,15 +45,27 @@ function toXML(o) {
   return serializer.json2xml_str(o);
 }
 
+function finishLoading(name) {
+  let f = function() {
+    loading(false);
+  };
+  Object.defineProperty(f, "name", { value: name });
+  return f;
+}
+
 function FETCH(method, url, success, error, opts) {
+  console.log(`${method} ${url}`);
   let sendOpts = {
     url: url,
     type: method,
     cache: false,
     success: function(response, textStatus, xhr) {
+      console.log(`Success (${url})`);
       success(xhr.responseText, xhr.status);
     },
     error: function(xhr, textStatus, errorThrown) {
+      console.log(`Error (${url})`);
+      console.log(errorThrown);
       if (error) {
         error(xhr.responseText, xhr.status);
       }
@@ -62,49 +74,69 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
-  $.ajax(sendOpts);
+  return $.ajax(sendOpts);
 }
 
 function GET(url, success, error, opts) {
-  FETCH('GET', url, success, error, opts);
+  return FETCH('GET', url, success, error, opts);
+}
+
+function _POST(base, url, data, success, error, opts) {
+  return base('POST', url, success, error, withOpts(opts, function(ajaxOpts) {
+    ajaxOpts.data = data;
+  }));
 }
 
 function POST(url, data, success, error, opts) {
-  FETCH('POST', url, success, error, function(ajaxOpts) {
-    if (opts) {
-      opts(ajaxOpts);
-    }
-    ajaxOpts.data = data;
-  });
+  return _POST(FETCH, url, data, success, error, opts);
 }
 
 function CORS(method, url, success, error, opts) {
-  FETCH(method, `https://cors-anywhere.herokuapp.com/${url}`, success, error, function(ajaxOpts) {
-    if (opts) {
-      opts(ajaxOpts);
-    }
-    let customBeforeSend = ajaxOpts.beforeSend;
-    ajaxOpts.beforeSend = function(xhr) {
-      xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-      if (customBeforeSend) {
-        customBeforeSend(xhr);
-      }
-    };
+  return FETCH(method, `https://cors-anywhere.herokuapp.com/${url}`, success, error, withOpts(opts, function(ajaxOpts) {
+    addRequestHeader(ajaxOpts, "Access-Control-Allow-Origin", "*");
     ajaxOpts.crossDomain = true;
-  });
+  }));
 }
 
 function GET_CORS(url, success, error, opts) {
-  CORS('GET', url, success, error, opts);
+  return CORS('GET', url, success, error, opts);
 }
 
 function POST_CORS(url, data, success, error, opts) {
-  CORS('POST', url, success, error, function(ajaxOpts) {
+  return _POST(CORS, url, data, success, error, opts);
+}
+
+function withOpts(opts, fOpts) {
+  return function withAjaxOpts(ajaxOpts) {
     if (opts) {
       opts(ajaxOpts);
     }
-    ajaxOpts.data = data;
-  });
+    fOpts(ajaxOpts);
+  };
+}
+
+function addRequestHeader(opts, name, value) {
+  let customBeforeSend = opts.beforeSend;
+  opts.beforeSend = function(xhr) {
+    if (customBeforeSend) {
+      customBeforeSend(xhr);
+    }
+    xhr.setRequestHeader(name, value);
+  };
+}
+
+Function.prototype.and = function(fOpts) {
+  let self = this;
+  return function(opts) {
+    self(opts);
+    fOpts(opts);
+  };
+}
+
+function contentType(type) {
+  return function(opts) {
+    addRequestHeader(opts, "Content-Type", type);
+  };
 }
 
 // Authorization
@@ -117,10 +149,8 @@ function buildAuthToken(user, password) {
 
 function auth() {
   return function(opts) {
-    opts.beforeSend = function(xhr) {
-      xhr.setRequestHeader("Authorization", "Basic " + authToken);
-    }
-  }
+    addRequestHeader(opts, "Authorization", "Basic " + authToken);
+  };
 }
 
 // Settings
@@ -129,6 +159,7 @@ let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
 
+var tasks = 0;
 var user, userId;
 var provider;
 var filter;
@@ -192,7 +223,7 @@ $(document).ready(function() {
     });
 
     // Load contents
-    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(() => loading(false));
+    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('Load Settings Finish'));
   })();
 });
 
@@ -338,12 +369,14 @@ function changeProfile(id) {
 }
 
 function loading(enabled) {
-  changeProfile(enabled ? undefined : userId || 0);
+  tasks += enabled ? 1 : -1;
+  changeProfile(tasks > 0 ? undefined : userId || 0);
 }
 
 function searchUser() {
   user = $("#search-user").val();
   if (user) {
+    console.log('Searching user...');
     loading(true);
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
@@ -357,8 +390,7 @@ function searchUser() {
       } else {
         alert(`User ${user} does not exists.`);
       }
-      loading(false);
-    }, (body, status) => loading(false));
+    }).always(finishLoading('Search User Finish'));
   }
   return false;
 }
@@ -375,6 +407,7 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
+    console.log('Updating password...');
     loading(true);
     
     buildAuthToken(user, password);
@@ -387,18 +420,15 @@ function updatePassword() {
       } else {
         alert(body);
       }
-      loading(false);
-    }, (body, status) => {
-      alert(body);
-      loading(false);
-    },
-    auth());
+    }, (body, status) => alert(body),
+    auth()).always(finishLoading('Update Password Finish'));
   }
 }
 
 $("#update-password-btn").click(updatePassword);
 
 function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) {
+  console.log('Updating chapter...');
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
@@ -450,10 +480,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       storage.remove('password');
       alert(`Cannot update episode, reason: ${reason}`);
     }
-
-    let data = `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`;
-
-    got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
+    
+    /*got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
       method: 'POST',
       headers: { Authorization: "Basic " + authToken },
       body: { data: data }
@@ -465,19 +493,20 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       }
     }).catch(err => cannotUpdate(err))
       .then(() => loading(false));
+    */
 
-    /*POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
+    let data = encodeURI(`data=<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`);
+
+    POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
       if (body === 'Updated') {
         updateAnime();
       } else {
         cannotUpdate(body);
       }
-      loading(false);
     }, (body, status) => {
       storage.remove('password');
       cannotUpdate(body);
-      loading(false);
-    }, auth());*/
+    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(finishLoading('Update Chapter Finish'));
   }
 
   event.stopPropagation(); // Inner trigger
@@ -485,6 +514,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
 function fetchCalendar() {
   return new Promise(function(resolve, reject) {
+    console.log('Fetching calendar...');
     let luxon = require('luxon');
     let cheerio = require('cheerio');
     let jsonframe = require('jsonframe-cheerio');
@@ -544,6 +574,7 @@ function fetchCalendar() {
         }
       */
 
+      console.log('Fetched calendar');
       resolve();
     }
   });
