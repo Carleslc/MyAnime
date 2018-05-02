@@ -33208,7 +33208,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
-    mal.updateAnime(malId, entry).then(res => {
+    malAPI.updateAnime(malId, entry).then(res => {
       console.log("OK: " + res);
       if (res === 'Updated') {
         updateAnime();
