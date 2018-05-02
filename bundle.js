@@ -32885,7 +32885,7 @@ function POST_CORS(url, data, success, error, opts) {
 var authToken;
 
 function buildAuthToken(user, password) {
-  authToken = btoa(user + ":" + password);
+  authToken = authToken || btoa(user + ":" + password);
 }
 
 function auth() {
@@ -33148,6 +33148,9 @@ function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
     loading(true);
+    
+    buildAuthToken(user, password);
+
     GET_CORS('https://myanimelist.net/api/account/verify_credentials.xml', (body, status) => {
       if (status === 200) {
         storage.set('password', password);
@@ -33177,9 +33180,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
   } else {
     loading(true);
 
-    if (!authToken) {
-      buildAuthToken(user, password);
-    }
+    buildAuthToken(user, password);
 
     let entry = { episode: chapter };
 
