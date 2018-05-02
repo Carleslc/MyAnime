@@ -74,6 +74,7 @@ function FETCH(method, url, success, error, opts) {
   if (opts) {
     opts(sendOpts);
   }
+  console.log(sendOpts);
   return $.ajax(sendOpts);
 }
 
