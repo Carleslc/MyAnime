@@ -45,6 +45,12 @@ function toXML(o) {
   return serializer.json2xml_str(o);
 }
 
+function loading(enabled) {
+  tasks += enabled ? 1 : -1;
+  console.log(`${loading.caller.name}, tasks ${tasks}`);
+  changeProfile(tasks > 0 ? undefined : userId || 0);
+}
+
 function finishLoading(name) {
   let f = function() {
     loading(false);
@@ -370,11 +376,6 @@ function changeProfile(id) {
     storage.set("user", user);
   }
   $("#profile-icon").attr("src", icon);
-}
-
-function loading(enabled) {
-  tasks += enabled ? 1 : -1;
-  changeProfile(tasks > 0 ? undefined : userId || 0);
 }
 
 function searchUser() {
