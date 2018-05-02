@@ -370,7 +370,6 @@ function changeProfile(id) {
 
 function loading(enabled) {
   tasks += enabled ? 1 : -1;
-  console.log(`${loading.caller.name}`);
   changeProfile(tasks > 0 ? undefined : userId || 0);
 }
 
