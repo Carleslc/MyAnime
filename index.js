@@ -463,11 +463,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       } else {
         cannotUpdate(body);
       }
-      loading(false);
-    }).catch(err => {
-      cannotUpdate(err);
-      loading(false);
-    });
+    }).catch(err => cannotUpdate(err))
+      .then(() => loading(false));
 
     /*POST_CORS(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
       if (body === 'Updated') {
