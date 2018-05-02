@@ -32891,7 +32891,7 @@ function buildAuthToken(user, password) {
 function auth() {
   return function(opts) {
     opts.beforeSend = function(xhr) {
-      console.log('Set Authorization');
+      console.log('Set Authorization: ' + authToken);
       xhr.setRequestHeader("Authorization", "Basic " + authToken);
     }
   }
