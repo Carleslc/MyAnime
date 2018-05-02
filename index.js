@@ -69,27 +69,19 @@ function GET(url, success, error, opts) {
   return FETCH('GET', url, success, error, opts);
 }
 
-function POST(url, data, success, error, opts) {
-  return FETCH('POST', url, success, error, function(ajaxOpts) {
-    if (opts) {
-      opts(ajaxOpts);
-    }
+function _POST(base, url, data, success, error, opts) {
+  return base('POST', url, success, error, withOpts(opts, function(ajaxOpts) {
     ajaxOpts.data = data;
   });
 }
 
+function POST(url, data, success, error, opts) {
+  return _POST(FETCH, url, data, success, error, opts);
+}
+
 function CORS(method, url, success, error, opts) {
-  return FETCH(method, `https://cors-anywhere.herokuapp.com/${url}`, success, error, function(ajaxOpts) {
-    if (opts) {
-      opts(ajaxOpts);
-    }
-    let customBeforeSend = ajaxOpts.beforeSend;
-    ajaxOpts.beforeSend = function(xhr) {
-      xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-      if (customBeforeSend) {
-        customBeforeSend(xhr);
-      }
-    };
+  return FETCH(method, `https://cors-anywhere.herokuapp.com/${url}`, success, error, withOpts(opts, function(ajaxOpts) {
+    ajaxOpts.addRequestHeader("Access-Control-Allow-Origin", "*");
     ajaxOpts.crossDomain = true;
   });
 }
@@ -99,12 +91,26 @@ function GET_CORS(url, success, error, opts) {
 }
 
 function POST_CORS(url, data, success, error, opts) {
-  return CORS('POST', url, success, error, function(ajaxOpts) {
+  return _POST(CORS, url, data, success, error, opts);
+}
+
+function withOpts(opts, fOpts) {
+  return function(ajaxOpts) {
     if (opts) {
       opts(ajaxOpts);
     }
-    ajaxOpts.data = data;
-  });
+    fOpts(ajaxOpts);
+  };
+}
+
+Object.prototype.addRequestHeader = function(name, value) {
+  let customBeforeSend = this.beforeSend;
+  this.beforeSend = function(xhr) {
+    if (customBeforeSend) {
+      customBeforeSend(xhr);
+    }
+    xhr.setRequestHeader(name, value);
+  };
 }
 
 Function.prototype.and = function(fOpts) {
@@ -117,7 +123,7 @@ Function.prototype.and = function(fOpts) {
 
 function contentType(type) {
   return function(opts) {
-    opts.setRequestHeader("Content-Type", type);
+    opts.addRequestHeader("Content-Type", type);
   };
 }
 
@@ -131,9 +137,7 @@ function buildAuthToken(user, password) {
 
 function auth() {
   return function(opts) {
-    opts.beforeSend = function(xhr) {
-      xhr.setRequestHeader("Authorization", "Basic " + authToken);
-    }
+    opts.addRequestHeader("Authorization", "Basic " + authToken);
   };
 }
 
@@ -206,7 +210,10 @@ $(document).ready(function() {
     });
 
     // Load contents
-    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(() => loading(false));
+    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(() => {
+      console.log('Load settings finish');
+      loading(false);
+    });
   })();
 });
 
@@ -372,8 +379,10 @@ function searchUser() {
       } else {
         alert(`User ${user} does not exists.`);
       }
+    }).always(() => {
+      console.log('searchUser finish');
       loading(false);
-    }, (body, status) => loading(false));
+    });
   }
   return false;
 }
@@ -402,12 +411,11 @@ function updatePassword() {
       } else {
         alert(body);
       }
+    }, (body, status) => alert(body),
+    auth()).always(() => {
+      console.log('updatePassword finish');
       loading(false);
-    }, (body, status) => {
-      alert(body);
-      loading(false);
-    },
-    auth());
+    });
   }
 }
 
@@ -492,7 +500,10 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }, (body, status) => {
       storage.remove('password');
       cannotUpdate(body);
-    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(() => loading(false));
+    }, auth().and(contentType("application/x-www-form-urlencoded"))).always(() => {
+      console.log('Update finish');
+      loading(false);
+    });
   }
 
   event.stopPropagation(); // Inner trigger
