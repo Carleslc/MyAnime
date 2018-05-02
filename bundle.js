@@ -33089,17 +33089,21 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
   } else {
     loading(true);
 
-    let entry = { episode: chapter };
+    let entry = {
+      entry: {
+        episode: chapter
+      }
+    };
 
     if (chapter == 1) {
-      entry.status = 1;
-      entry.date_start = formatToday();
+      entry.entry.status = 1;
+      entry.entry.date_start = formatToday();
     }
 
     let completed = chapter == maxChapter;
     if (completed) {
-      entry.status = 2;
-      entry.date_finished = formatToday();
+      entry.entry.status = 2;
+      entry.entry.date_finished = formatToday();
     }
 
     function updateAnime() {
@@ -33120,7 +33124,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
           $(`#anime-${malId}`).replaceWith(figure);
         });
         let anime = animes[index];
-        anime.my_status = entry.status || anime.my_status;
+        anime.my_status = entry.entry.status || anime.my_status;
         anime.my_watched_episodes = chapter;
         alert(`Updated ${title} to episode ${chapter}.`);
       }
@@ -33130,7 +33134,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
-    POST_CORS(`https://myanimelist.net/animelist/update/${malId}.xml`, `{ "data": "${toXML(entry)}" }`, (body, status) => {
+    POST_CORS(`https://myanimelist.net/animelist/update/${malId}.xml`, toXML(entry), (body, status) => {
       if (body === 'Updated') {
         updateAnime();
       } else {
