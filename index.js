@@ -376,7 +376,6 @@ function updatePassword() {
       if (status === 200) {
         storage.set('password', password);
         $("#set-password").modal('hide');
-        buildAuthToken(user, password);
         checkpoint();
       } else {
         alert(body);
@@ -401,6 +400,10 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     $("#set-password").modal('show');
   } else {
     loading(true);
+
+    if (!authToken) {
+      buildAuthToken(user, password);
+    }
 
     let entry = { episode: chapter };
 
@@ -440,15 +443,20 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
     }
 
     function cannotUpdate(reason) {
+      storage.remove('password');
       alert(`Cannot update episode, reason: ${reason}`);
     }
 
     let data = `<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`;
 
+    console.log('Basic ' + authToken);
+
     got(`https://cors-anywhere.herokuapp.com/https://myanimelist.net/api/animelist/update/${malId}.xml`, {
       method: 'POST',
       headers: {
-        Authorization: "Basic " + authToken
+        Authorization: "Basic " + authToken,
+        'User-Agent': 'MyAnime',
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: { data: data }
     }).then(res => {
@@ -460,7 +468,6 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       }
       loading(false);
     }).catch(err => {
-      storage.remove('password');
       console.log("Error: " + err);
       cannotUpdate(err.statusMessage);
       loading(false);
