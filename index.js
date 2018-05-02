@@ -107,8 +107,8 @@ function POST_CORS(url, data, success, error, opts) {
 }
 
 function withOpts(opts, fOpts) {
-  return function(ajaxOpts) {
-    console.log(`${withOpts.caller.name} withOpts`);
+  return function withAjaxOpts(ajaxOpts) {
+    console.log(`${withAjaxOpts.caller.name} withOpts`);
     if (opts) {
       console.log('opts');
       opts(ajaxOpts);
