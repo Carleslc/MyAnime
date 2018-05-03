@@ -1,4 +1,4 @@
-let API = "https://53bdde27.ngrok.io"; //'https://myanime-app.appspot.com';
+let API = 'https://myanime-app.appspot.com';
 
 let watching = $("#watching");
 let onHold = $("#on-hold");
