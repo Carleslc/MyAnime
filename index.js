@@ -13,19 +13,19 @@ var airingAnimes = {};
 var animes = [];
 
 let providerOffsets = {
-  "myanimelist": 0
-  "lucky-es": 0
-  "google-es": 0
-  "lucky-en": 0
-  "google-en": 0
-  "animeid": 3
-  "animeflv": 3
-  "animemovil": 3
-  "jkanime": 3
-  "tvanime": 3
-  "twist": 0
-  "gogoanime": 1
-  "crunchyroll": 0
+  "myanimelist": 0,
+  "lucky-es": 0,
+  "google-es": 0,
+  "lucky-en": 0,
+  "google-en": 0,
+  "animeid": 3,
+  "animeflv": 3,
+  "animemovil": 3,
+  "jkanime": 3,
+  "tvanime": 3,
+  "twist": 0,
+  "gogoanime": 1,
+  "crunchyroll": 0,
   "netflix": 0
 };
 
