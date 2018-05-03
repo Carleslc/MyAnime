@@ -12,6 +12,23 @@ var useAlternativeTitles;
 var airingAnimes = {};
 var animes = [];
 
+let providerOffsets = {
+  "myanimelist": 0
+  "lucky-es": 0
+  "google-es": 0
+  "lucky-en": 0
+  "google-en": 0
+  "animeid": 3
+  "animeflv": 3
+  "animemovil": 3
+  "jkanime": 3
+  "tvanime": 3
+  "twist": 0
+  "gogoanime": 1
+  "crunchyroll": 0
+  "netflix": 0
+};
+
 function loading(enabled) {
   tasks += enabled ? 1 : -1;
   //console.log(`${loading.caller.name}, tasks ${tasks}`);
@@ -48,6 +65,7 @@ $(document).ready(function() {
     $('#provider-selector').on('change', function() {
       provider = $(this).val();
       storage.set("provider", provider);
+      parseAnime()
     });
 
     // Filter
@@ -176,7 +194,11 @@ var airingAnime;
 function isAired(title, chapter, animeStatus) {
   airingAnime = undefined;
   function isAiringAired(anime) {
-    return anime.episode > chapter || (anime.episode == chapter && anime.airingDate < new Date());
+    console.log(title);
+    console.log(typeof(anime.airingDate));
+    console.log(anime.airingDate);
+    return anime.episode > chapter ||
+      (anime.episode == chapter && anime.airingDate.plusHours(providerOffsets[provider]) < new Date());
   }
   var aired;
   title = idify(title);
