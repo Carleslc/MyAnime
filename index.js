@@ -195,7 +195,7 @@ function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, mal
   title = getTitle(originalTitle, synonyms);
   callback(`<article id="anime-${malId}">
     <div>
-      <header>${title} #${chapter}${formatAiringDateByTitle(originalTitle, chapter, animeStatus)}</header>
+      <header>${title} #${chapter}${formatAiringDate(originalTitle, chapter, animeStatus)}</header>
       <figure>
         <img src="${image}" class="cover" width="225" height="313">
       </figure>
@@ -220,7 +220,7 @@ function airingDate(anime) {
   return anime.airingDate.plus({ hours: providerOffsets[provider] });
 }
 
-function formatDateByTitle(title, chapter, animeStatus) {
+function formatAiringDate(title, chapter, animeStatus) {
   return !isAired(title, chapter, animeStatus) && airingAnime ? `\n[${formatDate(airingDate(airingAnime))}]` : '';
 }
 
