@@ -1,4 +1,4 @@
-let API = 'https://myanime-app.appspot.com';
+let API = "https://53bdde27.ngrok.io"; //'https://myanime-app.appspot.com';
 
 let watching = $("#watching");
 let onHold = $("#on-hold");
@@ -52,6 +52,7 @@ $(document).ready(function() {
     // Information
     let recurrentUser = storage.get("recurrentUser");
     if (!recurrentUser) {
+      fetchCalendar().catch(cannotFetchCalendar());
       $('#info').modal('show');
       storage.set("recurrentUser", true);
     }
@@ -107,7 +108,8 @@ function fetchCalendar() {
     if (filter < 0 || !jQuery.isEmptyObject(airingAnimes)) {
       resolve();
     } else {
-      get(API + '/calendar', (body, status, response) => {
+      let timezoneOffsetHours = -(new Date()).getTimezoneOffset()/60;
+      get(API + `/calendar?offset=${timezoneOffsetHours}`, (body, status, response) => {
         airingAnimes = response;
         for (var key in airingAnimes) {
           airingAnimes[key].airingDate = new Date(airingAnimes[key].airingDate);
@@ -300,8 +302,21 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    storage.set('password', password);
+    /*loading(true);
+
+    getCors('https://myanimelist.net/api/account/verify_credentials.xml', (body, status) => {
+      if (status === 200) {
+        storage.set('password', password);
+        $("#set-password").modal('hide');
+        checkpoint();
+      } else {
+        alert(body);
+      }
+    }, (body, status) => alert(body),
+    auth(user, password)).always(finishLoading('Update Password Finish'));
+    */
     $("#set-password").modal('hide');
+    storage.set('password', password);
     checkpoint();
   }
 }
@@ -362,6 +377,21 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       reason = reason || 'The server does not respond.';
       alert(`Cannot update episode, reason: ${reason}`);
     }
+    
+    /*
+    let data = encodeURI(`data=<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`);
+
+    postCors(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
+      if (body === 'Updated') {
+        updateAnime();
+      } else {
+        cannotUpdate(body);
+      }
+    }, (body, status) => {
+      storage.remove('password');
+      cannotUpdate(body);
+    }, auth(user, password).and(contentType("application/x-www-form-urlencoded"))).always(finishLoading('Update Chapter Finish'));
+    */
 
     post(API + '/update', JSON.stringify(entry), (body, status) => {
       if (body === 'Updated') {

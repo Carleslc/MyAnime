@@ -5,8 +5,6 @@ const get = require('./http-utils');
 const handler = require('./error-handler');
 const idify = require('./utils');
 
-const defaultProvider = 'any';
-
 const tag = 'calendar';
 const refreshSeconds = 60 * 60 * 24;
 const backupTTL = refreshSeconds * 2;
@@ -30,8 +28,6 @@ function parse(html) {
     }
   };
 
-  var animeCalendar = _('.week').scrape(frame);
-
   /*
     airingAnimes: [
       {
@@ -43,46 +39,49 @@ function parse(html) {
     ]
   */
 
-  var airingAnimes = {};
-
-  for (anime of animeCalendar.airingAnimes) {
-    var date = new Date(anime.date);
-    var luxonDate = luxon.DateTime.fromJSDate(date);
-    airingAnimes[idify(anime.title, defaultProvider)] = {
-      episode: anime.episode,
-      airingDate: date,
-      weekday: luxonDate.weekdayLong,
-      date: luxonDate.toLocaleString(luxon.DateTime.DATE_FULL),
-      time: luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
-    };
-  }
-
-  /*
-    {
-      "one-piece": {
-        episode: "835",
-        airingDate: 2018-05-06T00:30:00Z (Date),
-        weekday: "Sunday",
-        date: "May 6, 2018"
-        time: "02:30"
-      },
-      ...
-    }
-  */
-
-  return airingAnimes;
+  return _('.week').scrape(frame);
 }
 
-function fetch(cache) {
+/*
+  {
+    "one-piece": {
+      episode: "835",
+      airingDate: "2018-05-06T02:30:00+02:00",
+      weekday: "Sunday",
+      date: "May 6, 2018"
+      time: "02:30"
+    },
+    ...
+  }
+*/
+function localize(calendar, locale, offset) {
+  var airingAnimes = {};
+  for (anime of calendar.airingAnimes) {
+    let date = luxon.DateTime.fromJSDate(new Date(anime.date /* utc */))
+      .plus({ hours: offset || 0 })
+      .setLocale(locale || 'en-US');
+    airingAnimes[idify(anime.title)] = {
+      episode: anime.episode,
+      airingDate: date.toISO(),
+      weekday: date.weekdayLong,
+      date: date.toLocaleString(luxon.DateTime.DATE_FULL),
+      time: date.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
+    }
+  }
+  return JSON.stringify(airingAnimes);
+}
+
+function fetch(cache, locale, offset) {
   return new Promise(function(resolve, reject) {
+    let withLocale = locale && offset >= 0;
     function retrieve() {
       get('https://notify.moe/calendar').then(html => {
-        var calendar = JSON.stringify(parse(html))
+        var calendar = parse(html)
         if (cache) {
-          set(cache, calendar)
+          set(cache, JSON.stringify(calendar))
         }
         console.log('Calendar retrieved')
-        resolve(calendar)
+        resolve(localize(calendar, locale, offset))
       }).catch(reject)
     }
     if (cache) {
@@ -90,7 +89,7 @@ function fetch(cache) {
         if (error) {
           reject('Calendar get cache error: ' + error.message)
         } else if (entries.length > 0) {
-            resolve(entries[0].body);
+            resolve(localize(JSON.parse(entries[0].body), locale, offset));
         } else {
           console.warn('Calendar not cached! Retrieving calendar...')
           retrieve()
