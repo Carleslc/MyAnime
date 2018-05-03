@@ -78,9 +78,8 @@ app.post('/update', auth, (req, res) => {
 
 app.get('/calendar', (req, res) => {
   res.setHeader('Content-Type', 'application/json')
-  let locale = req.headers['accept-language'];
-  let offsetHours = req.query.offset;
-  calendar.fetch(cache, locale, offsetHours)
+  //let locale = req.headers['accept-language'] || 'en-US';
+  calendar.fetch(cache, req.query.offset || 0)
     .then(cal => res.send(cal))
     .catch(handler.http(res))
 })
