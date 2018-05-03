@@ -1,17 +1,11 @@
-const luxon = require('luxon');
 const cheerio = require('cheerio');
 const jsonframe = require('jsonframe-cheerio');
 const get = require('./http-utils');
 const handler = require('./error-handler');
-const idify = require('./utils');
 
 const tag = 'calendar';
 const refreshSeconds = 60 * 60 * 24;
 const backupTTL = refreshSeconds * 2;
-
-function now() {
-  return luxon.DateTime.fromJSDate(new Date()).toLocaleString(luxon.DateTime.DATETIME_SHORT_WITH_SECONDS);
-}
 
 function parse(html) {
   let _ = cheerio.load(html);
@@ -38,35 +32,7 @@ function parse(html) {
       ...
     ]
   */
-
   return _('.week').scrape(frame);
-}
-
-/*
-  {
-    "one-piece": {
-      episode: "835",
-      airingDate: "2018-05-06T02:30:00.000+02:00",
-      weekday: "Sunday",
-      date: "May 6, 2018"
-      time: "02:30"
-    },
-    ...
-  }
-*/
-function localize(calendar, offset) {
-  var airingAnimes = {}
-  for (anime of calendar.airingAnimes) {
-    let date = luxon.DateTime.fromJSDate(new Date(anime.date /* utc */)).plus({ hours: offset })
-    airingAnimes[idify(anime.title)] = {
-      episode: anime.episode,
-      airingDate: date.toISO(),
-      weekday: date.weekdayLong,
-      date: date.toLocaleString(luxon.DateTime.DATE_FULL),
-      time: date.toLocaleString(luxon.DateTime.TIME_24_SIMPLE)
-    }
-  }
-  return JSON.stringify(airingAnimes)
 }
 
 function fetch(cache, offset) {
@@ -74,12 +40,12 @@ function fetch(cache, offset) {
     let withLocale = offset >= 0;
     function retrieve() {
       get('https://notify.moe/calendar').then(html => {
-        let calendar = parse(html)
+        let calendar = parse(html);
+        console.log('Calendar retrieved')
         if (cache) {
           set(cache, JSON.stringify(calendar))
         }
-        console.log('Calendar retrieved')
-        resolve(withLocale ? localize(calendar, offset) : JSON.stringify(calendar))
+        resolve(JSON.stringify(calendar))
       }).catch(reject)
     }
     if (cache) {
@@ -87,8 +53,7 @@ function fetch(cache, offset) {
         if (error) {
           reject('Calendar get cache error: ' + error.message)
         } else if (entries.length > 0) {
-          let calendar = entries[0].body;
-          resolve(withLocale ? localize(JSON.parse(calendar), offset) : calendar);
+          resolve(entries[0].body);
         } else {
           console.warn('Calendar not cached! Retrieving calendar...')
           retrieve()
@@ -105,7 +70,7 @@ function set(cache, calendar) {
       if (error) {
         console.error('Calendar set cache error: ' + error.message)
       } else {
-        console.log(`Calendar refreshed successfully [${now()}]`)
+        console.log('Calendar refreshed successfully')
       }
     })
 }
@@ -135,7 +100,6 @@ function refreshTask(cache) {
 }
 
 module.exports = {
-  now: now,
   fetch: fetch,
   expire: expire,
   refreshTask: refreshTask,

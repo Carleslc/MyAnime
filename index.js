@@ -9,8 +9,18 @@ var user, userId;
 var provider;
 var filter;
 var useAlternativeTitles;
-var airingAnimes = {};
 var animes = [];
+
+/*
+  {
+    "one-piece": {
+      episode: "835",
+      airingDate: "2018-05-06T02:30:00.000+02:00" (local)
+    },
+    ...
+  }
+*/
+var airingAnimes = {};
 
 let providerOffsets = {
   "myanimelist": 0,
@@ -66,6 +76,9 @@ $(document).ready(function() {
     $('#provider-selector').on('change', function() {
       provider = $(this).val();
       storage.set("provider", provider);
+      if (filter == 7) { // Not yet aired: Date provider offset
+        parseAnime();
+      }
     });
 
     // Filter
@@ -108,11 +121,12 @@ function fetchCalendar() {
     if (filter < 0 || !jQuery.isEmptyObject(airingAnimes)) {
       resolve();
     } else {
-      let timezoneOffsetHours = -(new Date()).getTimezoneOffset()/60;
-      get(API + `/calendar?offset=${timezoneOffsetHours}`, (body, status, response) => {
-        airingAnimes = response;
-        for (var key in airingAnimes) {
-          airingAnimes[key].airingDate = new Date(airingAnimes[key].airingDate);
+      get(API + '/calendar', (body, status, calendar) => {
+        for (anime of calendar.airingAnimes) {
+          airingAnimes[idify(anime.title)] = {
+            episode: anime.episode,
+            airingDate: luxon.DateTime.fromISO(anime.date)
+          }
         }
         resolve();
       }, (reason, status) => {
@@ -145,19 +159,28 @@ function getTitle(originalTitle, synonymsRaw) {
   return originalTitle;
 }
 
-function watchAnime(title, chapter, malId, movie) {
-  function chapterIfNotMovie() {
-    return movie ? '' : `${chapter}-`;
-  }
+function watchAnime(title, chapter, malId, movie, aired) {
   function getUrl() {
-    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/-/video`;
-    else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} ${chapter} online español -english`);
-    else if (provider == "google-es") return 'https://www.google.com/search?btnI&q=' + encodeURIComponent(`${title} ${chapter} online español -english`);
-    else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`${title} episode ${chapter} online english anime -español`);
-    else if (provider == "google-en") return 'https://www.google.com/search?btnI&q=' + encodeURIComponent(`${title} ${chapter} online english`);
+    function ifNotMovie(s) {
+      return movie ? ' ' : s;
+    }
+    function inUrl(chapter) {
+      return ifNotMovie(` inurl:${chapter} `);
+    }
+    function luckySpanish() {
+      return encodeURIComponent(`${title}${inUrl(chapter)}online español -english`);
+    }
+    function luckyEnglish() {
+      return encodeURIComponent(`${title}${ifNotMovie(` episode${inUrl(chapter)}`)}online english anime -español`);
+    }
+    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/${aired ? '-/video' : ''}`;
+    else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + luckySpanish();
+    else if (provider == "google-es") return 'https://www.google.com/search?btnI&q=' + luckySpanish();
+    else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + luckyEnglish();
+    else if (provider == "google-en") return 'https://www.google.com/search?btnI&q=' + luckyEnglish();
     else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
     else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
-    else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, chapterIfNotMovie() + "sub-espanol")}/`;
+    else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, (movie ? '' : `${chapter}-`) + "sub-espanol")}/`;
     else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
     else if (provider == "tvanime") return `http://tvanime.org/ver/${asUrl(title, chapter)}`;
     else if (provider == "twist") return `https://twist.moe/a/${asUrl(title)}/${chapter}`;
@@ -170,11 +193,20 @@ function watchAnime(title, chapter, malId, movie) {
   window.open(url);
 }
 
-function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, callback) {
-  title = getTitle(title, synonyms);
+function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start, callback) {
+  title = getTitle(originalTitle, synonyms);
+  let aired = isAired(originalTitle, chapter, animeStatus);
+  var release;
+  if (!aired) {
+    if (airingAnime) {
+      release = formatDateTime(airingDate(airingAnime));
+    } else if (start) {
+      release = formatDate(luxon.DateTime.fromISO(start));
+    }
+  }
   callback(`<article id="anime-${malId}">
     <div>
-      <header>${title} #${chapter}</header>
+      <header>${title} #${chapter}${release ? `<br><br>${release}`  : ''}</header>
       <figure>
         <img src="${image}" class="cover" width="225" height="313">
       </figure>
@@ -183,8 +215,8 @@ function getAnimeFigure(title, synonyms, chapter, maxChapter, image, malId, movi
       </aside>
     </div>
   </article>`);
-  $(`#anime-${malId} div`).click(function() { watchAnime(title, chapter, malId, movie) });
-  $(`#next-${malId}`).click(function() { updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) });
+  $(`#anime-${malId} div`).click(function() { watchAnime(title, chapter, malId, movie, aired) });
+  $(`#next-${malId}`).click(function() { updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start) });
 }
 
 function emptyAnime() {
@@ -195,15 +227,18 @@ function emptyAnime() {
 
 var airingAnime;
 
+function airingDate(anime) {
+  return anime.airingDate.plus({ hours: providerOffsets[provider] });
+}
+
 function isAired(title, chapter, animeStatus) {
   airingAnime = undefined;
   function isAiringAired(anime) {
-    return anime.episode > chapter ||
-      (anime.episode == chapter && anime.airingDate.plusHours(providerOffsets[provider]) < new Date());
+    return anime.episode > chapter || (anime.episode == chapter && airingDate(anime) < now());
   }
   var aired;
-  title = idify(title);
   if (animeStatus == 1) {
+    title = idify(title);
     if (title in airingAnimes) {
       airingAnime = airingAnimes[title];
       aired = isAiringAired(airingAnime);
@@ -243,7 +278,7 @@ function parseAnime() {
             }
             if (available) {
               getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
-                anime.series_animedb_id, type == 3, animeStatus, function(figure) {
+                anime.series_animedb_id, type == 3, animeStatus, anime.series_start, function(figure) {
                 section.append(figure);
               });
             }
@@ -323,11 +358,11 @@ function updatePassword() {
 
 $("#update-password-btn").click(updatePassword);
 
-function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) {
+function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start) {
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
-      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus);
+      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start);
     };
     $("#set-password").modal('show');
   } else {
@@ -340,29 +375,31 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
     if (chapter == 1) {
       entry.status = 1;
-      entry.date_start = formatToday();
+      entry.date_start = formatTodayRaw();
     }
 
     let completed = chapter == maxChapter;
     if (completed) {
       entry.status = 2;
-      entry.date_finished = formatToday();
+      entry.date_finished = formatTodayRaw();
     }
 
     function updateAnime() {
       let index = animes.findIndex(anime => anime.series_animedb_id == malId);
+
       function removeFigure() {
         $(`#anime-${malId}`).remove();
         animes.splice(index, 1);
       }
+
       if (completed) {
         removeFigure();
         alert(`Hooray! You've completed ${title}!`);
       } else if (!isAired(title, chapter + 1, animeStatus)) {
         removeFigure();
-        alert(`Updated ${title} to episode ${chapter}. Next episode will be available next ${airingAnime.weekday} (${airingAnime.date}) about ${airingAnime.time}h.`);
+        alert(`Updated ${title} to episode ${chapter}. Next episode will be available: ${formatDateTime(airingDate(airingAnime))}.`);
       } else {
-        getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, function(figure) {
+        getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, start, function(figure) {
           $(`#anime-${malId}`).replaceWith(figure);
         });
         let anime = animes[index];
