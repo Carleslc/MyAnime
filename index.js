@@ -22,7 +22,6 @@ var animes = [];
 */
 var airingAnimes = {};
 
-let timezoneOffsetHours = -(new Date()).getTimezoneOffset()/60;
 let providerOffsets = {
   "myanimelist": 0,
   "lucky-es": 0,
@@ -126,8 +125,7 @@ function fetchCalendar() {
         for (anime of calendar.airingAnimes) {
           airingAnimes[idify(anime.title)] = {
             episode: anime.episode,
-            date: anime.date,
-            airingDate: luxon.DateTime.fromISO(anime.date).plus({ hours: timezoneOffsetHours })
+            airingDate: luxon.DateTime.fromISO(anime.date)
           }
         }
         resolve();
@@ -198,13 +196,6 @@ function watchAnime(title, chapter, malId, movie, aired) {
 function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start, callback) {
   title = getTitle(originalTitle, synonyms);
   let aired = isAired(originalTitle, chapter, animeStatus);
-  if (airingAnime) {
-    console.log(originalTitle)
-    console.log(airingAnime.date)
-    console.log(timezoneOffsetHours)
-    console.log(formatDateTime(airingAnime.airingDate))
-    console.log(formatDateTime(airingDate(airingAnime)))
-  }
   var release;
   if (!aired) {
     if (airingAnime) {
