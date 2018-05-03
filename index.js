@@ -192,7 +192,7 @@ function watchAnime(title, chapter, malId, movie) {
 }
 
 function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, callback) {
-  title = getTitle(title, synonyms);
+  title = getTitle(originalTitle, synonyms);
   callback(`<article id="anime-${malId}">
     <div>
       <header>${title} #${chapter}${formatAiringDate(originalTitle, chapter, animeStatus)}</header>
