@@ -111,11 +111,8 @@ function fetchCalendar() {
       get(API + '/calendar', (body, status, response) => {
         airingAnimes = response;
         for (var key in airingAnimes) {
-          console.log('Before')
-          console.log(typeof(airingAnimes[key].airingDate));
           airingAnimes[key].airingDate = new Date(airingAnimes[key].airingDate);
-          console.log(typeof(airingAnimes[key].airingDate));
-          console.log('After')
+          console.log(airingAnimes[key].airingDate);
         }
         resolve();
       }, (reason, status) => {
