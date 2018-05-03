@@ -219,7 +219,6 @@ function parseAnime() {
             if (filter == 7) {
               available = !available;
             }
-            console.log(`${title} available: ${available}`);
             if (available) {
               getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
                 anime.series_animedb_id, type == 3, animeStatus, function(figure) {
