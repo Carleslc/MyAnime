@@ -196,9 +196,7 @@ function isAired(title, chapter, animeStatus) {
 }
 
 function parseAnime() {
-  fetchCalendar().catch(cannotFetchCalendar()).then(() => {
-    emptyAnime();
-    console.log(`Filter ${filter}`);
+  fetchCalendar().catch(cannotFetchCalendar()).then(emptyAnime).then(() => {
     for (anime of animes) {
       let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
       if (status != 2 && status != 4) {
@@ -206,7 +204,7 @@ function parseAnime() {
         let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special, 5 - ONA, 6 - Music
         let episodes = parseInt(anime.series_episodes);
         let nextChapter = parseInt(anime.my_watched_episodes) + 1;
-        if ((episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == 7 || filter == type)) {
+        if ((episodes == 0 || nextChapter <= episodes) && (filter <= 0 || filter == 7 || filter == type)) {
           var section;
           if (status == 1) {
             section = watching;
