@@ -104,11 +104,11 @@ function fetchCalendar() {
 
 function cannotFetchCalendar() {
   return error => {
-    let message = error.message || error;
-    if (error.status == 0) {
+    var message = error.message || error;
+    if (error.status == 0 && filter < 0) {
       console.warn(message);
     } else {
-      alert(message);
+      alert(message + "\n\nFilter is showing episodes regardless of whether or not it has been aired.");
     }
     airingAnimes.notEmpty = {};
   };
