@@ -80,17 +80,16 @@ $(document).ready(function() {
     });
 
     // Load contents
-    fetchCalendar().catch(error => {
-      console.log('Status ' + error.status);
-      if (error.status == 0) {
-        console.log(error.message);
-      } else {
-        alert(error.message);
-      }
-    }).always(() => {
-      searchUser();
-      finishLoading('Load Settings Finish')();
-    });
+    fetchCalendar()
+      .catch(error => {
+        if (error.status == 0) {
+          console.error(error.message);
+        } else {
+          alert(error.message);
+        }
+      })
+      .then(searchUser)
+      .then(finishLoading('Load Settings Finish'));
   })();
 });
 

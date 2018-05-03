@@ -33,25 +33,23 @@ const client = redis.createClient(
 
 const cache = require('express-redis-cache')({ client: client, prefix: 'anime' })
 
-function auth(next) {
-  return (req, res) => {
-    function unauthorized(msg) {
-      return res.status(401).send(msg || 'Invalid credentials');
-    }
- 
-    let user = basicAuth(req);
- 
-    if (!user || !user.name || !user.pass) {
-        return unauthorized();
-    }
-
-    get('https://myanimelist.net/api/account/verify_credentials.xml', user.name, user.pass)
-      .then(body => {
-        res.locals.mal = mal(user.name, user.pass)
-        next(req, res)
-      })
-      .catch((err, status) => unauthorized(err))
+function auth(req, res, next) {
+  function unauthorized(msg) {
+    return res.status(401).send(msg || 'Invalid credentials');
   }
+
+  let user = basicAuth(req);
+
+  if (!user || !user.name || !user.pass) {
+      return unauthorized();
+  }
+
+  get('https://myanimelist.net/api/account/verify_credentials.xml', user.name, user.pass)
+    .then(body => {
+      res.locals.mal = mal(user.name, user.pass)
+      next()
+    })
+    .catch((err, status) => unauthorized(err))
 }
 
 app.get('/', (req, res) => {
@@ -62,7 +60,7 @@ app.get('/', (req, res) => {
   console.log(message);
 });*/
 
-app.post('/update', auth((req, res) => {
+app.post('/update', auth, (req, res) => {
   if (!req.body.id) {
     res.sendStatus(400)
   } else {
@@ -75,7 +73,7 @@ app.post('/update', auth((req, res) => {
     }).then(body => res.send(body))
       .catch(handler.http2(res))
   }
-}))
+})
 
 app.get('/calendar', (req, res) => {
   res.setHeader('Content-Type', 'application/json')
