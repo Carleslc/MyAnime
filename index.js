@@ -199,7 +199,7 @@ function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, mal
   let aired = isAired(originalTitle, chapter, animeStatus);
   if (airingAnime) {
     console.log(originalTitle)
-    console.log(airingDate(airingAnime))
+    console.log(formatDateTime(airingDate(airingAnime)))
   }
   var release;
   if (!aired) {
