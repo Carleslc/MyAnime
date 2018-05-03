@@ -6,14 +6,13 @@ function pad(n, size) {
   return s;
 }
 
+function now() {
+  return luxon.DateTime.fromJSDate(new Date());
+}
+
 function formatToday() {
   let now = new Date();
   return `${pad(now.getMonth() + 1)}${pad(now.getDate())}${now.getFullYear()}`;
-}
-
-Date.prototype.plusHours = function(h) {
-  this.setTime(this.getTime() + (h * 60 * 60 * 1000));
-  return this;
 }
 
 function asUrl(s, append, prov) {
@@ -29,5 +28,5 @@ function asUrl(s, append, prov) {
 }
 
 function idify(s, prov) {
-  return asUrl(s, null, prov || '');
+  return asUrl(s, null, prov || 'none');
 }
