@@ -96,9 +96,9 @@ function fetchCalendar() {
     get(API + '/calendar', (body, status, response) => {
       airingAnimes = response;
       resolve();
-    }, (err, status) => {
+    }, (reason, status) => {
       reason = reason || 'The server does not respond.';
-      reject(`Cannot get calendar, reason: ${err} (Status ${status})`, status);
+      reject(`Cannot get calendar, reason: ${reason} (Status ${status})`, status);
     });
   });
 }
