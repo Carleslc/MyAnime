@@ -5,7 +5,6 @@ const app = express()
 const port = 8080
 
 const basicAuth = require('basic-auth')
-const luxon = require('luxon')
 const mal = require('popura')
 
 const get = require('./http-utils')
