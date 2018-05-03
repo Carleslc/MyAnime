@@ -110,6 +110,7 @@ function cannotFetchCalendar() {
     } else {
       alert(message);
     }
+    airingAnimes.notEmpty = {};
   };
 }
 
