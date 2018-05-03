@@ -207,8 +207,10 @@ function parseAnime() {
         }
         if (section) {
           let title = anime.series_title;
-          let aired = isAired(title, nextChapter, animeStatus);
-          let available = filter != 7 ? aired : !aired;
+          var available = filter < 0 || isAired(title, nextChapter, animeStatus);
+          if (filter == 7) {
+            available = !available;
+          }
           if (available) {
             getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
               anime.series_animedb_id, type == 3, animeStatus, function(figure) {
