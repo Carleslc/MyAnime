@@ -112,7 +112,7 @@ function fetchCalendar() {
         airingAnimes = response;
         for (var key in airingAnimes) {
           airingAnimes[key].airingDate = new Date(airingAnimes[key].airingDate);
-          console.log(airingAnimes[key].airingDate);
+          console.log(airingAnimes[key].airingDate.constructor === Date);
         }
         resolve();
       }, (reason, status) => {
