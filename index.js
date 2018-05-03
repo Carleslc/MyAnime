@@ -160,6 +160,7 @@ function getTitle(originalTitle, synonymsRaw) {
 }
 
 function watchAnime(title, chapter, malId, movie, aired) {
+  console.log("Watch anime: " + title);
   function getUrl() {
     function ifNotMovie(s) {
       return movie ? ' ' : s;
@@ -195,6 +196,7 @@ function watchAnime(title, chapter, malId, movie, aired) {
 
 function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start, callback) {
   title = getTitle(originalTitle, synonyms);
+  console.log("Anime figure: " + title);
   let aired = isAired(originalTitle, chapter, animeStatus);
   var release;
   if (!aired) {
@@ -253,6 +255,7 @@ function isAired(title, chapter, animeStatus) {
 
 function parseAnime() {
   loading(true);
+  console.log("Parse Anime");
   fetchCalendar().catch(cannotFetchCalendar()).then(emptyAnime).then(() => {
     for (anime of animes) {
       let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
@@ -272,6 +275,7 @@ function parseAnime() {
           }
           if (section) {
             let title = anime.series_title;
+            console.log(title);
             var available = filter < 0 || isAired(title, nextChapter, animeStatus);
             if (filter == 7) {
               available = !available;
