@@ -26,7 +26,3 @@ function asUrl(s, append, prov) {
 function idify(s, prov) {
   return asUrl(s, null, prov || '');
 }
-
-if (module) { // node.js import
-  module.exports = idify;
-}
