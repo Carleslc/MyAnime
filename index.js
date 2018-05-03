@@ -83,7 +83,7 @@ $(document).ready(function() {
     fetchCalendar()
       .catch(error => {
         if (error.status == 0) {
-          console.error(error.message);
+          console.warn(error.message);
         } else {
           alert(error.message);
         }
