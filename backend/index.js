@@ -5,6 +5,7 @@ const app = express()
 const port = 8080
 
 const basicAuth = require('basic-auth')
+const luxon = require('luxon')
 const mal = require('popura')
 
 const get = require('./http-utils')
@@ -77,7 +78,8 @@ app.post('/update', auth, (req, res) => {
 
 app.get('/calendar', (req, res) => {
   res.setHeader('Content-Type', 'application/json')
-  calendar.fetch(cache)
+  //let locale = req.headers['accept-language'] || 'en-US';
+  calendar.fetch(cache, req.query.offset || 0)
     .then(cal => res.send(cal))
     .catch(handler.http(res))
 })

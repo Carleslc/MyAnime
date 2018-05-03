@@ -108,7 +108,8 @@ function fetchCalendar() {
     if (filter < 0 || !jQuery.isEmptyObject(airingAnimes)) {
       resolve();
     } else {
-      get(API + '/calendar', (body, status, response) => {
+      let timezoneOffsetHours = -(new Date()).getTimezoneOffset()/60;
+      get(API + `/calendar?offset=${timezoneOffsetHours}`, (body, status, response) => {
         airingAnimes = response;
         for (var key in airingAnimes) {
           airingAnimes[key].airingDate = new Date(airingAnimes[key].airingDate);
