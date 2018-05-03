@@ -90,14 +90,15 @@ function fetchCalendar() {
     if (filter < 0 || !jQuery.isEmptyObject(airingAnimes)) {
       console.log('Calendar not needed');
       resolve();
+    } else {
+      get(API + '/calendar', (body, status, response) => {
+        airingAnimes = response;
+        resolve();
+      }, (reason, status) => {
+        reason = reason || 'The server does not respond.';
+        reject({ message: `Cannot get calendar, reason: ${reason}`, status: status });
+      });
     }
-    get(API + '/calendar', (body, status, response) => {
-      airingAnimes = response;
-      resolve();
-    }, (reason, status) => {
-      reason = reason || 'The server does not respond.';
-      reject({ message: `Cannot get calendar, reason: ${reason}`, status: status });
-    });
   });
 }
 
