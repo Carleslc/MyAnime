@@ -80,9 +80,14 @@ $(document).ready(function() {
     });
 
     // Load contents
-    fetchCalendar().then(searchUser).catch((error) => alert(error)).then(finishLoading('Load Settings Finish'));
-    /*searchUser();
-    loading(false);*/
+    fetchCalendar().then(searchUser).catch((error, status) => {
+      if (status == 0) {
+        console.log(error);
+        searchUser();
+      } else {
+        alert(error);
+      }
+    }).then(finishLoading('Load Settings Finish'));
   })();
 });
 
@@ -91,7 +96,10 @@ function fetchCalendar() {
     get(API + '/calendar', (body, status, response) => {
       airingAnimes = response;
       resolve();
-    }, (err, status) => reject(status > 0 ? `Cannot get calendar, reason: ${err} (Status ${status})` : 'The server does not respond'));
+    }, (err, status) => {
+      reason = reason || 'The server does not respond.';
+      reject(`Cannot get calendar, reason: ${err} (Status ${status})`, status);
+    });
   });
 }
 
@@ -313,7 +321,8 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
     function cannotUpdate(reason) {
       storage.remove('password');
-      alert(reason ? `Cannot update episode, reason: ${reason}` : 'The server does not respond');
+      reason = reason || 'The server does not respond.';
+      alert(`Cannot update episode, reason: ${reason}`);
     }
 
     post(API + '/update', JSON.stringify(entry), (body, status) => {
