@@ -200,7 +200,8 @@ function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, mal
   let aired = isAired(originalTitle, chapter, animeStatus);
   if (airingAnime) {
     console.log(originalTitle)
-    console.log(formatDateTime(airingAnime.date))
+    console.log(airingAnime.date)
+    console.log(timezoneOffsetHours)
     console.log(formatDateTime(airingAnime.airingDate))
     console.log(formatDateTime(airingDate(airingAnime)))
   }
