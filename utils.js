@@ -13,8 +13,12 @@ function now() {
 function formatDate(luxonDate) {
   let weekday = luxonDate.weekdayLong;
   let date = luxonDate.toLocaleString(luxon.DateTime.DATE_FULL);
+  return `${weekday} ${date}`;
+}
+
+function formatDateTime(luxonDate) {
   let time = luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE);
-  return `${weekday} ${date}, ${time}h`;
+  return `${formatDate(luxonDate)}, ${time}h`;
 }
 
 function formatTodayRaw() {

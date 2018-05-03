@@ -194,17 +194,24 @@ function watchAnime(title, chapter, malId, movie, aired) {
   window.open(url);
 }
 
-function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, callback) {
+function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start, callback) {
   title = getTitle(originalTitle, synonyms);
   let aired = isAired(originalTitle, chapter, animeStatus);
   if (airingAnime) {
-    airingDate(airingAnime)
-    airingDate(airingAnime)
-    airingDate(airingAnime)
+    console.log(originalTitle)
+    console.log(airingDate(airingAnime))
+  }
+  var release;
+  if (!aired) {
+    if (airingAnime) {
+      release = formatDateTime(airingDate(airingAnime));
+    } else if (start) {
+      release = formatDate(luxon.DateTime.fromISO(start));
+    }
   }
   callback(`<article id="anime-${malId}">
     <div>
-      <header>${title} #${chapter}${!aired && airingAnime ? `<br><br>${formatDate(airingDate(airingAnime))}` : ''}</header>
+      <header>${title} #${chapter}${release ? `<br><br>${release}`  : ''}</header>
       <figure>
         <img src="${image}" class="cover" width="225" height="313">
       </figure>
@@ -214,7 +221,7 @@ function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, mal
     </div>
   </article>`);
   $(`#anime-${malId} div`).click(function() { watchAnime(title, chapter, malId, movie, aired) });
-  $(`#next-${malId}`).click(function() { updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) });
+  $(`#next-${malId}`).click(function() { updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start) });
 }
 
 function emptyAnime() {
@@ -276,7 +283,7 @@ function parseAnime() {
             }
             if (available) {
               getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
-                anime.series_animedb_id, type == 3, animeStatus, function(figure) {
+                anime.series_animedb_id, type == 3, animeStatus, anime.series_start, function(figure) {
                 section.append(figure);
               });
             }
@@ -356,11 +363,11 @@ function updatePassword() {
 
 $("#update-password-btn").click(updatePassword);
 
-function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) {
+function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start) {
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
-      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus);
+      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start);
     };
     $("#set-password").modal('show');
   } else {
@@ -395,9 +402,9 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         alert(`Hooray! You've completed ${title}!`);
       } else if (!isAired(title, chapter + 1, animeStatus)) {
         removeFigure();
-        alert(`Updated ${title} to episode ${chapter}. Next episode will be available: ${formatDate(airingDate(airingAnime))}.`);
+        alert(`Updated ${title} to episode ${chapter}. Next episode will be available: ${formatDateTime(airingDate(airingAnime))}.`);
       } else {
-        getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, function(figure) {
+        getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, start, function(figure) {
           $(`#anime-${malId}`).replaceWith(figure);
         });
         let anime = animes[index];
