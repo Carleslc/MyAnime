@@ -91,7 +91,7 @@ function fetchCalendar() {
     get(API + '/calendar', (body, status, response) => {
       airingAnimes = response;
       resolve();
-    }, (err, status) => reject(`Cannot get calendar, reason: ${err} (Status ${status})`));
+    }, (err, status) => reject(status > 0 ? `Cannot get calendar, reason: ${err} (Status ${status})` : 'The server does not respond'));
   });
 }
 
@@ -313,7 +313,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
     function cannotUpdate(reason) {
       storage.remove('password');
-      alert(`Cannot update episode, reason: ${reason}`);
+      alert(reason ? `Cannot update episode, reason: ${reason}` : 'The server does not respond');
     }
 
     post(API + '/update', JSON.stringify(entry), (body, status) => {

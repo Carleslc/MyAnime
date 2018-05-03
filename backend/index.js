@@ -1,39 +1,37 @@
+'use strict';
+
 const express = require('express')
-const fetch = require('request')
-const cors = require('cors')
 const app = express()
 const port = 8080
 
 const basicAuth = require('basic-auth')
-
 const mal = require('popura')
 
-const calendar = require('./calendar');
+const get = require('./http-utils')
+const handler = require('./error-handler')
+const calendar = require('./calendar')
 
 const bodyParser = require('body-parser')
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
+const cors = require('cors')
 app.use(cors())
 
-function get(url, username, password) {
-  return new Promise(function(resolve, reject) {
-    var options = { url: url }
-    if (username && password) {
-      options.auth = {
-        user: username,
-        password: password
-      }
-    }
-    fetch(options, function(error, res, body) {
-      if (!error && res.statusCode === 200) {
-        resolve(body)
-      } else {
-        reject(body || error, (res && res.statusCode) || 500)
-      }
-    })
-  })
-}
+const nconf = require('nconf')
+nconf.argv().env().file('keys.json')
+
+const redis = require('redis')
+const client = redis.createClient(
+  nconf.get('redisPort') || '6379',
+  nconf.get('redisHost') || '127.0.0.1',
+  {
+    'auth_pass': nconf.get('redisKey'),
+    'return_buffers': true
+  }
+).on('error', (err) => console.error('ERR:REDIS:', err));
+
+const cache = require('express-redis-cache')({ client: client, prefix: 'anime' })
 
 function auth(next) {
   return (req, res) => {
@@ -41,22 +39,18 @@ function auth(next) {
       return res.status(401).send(msg || 'Invalid credentials');
     }
  
-    user = basicAuth(req);
+    let user = basicAuth(req);
  
     if (!user || !user.name || !user.pass) {
         return unauthorized();
     }
 
     get('https://myanimelist.net/api/account/verify_credentials.xml', user.name, user.pass)
-      .then(body => next(req, res, mal(user.name, user.pass)))
+      .then(body => {
+        res.locals.mal = mal(user.name, user.pass)
+        next(req, res)
+      })
       .catch((err, status) => unauthorized(err))
-  }
-}
-
-function handler(res) {
-  return (err, status) => {
-    console.error(JSON.stringify(err))
-    res.status(status || 500).send(err.message)
   }
 }
 
@@ -64,28 +58,34 @@ app.get('/', (req, res) => {
   res.send('MyAnime API')
 })
 
-app.get('/calendar', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  get('https://notify.moe/calendar')
-    .then(body => res.send(JSON.stringify(calendar(body))))
-    .catch(handler(res))
-})
+/*cache.on('message', function(message) {
+  console.log(message);
+});*/
 
-app.post('/update', auth((req, res, mal) => {
+app.post('/update', auth((req, res) => {
   if (!req.body.id) {
     res.sendStatus(400)
   } else {
-    console.log(`/update ${req.body.id} User ${mal.getUser()}`);
-    mal.updateAnime(req.body.id, {
+    console.log(`/update ${req.body.id} User ${res.locals.mal.getUser()}`)
+    res.locals.mal.updateAnime(req.body.id, {
       episode: req.body.episode,
       status: req.body.status,
       date_start: req.body.date_start,
       date_finish: req.body.date_finish
     }).then(body => res.send(body))
-      .catch(err => res.status(err.statusCode).send(err.statusMessage))
+      .catch(handler.http2(res))
   }
 }))
+
+app.get('/calendar', (req, res) => {
+  res.setHeader('Content-Type', 'application/json')
+  calendar.fetch(cache)
+    .then(cal => res.send(cal))
+    .catch(handler.http(res))
+})
 
 app.listen(port, (err) => {
   console.log(err || `Server is listening on ${port}`)
 })
+
+calendar.refreshTask(cache)

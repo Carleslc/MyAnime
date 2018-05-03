@@ -1,11 +1,21 @@
-let luxon = require('luxon');
-let cheerio = require('cheerio');
-let jsonframe = require('jsonframe-cheerio');
-let idify = require('../utils');
+const luxon = require('luxon');
+const cheerio = require('cheerio');
+const jsonframe = require('jsonframe-cheerio');
+const get = require('./http-utils');
+const handler = require('./error-handler');
+const idify = require('./utils');
 
-let defaultProvider = 'any';
+const defaultProvider = 'any';
 
-module.exports = function parseCalendar(html) {
+const tag = 'calendar';
+const refreshSeconds = 60 * 60 * 24;
+const backupTTL = refreshSeconds * 2;
+
+function now() {
+  return luxon.DateTime.fromJSDate(new Date()).toLocaleString(luxon.DateTime.DATETIME_SHORT_WITH_SECONDS);
+}
+
+function parse(html) {
   let _ = cheerio.load(html);
   jsonframe(_);
 
@@ -61,4 +71,75 @@ module.exports = function parseCalendar(html) {
   */
 
   return airingAnimes;
+}
+
+function fetch(cache) {
+  return new Promise(function(resolve, reject) {
+    function retrieve() {
+      get('https://notify.moe/calendar').then(html => {
+        var calendar = JSON.stringify(parse(html))
+        if (cache) {
+          set(cache, calendar)
+        }
+        console.log('Calendar retrieved')
+        resolve(calendar)
+      }).catch(reject)
+    }
+    if (cache) {
+      cache.get(tag, function(error, entries) {
+        if (error) {
+          reject('Calendar get cache error: ' + error.message)
+        } else if (entries.length > 0) {
+            resolve(entries[0].body);
+        } else {
+          console.warn('Calendar not cached! Retrieving calendar...')
+          retrieve()
+        }
+      })
+    } else retrieve()
+  })
+}
+
+function set(cache, calendar) {
+  cache.add(tag, calendar,
+    { expire: backupTTL, type: 'json' },
+    function(error, added) {
+      if (error) {
+        console.error('Calendar set cache error: ' + error.message)
+      } else {
+        console.log(`Calendar refreshed successfully [${now()}]`)
+      }
+    })
+}
+
+function expire(cache) {
+  cache.del(tag, function(err, n) {
+    if (err) {
+      console.error('Calendar del cache error: ' + error.message)
+    } else {
+      console.log(`Expired ${n} calendar entries`)
+    }
+  })
+}
+
+function refreshTask(cache) {
+  function refresh() {
+    console.log('Refreshing calendar...')
+    fetch()
+      .then(calendar => set(cache, calendar))
+      .catch(handler.httpConsole())
+  }
+  setImmediate(function() {
+    expire(cache)
+    refresh()
+  })
+  setInterval(refresh, refreshSeconds * 1000)
+}
+
+module.exports = {
+  now: now,
+  fetch: fetch,
+  expire: expire,
+  refreshTask: refreshTask,
+  expiration: backupTTL
 }
