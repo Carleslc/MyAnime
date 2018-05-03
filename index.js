@@ -112,7 +112,6 @@ function fetchCalendar() {
         airingAnimes = response;
         for (var key in airingAnimes) {
           airingAnimes[key].airingDate = new Date(airingAnimes[key].airingDate);
-          console.log(airingAnimes[key].airingDate.constructor === Date);
         }
         resolve();
       }, (reason, status) => {
@@ -198,7 +197,7 @@ var airingAnime;
 function isAired(title, chapter, animeStatus) {
   airingAnime = undefined;
   function isAiringAired(anime) {
-    console.log(typeof(anime.airingDate));
+    console.log(anime.airingDate.constructor === Date);
     return anime.episode > chapter ||
       (anime.episode == chapter && anime.airingDate.plusHours(providerOffsets[provider]) < new Date());
   }
