@@ -173,7 +173,7 @@ function watchAnime(title, chapter, malId, movie, aired) {
     function luckyEnglish() {
       return encodeURIComponent(`${title}${ifNotMovie(` episode${inUrl(chapter)}`)}online english anime -español`);
     }
-    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/${aired ? '-/video' : ''}`;
+    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/${aired && !movie ? '-/video' : ''}`;
     else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + luckySpanish();
     else if (provider == "google-es") return 'https://www.google.com/search?btnI&q=' + luckySpanish();
     else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + luckyEnglish();
