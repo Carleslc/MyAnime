@@ -111,7 +111,11 @@ function fetchCalendar() {
       get(API + '/calendar', (body, status, response) => {
         airingAnimes = response;
         for (var key in airingAnimes) {
+          console.log('Before')
+          console.log(typeof(airingAnimes[key].airingDate));
           airingAnimes[key].airingDate = new Date(airingAnimes[key].airingDate);
+          console.log(typeof(airingAnimes[key].airingDate));
+          console.log('After')
         }
         resolve();
       }, (reason, status) => {
@@ -197,6 +201,7 @@ var airingAnime;
 function isAired(title, chapter, animeStatus) {
   airingAnime = undefined;
   function isAiringAired(anime) {
+    console.log(typeof(anime.airingDate));
     return anime.episode > chapter ||
       (anime.episode == chapter && anime.airingDate.plusHours(providerOffsets[provider]) < new Date());
   }
