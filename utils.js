@@ -11,7 +11,7 @@ function formatToday() {
   return `${pad(now.getMonth() + 1)}${pad(now.getDate())}${now.getFullYear()}`;
 }
 
-Date.prototype.addHours = function(h) {
+Date.prototype.plusHours = function(h) {
   this.setTime(this.getTime() + (h * 60 * 60 * 1000));
   return this;
 }
