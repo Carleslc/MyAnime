@@ -52,6 +52,7 @@ $(document).ready(function() {
     // Information
     let recurrentUser = storage.get("recurrentUser");
     if (!recurrentUser) {
+      fetchCalendar().catch(cannotFetchCalendar());
       $('#info').modal('show');
       storage.set("recurrentUser", true);
     }
