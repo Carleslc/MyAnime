@@ -110,7 +110,8 @@ function fetchCalendar() {
     } else {
       get(API + '/calendar', (body, status, response) => {
         airingAnimes = response;
-        for (var anime of airingAnimes) {
+        console.log(airingAnimes);
+        for (anime of airingAnimes) {
           anime.airingDate = new Date(anime.airingDate);
         }
         resolve();
