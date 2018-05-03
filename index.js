@@ -88,6 +88,7 @@ $(document).ready(function() {
 function fetchCalendar() {
   return new Promise(function(resolve, reject) {
     if (filter < 0 || !jQuery.isEmptyObject(airingAnimes)) {
+      console.log('Calendar not needed');
       resolve();
     }
     get(API + '/calendar', (body, status, response) => {
@@ -196,7 +197,7 @@ function isAired(title, chapter, animeStatus) {
 function parseAnime() {
   fetchCalendar().catch(cannotFetchCalendar()).then(() => {
     emptyAnime();
-
+    console.log(`Filter ${filter}`);
     for (anime of animes) {
       let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
       if (status != 2 && status != 4) {
@@ -219,6 +220,7 @@ function parseAnime() {
             if (filter == 7) {
               available = !available;
             }
+            console.log(`${title} available: ${available}`);
             if (available) {
               getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
                 anime.series_animedb_id, type == 3, animeStatus, function(figure) {
