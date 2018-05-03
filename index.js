@@ -77,7 +77,7 @@ $(document).ready(function() {
     $('#provider-selector').on('change', function() {
       provider = $(this).val();
       storage.set("provider", provider);
-      if (filter < 0) { // Not yet aired: Date provider offset
+      if (filter == 7) { // Not yet aired: Date provider offset
         parseAnime();
       }
     });
@@ -160,7 +160,7 @@ function getTitle(originalTitle, synonymsRaw) {
   return originalTitle;
 }
 
-function watchAnime(title, chapter, malId, movie) {
+function watchAnime(title, chapter, malId, movie, aired) {
   function getUrl() {
     function ifNotMovie(s) {
       return movie ? ' ' : s;
@@ -174,7 +174,7 @@ function watchAnime(title, chapter, malId, movie) {
     function luckyEnglish() {
       return encodeURIComponent(`${title}${ifNotMovie(` episode${inUrl(chapter)}`)}online english anime -español`);
     }
-    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/-/video`;
+    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/${aired ? '-/video' : ''}`;
     else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + luckySpanish();
     else if (provider == "google-es") return 'https://www.google.com/search?btnI&q=' + luckySpanish();
     else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + luckyEnglish();
@@ -196,9 +196,15 @@ function watchAnime(title, chapter, malId, movie) {
 
 function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, callback) {
   title = getTitle(originalTitle, synonyms);
+  let aired = isAired(originalTitle, chapter, animeStatus);
+  if (airingAnime) {
+    airingDate(airingAnime)
+    airingDate(airingAnime)
+    airingDate(airingAnime)
+  }
   callback(`<article id="anime-${malId}">
     <div>
-      <header>${title} #${chapter}${formatAiringDate(originalTitle, chapter, animeStatus)}</header>
+      <header>${title} #${chapter}${!aired && airingAnime ? `<br><br>${formatDate(airingDate(airingAnime))}` : ''}</header>
       <figure>
         <img src="${image}" class="cover" width="225" height="313">
       </figure>
@@ -207,7 +213,7 @@ function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, mal
       </aside>
     </div>
   </article>`);
-  $(`#anime-${malId} div`).click(function() { watchAnime(title, chapter, malId, movie) });
+  $(`#anime-${malId} div`).click(function() { watchAnime(title, chapter, malId, movie, aired) });
   $(`#next-${malId}`).click(function() { updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus) });
 }
 
@@ -221,10 +227,6 @@ var airingAnime;
 
 function airingDate(anime) {
   return anime.airingDate.plus({ hours: providerOffsets[provider] });
-}
-
-function formatAiringDate(title, chapter, animeStatus) {
-  return !isAired(title, chapter, animeStatus) && airingAnime ? `\n[${formatDate(airingDate(airingAnime))}]` : '';
 }
 
 function isAired(title, chapter, animeStatus) {
