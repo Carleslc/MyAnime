@@ -14,7 +14,7 @@ function formatDate(luxonDate) {
   let weekday = luxonDate.weekdayLong;
   let date = luxonDate.toLocaleString(luxon.DateTime.DATE_FULL);
   let time = luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE);
-  return `${weekday} (${date}) about ${time}h`;
+  return `${weekday} ${date}, ${time}h`;
 }
 
 function formatTodayRaw() {

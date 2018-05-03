@@ -77,6 +77,9 @@ $(document).ready(function() {
     $('#provider-selector').on('change', function() {
       provider = $(this).val();
       storage.set("provider", provider);
+      if (filter < 0) { // Not yet aired: Date provider offset
+        parseAnime();
+      }
     });
 
     // Filter
@@ -390,7 +393,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         alert(`Hooray! You've completed ${title}!`);
       } else if (!isAired(title, chapter + 1, animeStatus)) {
         removeFigure();
-        alert(`Updated ${title} to episode ${chapter}. Next episode will be available next ${formatDate(airingDate(airingAnime))}.`);
+        alert(`Updated ${title} to episode ${chapter}. Next episode will be available: ${formatDate(airingDate(airingAnime))}.`);
       } else {
         getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, function(figure) {
           $(`#anime-${malId}`).replaceWith(figure);
