@@ -65,7 +65,6 @@ $(document).ready(function() {
     $('#provider-selector').on('change', function() {
       provider = $(this).val();
       storage.set("provider", provider);
-      parseAnime()
     });
 
     // Filter
