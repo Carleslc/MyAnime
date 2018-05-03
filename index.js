@@ -126,6 +126,7 @@ function fetchCalendar() {
         for (anime of calendar.airingAnimes) {
           airingAnimes[idify(anime.title)] = {
             episode: anime.episode,
+            date: anime.date,
             airingDate: luxon.DateTime.fromISO(anime.date).plus({ hours: timezoneOffsetHours })
           }
         }
@@ -199,6 +200,8 @@ function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, mal
   let aired = isAired(originalTitle, chapter, animeStatus);
   if (airingAnime) {
     console.log(originalTitle)
+    console.log(formatDateTime(airingAnime.date))
+    console.log(formatDateTime(airingAnime.airingDate))
     console.log(formatDateTime(airingDate(airingAnime)))
   }
   var release;
