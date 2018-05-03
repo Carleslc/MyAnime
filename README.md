@@ -18,7 +18,7 @@ Click on "Next" at the top right corner of an episode to mark it as watched in y
 ## Features
 - Cover images and links for the series in which you are interested.
 - Easy access to your outstanding episodes of MyAnimeList lists Watching, On Hold and Plan to Watch, with several providers of streaming/downloading to choose.
-- Filter episodes by TV, Movie, OVA, Special, ONA or Music.
+- Filter episodes by 'Already aired', 'Not yet aired', TV, Movie, OVA, Special, ONA or Music.
 - Some series have title synonyms, choose between original or alternative title.
 - Your preferences are saved in the browser, so you only need to change them when you need it. User is automatically retrieved based on the last user used.
 - Update your watched episodes in your MyAnimeList profile directly within this page.
