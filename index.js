@@ -80,14 +80,14 @@ $(document).ready(function() {
     });
 
     // Load contents
-    fetchCalendar().then(searchUser).catch((error, status) => {
+    fetchCalendar().catch((error, status) => {
+      console.log('Status ' + status);
       if (status == 0) {
         console.log(error);
-        searchUser();
       } else {
         alert(error);
       }
-    }).then(finishLoading('Load Settings Finish'));
+    }).always(searchUser).then(finishLoading('Load Settings Finish'));
   })();
 });
 
@@ -98,7 +98,7 @@ function fetchCalendar() {
       resolve();
     }, (reason, status) => {
       reason = reason || 'The server does not respond.';
-      reject(`Cannot get calendar, reason: ${reason} (Status ${status})`, status);
+      reject(`Cannot get calendar, reason: ${reason}`, status);
     });
   });
 }
