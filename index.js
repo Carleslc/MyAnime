@@ -1,4 +1,4 @@
-let API = 'https://53bdde27.ngrok.io'; // https://myanime-app.appspot.com
+let API = 'https://myanime-app.appspot.com';
 
 let watching = $("#watching");
 let onHold = $("#on-hold");
@@ -104,11 +104,10 @@ function fetchCalendar() {
 function cannotFetchCalendar() {
   return error => {
     var message = error.message || error;
-    if (error.status == 0 && filter < 0) {
-      console.warn(message);
-    } else {
+    if (error.status > 0 || filter >= 0) {
       alert(message + "\n\nFilter is showing episodes regardless of whether or not it has been aired.");
     }
+    console.warn(message);
     airingAnimes.notEmpty = {};
   };
 }
