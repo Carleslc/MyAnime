@@ -81,13 +81,7 @@ $(document).ready(function() {
 
     // Load contents
     fetchCalendar()
-      .catch(error => {
-        if (error.status == 0) {
-          console.warn(error.message);
-        } else {
-          alert(error.message);
-        }
-      })
+      
       .then(searchUser)
       .then(finishLoading('Load Settings Finish'));
   })();
@@ -95,6 +89,9 @@ $(document).ready(function() {
 
 function fetchCalendar() {
   return new Promise(function(resolve, reject) {
+    if (filter < 0 || !jQuery.isEmptyObject(airingAnimes)) {
+      resolve();
+    }
     get(API + '/calendar', (body, status, response) => {
       airingAnimes = response;
       resolve();
@@ -103,6 +100,17 @@ function fetchCalendar() {
       reject({ message: `Cannot get calendar, reason: ${reason}`, status: status });
     });
   });
+}
+
+function cannotFetchCalendar() {
+  return error => {
+    let message = error.message || error;
+    if (error.status == 0) {
+      console.warn(message);
+    } else {
+      alert(message);
+    }
+  };
 }
 
 function getTitle(originalTitle, synonymsRaw) {
@@ -187,40 +195,42 @@ function isAired(title, chapter, animeStatus) {
 }
 
 function parseAnime() {
-  emptyAnime();
+  fetchCalendar().catch(cannotFetchCalendar()).then(() => {
+    emptyAnime();
 
-  for (anime of animes) {
-    let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
-    if (status != 2 && status != 4) {
-      let animeStatus = anime.series_status; // 1 - Currently Airing, 2 - Finished, 3 - Not yet aired
-      let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special, 5 - ONA, 6 - Music
-      let episodes = parseInt(anime.series_episodes);
-      let nextChapter = parseInt(anime.my_watched_episodes) + 1;
-      if ((episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == 7 || filter == type)) {
-        var section;
-        if (status == 1) {
-          section = watching;
-        } else if (status == 3) {
-          section = onHold;
-        } else if (status == 6) {
-          section = planToWatch;
-        }
-        if (section) {
-          let title = anime.series_title;
-          var available = filter < 0 || isAired(title, nextChapter, animeStatus);
-          if (filter == 7) {
-            available = !available;
+    for (anime of animes) {
+      let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
+      if (status != 2 && status != 4) {
+        let animeStatus = anime.series_status; // 1 - Currently Airing, 2 - Finished, 3 - Not yet aired
+        let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special, 5 - ONA, 6 - Music
+        let episodes = parseInt(anime.series_episodes);
+        let nextChapter = parseInt(anime.my_watched_episodes) + 1;
+        if ((episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == 7 || filter == type)) {
+          var section;
+          if (status == 1) {
+            section = watching;
+          } else if (status == 3) {
+            section = onHold;
+          } else if (status == 6) {
+            section = planToWatch;
           }
-          if (available) {
-            getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
-              anime.series_animedb_id, type == 3, animeStatus, function(figure) {
-              section.append(figure);
-            });
+          if (section) {
+            let title = anime.series_title;
+            var available = filter < 0 || isAired(title, nextChapter, animeStatus);
+            if (filter == 7) {
+              available = !available;
+            }
+            if (available) {
+              getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
+                anime.series_animedb_id, type == 3, animeStatus, function(figure) {
+                section.append(figure);
+              });
+            }
           }
         }
       }
     }
-  }
+  });
 }
 
 function changeProfile(id) {
