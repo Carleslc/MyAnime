@@ -195,7 +195,7 @@ function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, mal
   title = getTitle(originalTitle, synonyms);
   callback(`<article id="anime-${malId}">
     <div>
-      <header>${title} #${chapter}${formatAiringDate(originalTitle, chapter, animeStatus)}</header>
+      <header>${title} #${chapter}${formatAiringDateByTitle(originalTitle, chapter, animeStatus)}</header>
       <figure>
         <img src="${image}" class="cover" width="225" height="313">
       </figure>
@@ -220,8 +220,8 @@ function airingDate(anime) {
   return anime.airingDate.plus({ hours: providerOffsets[provider] });
 }
 
-function formatAiringDate(title, chapter, animeStatus) {
-  return !isAired(title, chapter, animeStatus) && airingAnime ? `\n[${airingDate(airingAnime)}]` : '';
+function formatDateByTitle(title, chapter, animeStatus) {
+  return !isAired(title, chapter, animeStatus) && airingAnime ? `\n[${formatDate(airingDate(airingAnime))}]` : '';
 }
 
 function isAired(title, chapter, animeStatus) {
@@ -368,13 +368,13 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
 
     if (chapter == 1) {
       entry.status = 1;
-      entry.date_start = formatToday();
+      entry.date_start = formatTodayRaw();
     }
 
     let completed = chapter == maxChapter;
     if (completed) {
       entry.status = 2;
-      entry.date_finished = formatToday();
+      entry.date_finished = formatTodayRaw();
     }
 
     function updateAnime() {
@@ -390,13 +390,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
         alert(`Hooray! You've completed ${title}!`);
       } else if (!isAired(title, chapter + 1, animeStatus)) {
         removeFigure();
-
-        let airingDate = airingDate(airingAnime);
-        let weekday = airingDate.weekdayLong;
-        let date = airingDate.toLocaleString(luxon.DateTime.DATE_FULL);
-        let time = airingDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE);
-
-        alert(`Updated ${title} to episode ${chapter}. Next episode will be available next ${weekday} (${date}) about ${time}h.`);
+        alert(`Updated ${title} to episode ${chapter}. Next episode will be available next ${formatDate(airingDate(airingAnime))}.`);
       } else {
         getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, function(figure) {
           $(`#anime-${malId}`).replaceWith(figure);

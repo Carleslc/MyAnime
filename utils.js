@@ -10,7 +10,14 @@ function now() {
   return luxon.DateTime.fromJSDate(new Date());
 }
 
-function formatToday() {
+function formatDate(luxonDate) {
+  let weekday = luxonDate.weekdayLong;
+  let date = luxonDate.toLocaleString(luxon.DateTime.DATE_FULL);
+  let time = luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE);
+  return `${weekday} (${date}) about ${time}h`;
+}
+
+function formatTodayRaw() {
   let now = new Date();
   return `${pad(now.getMonth() + 1)}${pad(now.getDate())}${now.getFullYear()}`;
 }
