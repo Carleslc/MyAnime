@@ -80,10 +80,8 @@ $(document).ready(function() {
     });
 
     // Load contents
-    fetchCalendar()
-      
-      .then(searchUser)
-      .then(finishLoading('Load Settings Finish'));
+    searchUser();
+    loading(false);
   })();
 });
 
