@@ -13,13 +13,13 @@ Options.prototype.and = function(opts) {
 }
 
 function fetch(method, url, success, error, opts) {
-  console.log(`${method} ${url}`);
+  //console.log(`${method} ${url}`);
   let sendOpts = {
     url: url,
     type: method,
     cache: false,
     success: function(response, textStatus, xhr) {
-      console.log(`Success (${url})`);
+      //console.log(`Success (${url})`);
       success(xhr.responseText, xhr.status, response);
     },
     error: function(xhr, textStatus, errorThrown) {
