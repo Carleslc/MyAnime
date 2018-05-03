@@ -196,7 +196,7 @@ function parseAnime() {
       let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special, 5 - ONA, 6 - Music
       let episodes = parseInt(anime.series_episodes);
       let nextChapter = parseInt(anime.my_watched_episodes) + 1;
-      if ((episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == type)) {
+      if ((episodes == 0 || nextChapter <= episodes) && (filter == 0 || filter == 7 || filter == type)) {
         var section;
         if (status == 1) {
           section = watching;
@@ -205,11 +205,16 @@ function parseAnime() {
         } else if (status == 6) {
           section = planToWatch;
         }
-        let title = anime.series_title;
-        if (section && isAired(title, nextChapter, animeStatus)) {
-          getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image, anime.series_animedb_id, type == 3, animeStatus, function(figure) {
-            section.append(figure);
-          });
+        if (section) {
+          let title = anime.series_title;
+          let aired = isAired(title, nextChapter, animeStatus);
+          let available = filter != 7 ? aired : !aired;
+          if (available) {
+            getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
+              anime.series_animedb_id, type == 3, animeStatus, function(figure) {
+              section.append(figure);
+            });
+          }
         }
       }
     }
