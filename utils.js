@@ -18,7 +18,7 @@ function formatDate(luxonDate) {
 
 function formatDateTime(luxonDate) {
   let time = luxonDate.toLocaleString(luxon.DateTime.TIME_24_SIMPLE);
-  return `${formatDate(luxonDate)}, ${time}h`;
+  return `${formatDate(luxonDate)} ~${time}h`;
 }
 
 function formatTodayRaw() {
