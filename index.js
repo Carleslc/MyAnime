@@ -21,6 +21,7 @@ var animes = [];
   }
 */
 var airingAnimes = {};
+var calendarFetched = false;
 
 let providerOffsets = {
   "myanimelist": 0,
@@ -62,7 +63,6 @@ $(document).ready(function() {
     // Information
     let recurrentUser = storage.get("recurrentUser");
     if (!recurrentUser) {
-      fetchCalendar().catch(cannotFetchCalendar());
       $('#info').modal('show');
       storage.set("recurrentUser", true);
     }
@@ -112,15 +112,17 @@ $(document).ready(function() {
 
     // Load contents
     searchUser();
+    fetchCalendar()
+      .then(() => calendarFetched = true)
+      .then(parseAnime)
+      .catch(cannotFetchCalendar());
     loading(false);
   })();
 });
 
 function fetchCalendar() {
   return new Promise(function(resolve, reject) {
-    if (filter < 0 || !jQuery.isEmptyObject(airingAnimes)) {
-      resolve();
-    } else {
+    if (!calendarFetched) {
       get(API + '/calendar', (body, status, calendar) => {
         for (anime of calendar.airingAnimes) {
           airingAnimes[idify(anime.title)] = {
@@ -133,18 +135,18 @@ function fetchCalendar() {
         reason = reason || 'The server does not respond.';
         reject({ message: `Cannot get calendar, reason: ${reason}`, status: status });
       });
-    }
+    } else resolve();
   });
 }
 
 function cannotFetchCalendar() {
   return error => {
+    calendarFetched = true;
     var message = error.message || error;
     if (error.status > 0 || filter >= 0) {
       alert(message + "\n\nFilter is showing episodes regardless of whether or not it has been aired.");
     }
     console.warn(message);
-    airingAnimes.notEmpty = {};
   };
 }
 
@@ -252,8 +254,9 @@ function isAired(title, chapter, animeStatus) {
 }
 
 function parseAnime() {
-  loading(true);
-  fetchCalendar().catch(cannotFetchCalendar()).then(emptyAnime).then(() => {
+  if (calendarFetched) {
+    loading(true);
+    emptyAnime();
     for (anime of animes) {
       let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
       if (status != 2 && status != 4) {
@@ -286,7 +289,8 @@ function parseAnime() {
         }
       }
     }
-  }).then(finishLoading('Parse Anime Finish'));
+    loading(false);
+  }
 }
 
 function changeProfile(id) {
