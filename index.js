@@ -34,7 +34,7 @@ let providerOffsets = {
   "animemovil": 2,
   "jkanime": 5,
   "tvanime": 3,
-  "twist": 0,
+  "twist": 3,
   "gogoanime": 2,
   "crunchyroll": 1,
   "netflix": 0
