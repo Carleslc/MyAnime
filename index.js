@@ -30,13 +30,13 @@ let providerOffsets = {
   "lucky-en": 0,
   "google-en": 0,
   "animeid": 3,
-  "animeflv": 3,
-  "animemovil": 3,
-  "jkanime": 3,
+  "animeflv": 2,
+  "animemovil": 2,
+  "jkanime": 5,
   "tvanime": 3,
   "twist": 0,
-  "gogoanime": 1,
-  "crunchyroll": 0,
+  "gogoanime": 2,
+  "crunchyroll": 1,
   "netflix": 0
 };
 
