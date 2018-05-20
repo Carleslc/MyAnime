@@ -197,18 +197,18 @@ function watchAnime(title, chapter, malId, movie, aired) {
 
 function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start, callback) {
   let title = getTitle(originalTitle, synonyms);
-  let aired = isAired(originalTitle, chapter, animeStatus);
+  let aired = isAired(originalTitle, chapter, animeStatus, start);
   var release;
   if (!aired) {
     if (airingAnime) {
       release = formatDateTime(airingDate(airingAnime));
     } else if (start) {
-      release = formatDate(luxon.DateTime.fromISO(start));
+      release = formatDate(start);
     }
   }
   callback(`<article id="anime-${malId}">
     <div>
-      <header>${title} #${chapter}${release ? `<br><br>${release}`  : ''}</header>
+      <header>${title} #${chapter}${release ? `<br><br>${release}` : ''}</header>
       <figure>
         <img src="${image}" class="cover" width="225" height="313">
       </figure>
@@ -233,19 +233,28 @@ function airingDate(anime) {
   return anime.airingDate.plus({ hours: providerOffsets[provider] });
 }
 
-function isAired(title, chapter, animeStatus) {
+function isAired(title, chapter, animeStatus, start) {
   airingAnime = undefined;
   function isAiringAired(anime) {
     return anime.episode > chapter || (anime.episode == chapter && airingDate(anime) < now());
   }
+  function estimatedAiringDate() {
+    return start.plus({ weeks: chapter })
+  }
   var aired;
   if (animeStatus == 1) {
     title = idify(title);
-    if (title in airingAnimes) {
+    if (title in airingAnimes) { // in calendar
       airingAnime = airingAnimes[title];
       aired = isAiringAired(airingAnime);
+    } else if (start) {
+      aired = estimatedAiringDate() <= now();
+      if (aired) { // estimation
+        // TODO: ID (`https://notify.moe/_/anime-search/${title}`) exists?
+        // Yes -> aired = Episode chapter has link (https://notify.moe/api/animeepisodes/ID)
+      }
     } else {
-      aired = true;
+      aired = false;
     }
   } else {
     aired = animeStatus == 2;
@@ -275,13 +284,17 @@ function parseAnime() {
           }
           if (section) {
             let title = anime.series_title;
-            var available = filter < 0 || isAired(title, nextChapter, animeStatus);
+            var start = '';
+            if (anime.series_start) {
+              start = luxon.DateTime.fromISO(anime.series_start);
+            }
+            var available = filter < 0 || isAired(title, nextChapter, animeStatus, start);
             if (filter == 7) {
               available = !available;
             }
             if (available) {
               getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
-                anime.series_animedb_id, type == 3, animeStatus, anime.series_start, function(figure) {
+                anime.series_animedb_id, type == 3, animeStatus, start, function(figure) {
                 section.append(figure);
               });
             }
@@ -399,7 +412,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       if (completed) {
         removeFigure();
         alert(`Hooray! You've completed ${title}!`);
-      } else if (!isAired(title, chapter + 1, animeStatus)) {
+      } else if (!isAired(title, chapter + 1, animeStatus, start)) {
         removeFigure();
         alert(`Updated ${title} to episode ${chapter}. Next episode will be available: ${formatDateTime(airingDate(airingAnime))}.`);
       } else {

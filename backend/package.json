@@ -23,10 +23,12 @@
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "express-redis-cache": "^1.1.1",
+    "full-icu": "^1.2.1",
     "jsonframe-cheerio": "^3.0.1",
+    "luxon": "^1.2.1",
     "nconf": "^0.10.0",
     "popura": "^1.2.5",
     "redis": "^2.8.0",
-    "request": "^2.85.0"
+    "request": "^2.86.0"
   }
 }

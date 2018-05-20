@@ -1,3 +1,4 @@
+const { DateTime } = require('luxon');
 const cheerio = require('cheerio');
 const jsonframe = require('jsonframe-cheerio');
 const get = require('./http-utils');
@@ -92,11 +93,18 @@ function refreshTask(cache) {
       .then(calendar => set(cache, calendar))
       .catch(handler.httpConsole())
   }
-  setImmediate(function() {
+  setImmediate(function refreshNow() {
     expire(cache)
     refresh()
   })
-  setInterval(refresh, refreshSeconds * 1000)
+  now = DateTime.fromJSDate(new Date())
+  schedule_loop = now.startOf('day').plus({ days: 1, minutes: 1 })
+  schedule_loop_millis = schedule_loop.diff(now).toObject().milliseconds
+  console.log('Refresh loop will start in ' + (schedule_loop_millis/1000/3600).toFixed(2) + ' hours at ' + schedule_loop.toLocaleString(DateTime.DATETIME_FULL))
+  setTimeout(function scheduleRefresh() {
+    refresh()
+    setInterval(refresh, refreshSeconds * 1000)
+  }, schedule_loop_millis)
 }
 
 module.exports = {
