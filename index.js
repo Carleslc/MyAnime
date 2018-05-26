@@ -89,15 +89,11 @@ $(document).ready(function() {
       $('#provider-selector').val(provider).change();
     });
     provider = $('#provider-selector').val();
-    console.log('Provider: ' + providers[provider]);
     $("#provider-link").attr("href", providers[provider]);
-    console.log($("#provider-link").val());
 
     $('#provider-selector').on('change', function() {
       provider = $(this).val();
-      console.log('Provider: ' + providers[provider]);
       $("#provider-link").attr("href", providers[provider]);
-      console.log($("#provider-link").val());
       storage.set("provider", provider);
       if (filter == 7) { // Not yet aired: Date provider offset
         parseAnime();
@@ -135,10 +131,11 @@ $(document).ready(function() {
 
     // Load contents
     searchUser();
-    fetchCalendar()
+    // Fetch disabled until MAL API works
+    /*fetchCalendar()
       .then(() => calendarFetched = true)
       .then(parseAnime)
-      .catch(cannotFetchCalendar());
+      .catch(cannotFetchCalendar());*/
     loading(false);
   })();
 });
