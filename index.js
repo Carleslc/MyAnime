@@ -40,6 +40,23 @@ let providerOffsets = {
   "netflix": 0
 };
 
+let providers = {
+  "myanimelist": "https://myanimelist.net/",
+  "lucky-es": "https://duckduckgo.com/",
+  "google-es": "https://www.google.es/",
+  "lucky-en": "https://duckduckgo.com/",
+  "google-en": "https://www.google.com/",
+  "animeid": "https://www.animeid.tv/",
+  "animeflv": "https://www.animeflv.net/",
+  "animemovil": "https://animemovil.com/",
+  "jkanime": "http://jkanime.net/",
+  "tvanime": "http://tvanime.org/",
+  "twist": "https://twist.moe/",
+  "gogoanime": "https://www2.gogoanime.se/",
+  "crunchyroll": "https://www.crunchyroll.com/",
+  "netflix": "https://www.netflix.com/"
+};
+
 function loading(enabled) {
   tasks += enabled ? 1 : -1;
   //console.log(`${loading.caller.name}, tasks ${tasks}`);
@@ -72,9 +89,15 @@ $(document).ready(function() {
       $('#provider-selector').val(provider).change();
     });
     provider = $('#provider-selector').val();
+    console.log('Provider: ' + providers[provider]);
+    $("#provider-link").attr("href", providers[provider]);
+    console.log($("#provider-link").val());
 
     $('#provider-selector').on('change', function() {
       provider = $(this).val();
+      console.log('Provider: ' + providers[provider]);
+      $("#provider-link").attr("href", providers[provider]);
+      console.log($("#provider-link").val());
       storage.set("provider", provider);
       if (filter == 7) { // Not yet aired: Date provider offset
         parseAnime();
@@ -175,20 +198,21 @@ function watchAnime(title, chapter, malId, movie, aired) {
     function luckyEnglish() {
       return encodeURIComponent(`${title}${ifNotMovie(` episode${inUrl(chapter)}`)}online english anime -español`);
     }
-    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/${aired && !movie ? '-/video' : ''}`;
-    else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + luckySpanish();
-    else if (provider == "google-es") return 'https://www.google.com/search?btnI&q=' + luckySpanish();
-    else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + luckyEnglish();
-    else if (provider == "google-en") return 'https://www.google.com/search?btnI&q=' + luckyEnglish();
-    else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
-    else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
-    else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, (movie ? '' : `${chapter}-`) + "sub-espanol")}/`;
-    else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
-    else if (provider == "tvanime") return `http://tvanime.org/ver/${asUrl(title, chapter)}`;
-    else if (provider == "twist") return `https://twist.moe/a/${asUrl(title)}/${chapter}`;
-    else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
-    else if (provider == "crunchyroll") return `https://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
-    else if (provider == "netflix") return `https://www.netflix.com/search?q=${encodeURI(title)}`;
+    let baseUrl = providers[provider];
+    if (provider == "myanimelist") return `${baseUrl}anime/${malId}/${aired && !movie ? '-/video' : ''}`;
+    else if (provider == "lucky-es") return `${baseUrl}?q=!ducky+` + luckySpanish();
+    else if (provider == "google-es") return `${baseUrl}search?btnI&q=` + luckySpanish();
+    else if (provider == "lucky-en") return `${baseUrl}?q=!ducky+` + luckyEnglish();
+    else if (provider == "google-en") return `${baseUrl}search?btnI&q=` + luckyEnglish();
+    else if (provider == "animeid") return `${baseUrl}v/${asUrl(title, chapter)}`;
+    else if (provider == "animeflv") return `${baseUrl}?q=!ducky+` + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
+    else if (provider == "animemovil") return `${baseUrl}${asUrl(title, (movie ? '' : `${chapter}-`) + "sub-espanol")}/`;
+    else if (provider == "jkanime") return `${baseUrl}${asUrl(title)}/${chapter}/`;
+    else if (provider == "tvanime") return `${baseUrl}ver/${asUrl(title, chapter)}`;
+    else if (provider == "twist") return `${baseUrl}a/${asUrl(title)}/${chapter}`;
+    else if (provider == "gogoanime") return `${baseUrl}${asUrl(title, `episode-${chapter}`)}`;
+    else if (provider == "crunchyroll") return `${baseUrl}search?q=${encodeURI(`${title} ${chapter}`)}`;
+    else if (provider == "netflix") return `${baseUrl}search?q=${encodeURI(title)}`;
   }
   let url = getUrl();
   console.log(url);
