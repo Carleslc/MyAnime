@@ -131,7 +131,9 @@ $(document).ready(function() {
 
     // Load contents
     searchUser();
-    // Fetch disabled until MAL API works
+    // Server disabled until MAL API works
+    calendarFetched = true
+    parseAnime()
     /*fetchCalendar()
       .then(() => calendarFetched = true)
       .then(parseAnime)
