@@ -1,4 +1,9 @@
-let API = 'https://myanime-app.appspot.com';
+const API = 'https://myanime-app.appspot.com';
+const headers = setHeaders({
+  'User-Agent': 'MyAnime (github.com/Carleslc/MyAnime)',
+  'Accept': 'application/vnd.api+json',
+  'Content-Type': 'application/vnd.api+json',
+});
 
 let watching = $("#watching");
 let onHold = $("#on-hold");
@@ -6,6 +11,7 @@ let planToWatch = $("#plan-to-watch");
 
 var tasks = 0;
 var user, userId;
+var api;
 var provider;
 var filter;
 var useAlternativeTitles;
@@ -66,6 +72,18 @@ $(document).ready(function() {
       $('#info').modal('show');
       storage.set("recurrentUser", true);
     }
+
+    // API
+    storage.with("api", function(api) {
+      $('#api-provider-selector').val(api).change();
+    });
+    api = $('#api-provider-selector').val();
+    $('#api-provider-selector').on('change', function() {
+      api = $(this).val();
+      emptyAnime();
+      // TODO: Search User from different API
+      storage.set("api", api);
+    });
 
     // Provider
     storage.with("provider", function(provider) {
@@ -173,20 +191,21 @@ function watchAnime(title, chapter, malId, movie, aired) {
     function luckyEnglish() {
       return encodeURIComponent(`${title}${ifNotMovie(` episode${inUrl(chapter)}`)}online english anime -español`);
     }
-    if (provider == "myanimelist") return `https://myanimelist.net/anime/${malId}/${aired && !movie ? '-/video' : ''}`;
-    else if (provider == "lucky-es") return "https://duckduckgo.com/?q=!ducky+" + luckySpanish();
-    else if (provider == "google-es") return 'https://www.google.com/search?btnI&q=' + luckySpanish();
-    else if (provider == "lucky-en") return "https://duckduckgo.com/?q=!ducky+" + luckyEnglish();
-    else if (provider == "google-en") return 'https://www.google.com/search?btnI&q=' + luckyEnglish();
-    else if (provider == "animeid") return `https://www.animeid.tv/v/${asUrl(title, chapter)}`;
-    else if (provider == "animeflv") return "https://duckduckgo.com/?q=!ducky+" + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
-    else if (provider == "animemovil") return `https://animemovil.com/${asUrl(title, (movie ? '' : `${chapter}-`) + "sub-espanol")}/`;
-    else if (provider == "jkanime") return `http://jkanime.net/${asUrl(title)}/${chapter}/`;
-    else if (provider == "tvanime") return `http://tvanime.org/ver/${asUrl(title, chapter)}`;
-    else if (provider == "twist") return `https://twist.moe/a/${asUrl(title)}/${chapter}`;
-    else if (provider == "gogoanime") return `https://www2.gogoanime.se/${asUrl(title, `episode-${chapter}`)}`;
-    else if (provider == "crunchyroll") return `https://www.crunchyroll.com/search?q=${encodeURI(`${title} ${chapter}`)}`;
-    else if (provider == "netflix") return `https://www.netflix.com/search?q=${encodeURI(title)}`;
+    let baseUrl = providers[provider];
+    if (provider == "api") return `${baseUrl}anime/${malId}/${aired && !movie ? '-/video' : ''}`;
+    else if (provider == "lucky-es") return `${baseUrl}?q=!ducky+` + luckySpanish();
+    else if (provider == "google-es") return `${baseUrl}search?btnI&q=` + luckySpanish();
+    else if (provider == "lucky-en") return `${baseUrl}?q=!ducky+` + luckyEnglish();
+    else if (provider == "google-en") return `${baseUrl}search?btnI&q=` + luckyEnglish();
+    else if (provider == "animeid") return `${baseUrl}v/${asUrl(title, chapter)}`;
+    else if (provider == "animeflv") return `${baseUrl}?q=!ducky+` + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
+    else if (provider == "animemovil") return `${baseUrl}${asUrl(title, (movie ? '' : `${chapter}-`) + "sub-espanol")}/`;
+    else if (provider == "jkanime") return `${baseUrl}${asUrl(title)}/${chapter}/`;
+    else if (provider == "tvanime") return `${baseUrl}ver/${asUrl(title, chapter)}`;
+    else if (provider == "twist") return `${baseUrl}a/${asUrl(title)}/${chapter}`;
+    else if (provider == "gogoanime") return `${baseUrl}${asUrl(title, `episode-${chapter}`)}`;
+    else if (provider == "crunchyroll") return `${baseUrl}search?q=${encodeURI(`${title} ${chapter}`)}`;
+    else if (provider == "netflix") return `${baseUrl}search?q=${encodeURI(title)}`;
   }
   let url = getUrl();
   console.log(url);
@@ -289,15 +308,16 @@ function parseAnime() {
   }).then(finishLoading('Parse Anime Finish'));
 }
 
-function changeProfile(id) {
+function changeProfile() {
   var icon;
-  if (id == undefined) {
+  if (userId == undefined) {
     icon = "load-fig.gif";
-  } else if (id == 0) {
+  } else if (userId == 0) {
     icon = "mal.jpg";
   } else {
-    icon = `https://myanimelist.cdn-dena.com/images/userimages/${id}.jpg`;
-    $("#profile-link").attr("href", `https://myanimelist.net/profile/${user}`);
+    //icon = `https://myanimelist.cdn-dena.com/images/userimages/${userId}.jpg`;
+    icon = `https://media.kitsu.io/users/avatars/${userId}/medium.jpeg`
+    $("#profile-link").attr("href", /*`https://myanimelist.net/profile/${user}`*/`https://kitsu.io/api/edge/users/${userId}`);
     storage.set("user", user);
   }
   $("#profile-icon").attr("src", icon);
@@ -310,17 +330,32 @@ function searchUser() {
     // Official API: https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime (fromXML(body))
     // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
     // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
-    get(`https://kuristina.herokuapp.com/anime/${user}.json`, (body, status, response) => {
+    /*get(`https://kuristina.herokuapp.com/anime/${user}.json`, (body, status, response) => {
       let mal = response.myanimelist;
       if (mal) {
         animes = mal.anime || [];
         parseAnime();
         userId = mal.myinfo.user_id;
-        changeProfile(userId);
+        changeProfile();
       } else {
         alert(`User ${user} does not exists.`);
       }
-    }).always(finishLoading('Search User Finish'));
+    }).always(finishLoading('Search User Finish'));*/
+    let loaded = finishLoading('Search User Finish');
+    get(`https://kitsu.io/api/edge/users?filter[name]=${user}&fields[users]=id,name,avatar`, (body, status, response) => {
+      var userData = response.data[0];
+      if (userData) {
+        userId = userData.id;
+        get(`https://kitsu.io/api/edge/users/${userId}/library-entries?page[limit]=500&page[offset]=0&fields[libraryEntries]=status,progress,progressedAt&include=anime,manga&fields[anime]=slug,canonicalTitle,abbreviatedTitles,titles,startDate,endDate,nextRelease,status,subtype,posterImage&fields[manga]=slug`, (body, status, response) => {
+          changeProfile();
+          console.log(response);
+          loaded();
+        }, catchConsole(loaded), headers);
+      } else {
+        alert(`User ${user} does not exists.`);
+        loaded();
+      }
+    }, catchConsole(loaded), headers);
   }
   return false;
 }
@@ -436,7 +471,7 @@ function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId
       } else {
         cannotUpdate(body);
       }
-    }, cannotUpdate, auth(user, password).and(contentType("application/json")))
+    }, cannotUpdate, auth(user, password).and(headers))
     .always(finishLoading('Update Chapter Finish'));
   }
 

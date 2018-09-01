@@ -12,6 +12,13 @@ Options.prototype.and = function(opts) {
   }) : self;
 }
 
+function catchConsole(and) {
+  return (errorMessage, status) => {
+    console.error(`Error ${status}: ${errorMessage}`);
+    and();
+  };
+}
+
 function fetch(method, url, success, error, opts) {
   //console.log(`${method} ${url}`);
   let sendOpts = {
@@ -75,6 +82,14 @@ function addRequestHeader(ajaxOpts, name, value) {
     }
     xhr.setRequestHeader(name, value);
   };
+}
+
+function setHeaders(obj) {
+  return new Options(ajaxOpts => {
+    for (var key in obj) {
+      addRequestHeader(ajaxOpts, key, obj[key]);
+    }
+  });
 }
 
 function contentType(type) {
