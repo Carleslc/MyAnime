@@ -34,7 +34,6 @@ let providerOffsets = {
   "google-en": 0,
   "animeid": 3,
   "animeflv": 2,
-  "animemovil": 2,
   "jkanime": 5,
   "tvanime": 3,
   "twist": 3,
@@ -51,7 +50,6 @@ let providers = {
   "google-en": "https://www.google.com/",
   "animeid": "https://www.animeid.tv/",
   "animeflv": "https://duckduckgo.com/",
-  "animemovil": "https://animemovil.com/",
   "jkanime": "http://jkanime.net/",
   "tvanime": "http://tvanime.org/",
   "twist": "https://twist.moe/",
@@ -213,7 +211,6 @@ function watchAnime(title, chapter, malId, movie, aired) {
     else if (provider == "google-en") return `${baseUrl}search?btnI&q=` + luckyEnglish();
     else if (provider == "animeid") return `${baseUrl}v/${asUrl(title, chapter)}`;
     else if (provider == "animeflv") return `${baseUrl}?q=!ducky+` + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
-    else if (provider == "animemovil") return `${baseUrl}${asUrl(title, (movie ? '' : `${chapter}-`) + "sub-espanol")}/`;
     else if (provider == "jkanime") return `${baseUrl}${asUrl(title)}/${chapter}/`;
     else if (provider == "tvanime") return `${baseUrl}ver/${asUrl(title, chapter)}`;
     else if (provider == "twist") return `${baseUrl}a/${asUrl(title)}/${chapter}`;
