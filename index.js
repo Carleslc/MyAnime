@@ -1,14 +1,17 @@
-let API = 'https://myanime-app.appspot.com';
+const API = 'https://myanime-app.appspot.com';
+
+const LOADING_PROFILE = 'load-fig.gif';
+const DEFAULT_PROFILE = 'mal.jpg';
 
 let watching = $("#watching");
 let onHold = $("#on-hold");
 let planToWatch = $("#plan-to-watch");
 
 var tasks = 0;
-var user, userId;
+var user, userIcon;
 var provider;
-var filter;
-var useAlternativeTitles;
+var filter, filterType;
+//var useAlternativeTitles;
 var animes = [];
 
 /*
@@ -47,7 +50,7 @@ let providers = {
   "lucky-en": "https://duckduckgo.com/",
   "google-en": "https://www.google.com/",
   "animeid": "https://www.animeid.tv/",
-  "animeflv": "https://www.animeflv.net/",
+  "animeflv": "https://duckduckgo.com/",
   "animemovil": "https://animemovil.com/",
   "jkanime": "http://jkanime.net/",
   "tvanime": "http://tvanime.org/",
@@ -60,12 +63,13 @@ let providers = {
 function loading(enabled) {
   tasks += enabled ? 1 : -1;
   //console.log(`${loading.caller.name}, tasks ${tasks}`);
-  changeProfile(tasks > 0 ? undefined : userId || 0);
+  changeProfile(tasks > 0 ? LOADING_PROFILE : userIcon || DEFAULT_PROFILE);
 }
 
 function finishLoading(name) {
   let f = function() {
     loading(false);
+    console.log(name);
   };
   Object.defineProperty(f, "name", { value: name });
   return f;
@@ -101,19 +105,23 @@ $(document).ready(function() {
     });
 
     // Filter
+    let filterSelector = $('#filter-selector');
     storage.with("filter", function(filter) {
-      $('#filter-selector').val(filter).change();
+      filterSelector.val(filter).change();
     });
-    filter = parseInt($('#filter-selector').val());
+    filter = parseInt(filterSelector.val());
+    filterType = $('#filter-selector option:selected').text();
 
-    $('#filter-selector').on('change', function() {
-      filter = parseInt($('#filter-selector').val());
+    filterSelector.on('change', function () {
+      filter = parseInt(filterSelector.val());
+      filterType = $('#filter-selector option:selected').text();
       storage.set("filter", filter);
       parseAnime();
     });
 
     // Alternative Titles
-    storage.with("alternatives", function(alternatives) {
+    // NOTE: Not provided with /animelist endpoint (Jikan API). Retrieving synonyms with /anime endpoint for each one is unfeasible.
+    /*storage.with("alternatives", function(alternatives) {
       $('#alternatives').prop('checked', alternatives == 'true');
     });
     useAlternativeTitles = $('#alternatives').is(':checked');
@@ -122,7 +130,7 @@ $(document).ready(function() {
       useAlternativeTitles = $('#alternatives').is(':checked');
       storage.set("alternatives", useAlternativeTitles);
       parseAnime();
-    });
+    });*/
 
     // User
     storage.with("user", function(user) {
@@ -131,9 +139,9 @@ $(document).ready(function() {
 
     // Load contents
     searchUser();
+
     // Server disabled until MAL API works
-    calendarFetched = true
-    parseAnime()
+    calendarFetched = true;
     /*fetchCalendar()
       .then(() => calendarFetched = true)
       .then(parseAnime)
@@ -172,7 +180,7 @@ function cannotFetchCalendar() {
   };
 }
 
-function getTitle(originalTitle, synonymsRaw) {
+/*unction getTitle(originalTitle, synonymsRaw) {
   if (useAlternativeTitles && synonymsRaw) {
     let synonyms = synonymsRaw.split('; ').filter(s => s != null && s.trim() != "" && s.trim() != originalTitle);
     if (synonyms.length > 0) {
@@ -181,7 +189,7 @@ function getTitle(originalTitle, synonymsRaw) {
     }
   }
   return originalTitle;
-}
+}*/
 
 function watchAnime(title, chapter, malId, movie, aired) {
   function getUrl() {
@@ -219,7 +227,7 @@ function watchAnime(title, chapter, malId, movie, aired) {
 }
 
 function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start, callback) {
-  let title = getTitle(originalTitle, synonyms);
+  let title = originalTitle;
   let aired = isAired(originalTitle, chapter, animeStatus, start);
   var release;
   if (!aired) {
@@ -285,18 +293,21 @@ function isAired(title, chapter, animeStatus, start) {
   return aired;
 }
 
-function parseAnime() {
+function parseAnime(list, keep) {
   if (calendarFetched) {
     loading(true);
-    emptyAnime();
-    for (anime of animes) {
-      let status = anime.my_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
+    if (!keep) {
+      emptyAnime();
+    }
+    let animeList = list || animes;
+    for (anime of animeList) {
+      let status = anime.watching_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
       if (status != 2 && status != 4) {
-        let animeStatus = anime.series_status; // 1 - Currently Airing, 2 - Finished, 3 - Not yet aired
-        let type = anime.series_type; // 1 - TV, 2 - OVA, 3 - Movie, 4 - Special, 5 - ONA, 6 - Music
-        let episodes = parseInt(anime.series_episodes);
-        let nextChapter = parseInt(anime.my_watched_episodes) + 1;
-        if ((episodes == 0 || nextChapter <= episodes) && (filter <= 0 || filter == 7 || filter == type)) {
+        let animeStatus = anime.airing_status; // 1 - Currently Airing, 2 - Finished, 3 - Not yet aired
+        let type = anime.type; // TV, OVA, Movie, Special, ONA, Music
+        let episodes = anime.total_episodes;
+        let nextChapter = anime.watched_episodes + 1;
+        if ((episodes == 0 || nextChapter <= episodes) && (filter <= 0 || filter == 7 || filterType == type)) {
           var section;
           if (status == 1) {
             section = watching;
@@ -306,18 +317,18 @@ function parseAnime() {
             section = planToWatch;
           }
           if (section) {
-            let title = anime.series_title;
+            let title = anime.title;
             var start = '';
-            if (anime.series_start) {
-              start = luxon.DateTime.fromISO(anime.series_start);
+            if (anime.start_date) {
+              start = luxon.DateTime.fromISO(anime.start_date);
             }
             var available = filter < 0 || isAired(title, nextChapter, animeStatus, start);
             if (filter == 7) {
               available = !available;
             }
             if (available) {
-              getAnimeFigure(title, anime.series_synonyms, nextChapter, episodes, anime.series_image,
-                anime.series_animedb_id, type == 3, animeStatus, start, function(figure) {
+              getAnimeFigure(title, [] /* synonyms */, nextChapter, episodes, anime.image_url,
+                anime.mal_id, type == 'Movie', animeStatus, start, function(figure) {
                 section.append(figure);
               });
             }
@@ -329,17 +340,27 @@ function parseAnime() {
   }
 }
 
-function changeProfile(id) {
-  var icon;
-  if (id == undefined) {
-    icon = "load-fig.gif";
-  } else if (id == 0) {
-    icon = "mal.jpg";
-  } else {
-    icon = `https://myanimelist.cdn-dena.com/images/userimages/${id}.jpg`;
-    $("#profile-link").attr("href", `https://myanimelist.net/profile/${user}`);
-    storage.set("user", user);
+function fetchAnimes() {
+  function fetchAnimeList(list) {
+    loading(true);
+    get(`https://api.jikan.moe/v3/user/${user}/animelist/${list}`, (body, status, response) => {
+      if (status == 200) {
+        let animeList = response.anime || [];
+        animes.push(...animeList);
+        parseAnime(animeList, true);
+      } else {
+        console.log(`Animes ${list} not fetched. STATUS: ${status}`);
+      }
+    }).always(finishLoading(`Fetch Animes ${list} Finish`));
   }
+  animes = [];
+  fetchAnimeList('watching');
+  fetchAnimeList('onhold');
+  fetchAnimeList('ptw');
+}
+
+function changeProfile(icon) {
+  $("#profile-link").attr("href", `https://myanimelist.net/profile/${user}`);
   $("#profile-icon").attr("src", icon);
 }
 
@@ -347,18 +368,15 @@ function searchUser() {
   user = $("#search-user").val();
   if (user) {
     loading(true);
-    // Official API: https://myanimelist.net/malappinfo.php?u=${user}&status=1,3,6&type=anime (fromXML(body))
-    // Alternative API: https://kuristina.herokuapp.com/anime/${user}.json
-    // Alternative API: https://bitbucket.org/animeneko/atarashii-api (Needs deployment)
-    get(`https://kuristina.herokuapp.com/anime/${user}.json`, (body, status, response) => {
-      let mal = response.myanimelist;
-      if (mal) {
-        animes = mal.anime || [];
-        parseAnime();
-        userId = mal.myinfo.user_id;
-        changeProfile(userId);
+    get(`https://api.jikan.moe/v3/user/${user}`, (body, status, response) => {
+      if (status == 200) {
+        fetchAnimes();
+        userIcon = response.image_url;
+        changeProfile(userIcon);
+        storage.set("user", user);
       } else {
         alert(`User ${user} does not exists.`);
+        storage.remove('user');
       }
     }).always(finishLoading('Search User Finish'));
   }
@@ -377,19 +395,6 @@ var checkpoint;
 function updatePassword() {
   let password = $("#password").val().trim();
   if (password != '') {
-    /*loading(true);
-
-    getCors('https://myanimelist.net/api/account/verify_credentials.xml', (body, status) => {
-      if (status === 200) {
-        storage.set('password', password);
-        $("#set-password").modal('hide');
-        checkpoint();
-      } else {
-        alert(body);
-      }
-    }, (body, status) => alert(body),
-    auth(user, password)).always(finishLoading('Update Password Finish'));
-    */
     $("#set-password").modal('hide');
     storage.set('password', password);
     checkpoint();
@@ -398,77 +403,74 @@ function updatePassword() {
 
 $("#update-password-btn").click(updatePassword);
 
+function updateAnime(title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start) {
+  let index = animes.findIndex(anime => anime.mal_id == malId);
+  let anime = animes[index];
+
+  function removeFigure() {
+    $(`#anime-${malId}`).remove();
+    animes.splice(index, 1);
+  }
+
+  let entry = {
+    id: malId,
+    episode: chapter
+  };
+
+  if (chapter == 1) {
+    entry.status = 1;
+    entry.date_start = formatTodayRaw();
+  }
+
+  let completed = chapter == maxChapter;
+  if (completed) {
+    entry.status = 2;
+    entry.date_finished = formatTodayRaw();
+  }
+
+  // Open MAL URL (Manual updating until MAL Official API is restored to update episodes via code)
+  window.open(anime.url, '_blank');
+
+  if (completed) {
+    removeFigure();
+    alert(`Hooray! You've completed ${title}!`);
+  } else if (!isAired(title, chapter + 1, animeStatus, start)) {
+    removeFigure();
+    alert(`Updated ${title} to episode ${chapter}. Next episode will be available: ${formatDateTime(airingDate(airingAnime))}.`);
+  } else {
+    getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, start, function (figure) {
+      $(`#anime-${malId}`).replaceWith(figure);
+    });
+    anime.watching_status = entry.status || anime.watching_status;
+    anime.watched_episodes = chapter;
+    alert(`Updated ${title} to episode ${chapter}.`);
+  }
+}
+
 function updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start) {
+  loading(true);
+  updateAnime(title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start);
+  loading(false);
+  event.stopPropagation(); // Inner trigger
+}
+
+function updateChapterAPI(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start) {
   let password = storage.get('password');
   if (password == null) {
     checkpoint = function() {
-      updateChapter(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start);
+      updateChapterAPI(event, title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start);
     };
     $("#set-password").modal('show');
   } else {
     loading(true);
 
-    let entry = {
-      id: malId,
-      episode: chapter
-    };
-
-    if (chapter == 1) {
-      entry.status = 1;
-      entry.date_start = formatTodayRaw();
-    }
-
-    let completed = chapter == maxChapter;
-    if (completed) {
-      entry.status = 2;
-      entry.date_finished = formatTodayRaw();
-    }
-
-    function updateAnime() {
-      let index = animes.findIndex(anime => anime.series_animedb_id == malId);
-
-      function removeFigure() {
-        $(`#anime-${malId}`).remove();
-        animes.splice(index, 1);
-      }
-
-      if (completed) {
-        removeFigure();
-        alert(`Hooray! You've completed ${title}!`);
-      } else if (!isAired(title, chapter + 1, animeStatus, start)) {
-        removeFigure();
-        alert(`Updated ${title} to episode ${chapter}. Next episode will be available: ${formatDateTime(airingDate(airingAnime))}.`);
-      } else {
-        getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, start, function(figure) {
-          $(`#anime-${malId}`).replaceWith(figure);
-        });
-        let anime = animes[index];
-        anime.my_status = entry.status || anime.my_status;
-        anime.my_watched_episodes = chapter;
-        alert(`Updated ${title} to episode ${chapter}.`);
-      }
-    }
+    let entry = updateAnime(title, synonyms, chapter, maxChapter, image, malId, movie, animeStatus, start);
 
     function cannotUpdate(reason) {
       storage.remove('password');
       reason = reason || 'The server does not respond.';
       alert(`Cannot update episode, reason: ${reason}`);
     }
-    
-    /*
-    let data = encodeURI(`data=<?xml version="1.0" encoding="UTF-8"?><entry>${toXML(entry)}</entry>`);
-
-    postCors(`https://myanimelist.net/api/animelist/update/${malId}.xml`, data, (body, status) => {
-      if (body === 'Updated') {
-        updateAnime();
-      } else {
-        cannotUpdate(body);
-      }
-    }, (body, status) => {
-      storage.remove('password');
-      cannotUpdate(body);
-    }, auth(user, password).and(contentType("application/x-www-form-urlencoded"))).always(finishLoading('Update Chapter Finish'));
-    */
 
     post(API + '/update', JSON.stringify(entry), (body, status) => {
       if (body === 'Updated') {
