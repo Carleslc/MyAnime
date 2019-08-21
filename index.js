@@ -67,7 +67,7 @@ function loading(enabled) {
 function finishLoading(name) {
   let f = function() {
     loading(false);
-    console.log(name);
+    //console.log(name);
   };
   Object.defineProperty(f, "name", { value: name });
   return f;
@@ -138,7 +138,7 @@ $(document).ready(function() {
     // Load contents
     searchUser();
 
-    // Server disabled until MAL API works
+    // Backend server currenlty disabled
     calendarFetched = true;
     /*fetchCalendar()
       .then(() => calendarFetched = true)
@@ -341,12 +341,15 @@ function fetchAnimes() {
   function fetchAnimeList(list) {
     loading(true);
     get(`https://api.jikan.moe/v3/user/${user}/animelist/${list}`, (body, status, response) => {
-      if (status == 200) {
-        let animeList = response.anime || [];
-        animes.push(...animeList);
-        parseAnime(animeList, true);
-      } else {
-        console.log(`Animes ${list} not fetched. STATUS: ${status}`);
+      let animeList = response.anime || [];
+      animes.push(...animeList);
+      parseAnime(animeList, true);
+    }, (body, status) => {
+      if (status = 429) { // Too Many Requests
+        // Try again after 2 seconds
+        setTimeout(function() {
+          fetchAnimeList(list);
+        }, 2000);
       }
     }).always(finishLoading(`Fetch Animes ${list} Finish`));
   }
@@ -372,14 +375,10 @@ function searchUser() {
   if (user) {
     loading(true);
     get(`https://api.jikan.moe/v3/user/${user}`, (_body, status, response) => {
-      if (status == 200) {
-        fetchAnimes();
-        userIcon = response.image_url;
-        changeProfile(userIcon);
-        storage.set("user", user);
-      } else {
-        notFound(status);
-      }
+      fetchAnimes();
+      userIcon = response.image_url;
+      changeProfile(userIcon);
+      storage.set("user", user);
     }, (_body, status) => {
       notFound(status);
     }).always(finishLoading('Search User Finish'));

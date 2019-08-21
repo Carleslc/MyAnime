@@ -31,7 +31,7 @@ function asUrl(s, append, prov) {
     s = `${s}-${append}`;
   }
   s = s.toLowerCase();
-  if ((prov || provider) in ["animemovil", "gogoanime"]) {
+  if ((prov || provider) in ["gogoanime"]) {
     s = s.replace(/[;]/g, '');
   }
   s = s.replace(/[^-a-z0-9]+/g, '-').replace(/-{2,}/, '-');
