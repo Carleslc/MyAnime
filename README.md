@@ -34,7 +34,7 @@ _Crossed out features are no longer available since MAL Official API was shut do
 - 🇪🇸 [AnimeFlv](https://www.animeflv.net)
 - 🇪🇸 [AnimeID](https://www.animeid.tv/)
 - 🇪🇸 [jkanime](http://jkanime.net/)
-- 🇪🇸 [TvAnime](http://tvanime.org/)
+- 🇪🇸 [MonosChinos](https://monoschinos.com/)
 - 🇬🇧 I'm Feeling Lucky
 - 🇬🇧 [Twist](https://twist.moe/)
 - 🇬🇧 [GogoAnime](https://www2.gogoanime.se/)

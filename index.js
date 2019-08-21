@@ -35,7 +35,7 @@ let providerOffsets = {
   "animeid": 3,
   "animeflv": 2,
   "jkanime": 5,
-  "tvanime": 3,
+  "monoschinos": 3,
   "twist": 3,
   "gogoanime": 2,
   "crunchyroll": 1,
@@ -51,7 +51,7 @@ let providers = {
   "animeid": "https://www.animeid.tv/",
   "animeflv": "https://duckduckgo.com/",
   "jkanime": "http://jkanime.net/",
-  "tvanime": "http://tvanime.org/",
+  "monoschinos": "https://monoschinos.com/",
   "twist": "https://twist.moe/",
   "gogoanime": "https://www2.gogoanime.se/",
   "crunchyroll": "https://www.crunchyroll.com/",
@@ -212,7 +212,7 @@ function watchAnime(title, chapter, malId, movie, aired) {
     else if (provider == "animeid") return `${baseUrl}v/${asUrl(title, chapter)}`;
     else if (provider == "animeflv") return `${baseUrl}?q=!ducky+` + encodeURIComponent(`site:animeflv.net ${title} inurl:${chapter} -/${chapter}/`);
     else if (provider == "jkanime") return `${baseUrl}${asUrl(title)}/${chapter}/`;
-    else if (provider == "tvanime") return `${baseUrl}ver/${asUrl(title, chapter)}`;
+    else if (provider == "monoschinos") return `${baseUrl}ver/${asUrl(title, chapter)}`;
     else if (provider == "twist") return `${baseUrl}a/${asUrl(title)}/${chapter}`;
     else if (provider == "gogoanime") return `${baseUrl}${asUrl(title, `episode-${chapter}`)}`;
     else if (provider == "crunchyroll") return `${baseUrl}search?q=${encodeURI(`${title} ${chapter}`)}`;
