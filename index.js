@@ -362,19 +362,26 @@ function changeProfile(icon) {
 }
 
 function searchUser() {
+  function notFound(status) {
+    if (status == 404) {
+      alert(`User ${user} does not exists.`);
+      storage.remove('user');
+    }
+  }
   user = $("#search-user").val();
   if (user) {
     loading(true);
-    get(`https://api.jikan.moe/v3/user/${user}`, (body, status, response) => {
+    get(`https://api.jikan.moe/v3/user/${user}`, (_body, status, response) => {
       if (status == 200) {
         fetchAnimes();
         userIcon = response.image_url;
         changeProfile(userIcon);
         storage.set("user", user);
       } else {
-        alert(`User ${user} does not exists.`);
-        storage.remove('user');
+        notFound(status);
       }
+    }, (_body, status) => {
+      notFound(status);
     }).always(finishLoading('Search User Finish'));
   }
   return false;
