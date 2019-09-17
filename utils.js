@@ -32,7 +32,7 @@ function asUrl(s, append, prov) {
   }
   s = s.toLowerCase();
   if ((prov || provider) in ["gogoanime"]) {
-    s = s.replace(/[;]/g, '');
+    s = s.replace(/;/g, '');
   }
   s = s.replace(/[^-a-z0-9]+/g, '-').replace(/-{2,}/, '-');
   return encodeURIComponent(s);
