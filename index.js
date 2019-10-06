@@ -98,7 +98,7 @@ $(document).ready(function() {
       $("#provider-link").attr("href", providers[provider]);
       storage.set("provider", provider);
       if (filter == 7) { // Not yet aired: Date provider offset
-        parseAnime();
+        emptyAndParseAnime();
       }
     });
 
@@ -114,7 +114,7 @@ $(document).ready(function() {
       filter = parseInt(filterSelector.val());
       filterType = $('#filter-selector option:selected').text();
       storage.set("filter", filter);
-      parseAnime();
+      emptyAndParseAnime();
     });
 
     // Alternative Titles
@@ -127,7 +127,7 @@ $(document).ready(function() {
     $('#alternatives').on('change', function() {
       useAlternativeTitles = $('#alternatives').is(':checked');
       storage.set("alternatives", useAlternativeTitles);
-      parseAnime();
+      emptyAndParseAnime();
     });*/
 
     // User
@@ -142,7 +142,7 @@ $(document).ready(function() {
     calendarFetched = true;
     /*fetchCalendar()
       .then(() => calendarFetched = true)
-      .then(parseAnime)
+      .then(emptyAndParseAnime)
       .catch(cannotFetchCalendar());*/
     loading(false);
   })();
@@ -267,7 +267,7 @@ function isAired(title, chapter, animeStatus, start) {
     return anime.episode > chapter || (anime.episode == chapter && airingDate(anime) < now());
   }
   function estimatedAiringDate() {
-    return start.plus({ weeks: chapter })
+    return start.plus({ weeks: chapter - 1 })
   }
   var aired;
   if (animeStatus == 1) {
@@ -290,12 +290,14 @@ function isAired(title, chapter, animeStatus, start) {
   return aired;
 }
 
-function parseAnime(list, keep) {
+function emptyAndParseAnime() {
+  emptyAnime();
+  parseAnime();
+}
+
+function parseAnime(list) {
   if (calendarFetched) {
     loading(true);
-    if (!keep) {
-      emptyAnime();
-    }
     let animeList = list || animes;
     for (anime of animeList) {
       let status = anime.watching_status; // 1 - Watching, 2 - Completed, 3 - On Hold, 4 - Dropped, 6 - Plan to Watch
@@ -340,12 +342,12 @@ function parseAnime(list, keep) {
 function fetchAnimes() {
   function fetchAnimeList(list) {
     loading(true);
-    get(`https://api.jikan.moe/v3/user/${user}/animelist/${list}`, (body, status, response) => {
+    get(`https://api.jikan.moe/v3/user/${user}/animelist/${list}`, (_body, _status, response) => {
       let animeList = response.anime || [];
       animes.push(...animeList);
-      parseAnime(animeList, true);
-    }, (body, status) => {
-      if (status = 429) { // Too Many Requests
+      parseAnime(animeList);
+    }, (_body, status) => {
+      if (status == 429) { // Too Many Requests
         // Try again after 2 seconds
         setTimeout(function() {
           fetchAnimeList(list);
@@ -354,8 +356,11 @@ function fetchAnimes() {
     }).always(finishLoading(`Fetch Animes ${list} Finish`));
   }
   animes = [];
+  watching.empty();
   fetchAnimeList('watching');
+  onHold.empty();
   fetchAnimeList('onhold');
+  planToWatch.empty();
   fetchAnimeList('ptw');
 }
 
