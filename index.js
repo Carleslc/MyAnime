@@ -139,7 +139,6 @@ $(document).ready(function() {
     searchUser();
 
     // Backend server currenlty disabled
-    calendarFetched = true;
     /*fetchCalendar()
       .then(() => calendarFetched = true)
       .then(emptyAndParseAnime)
@@ -151,7 +150,7 @@ $(document).ready(function() {
 function fetchCalendar() {
   return new Promise(function(resolve, reject) {
     if (!calendarFetched) {
-      get(API + '/calendar', (body, status, calendar) => {
+      get(API + '/calendar', (_body, _status, calendar) => {
         for (anime of calendar.airingAnimes) {
           airingAnimes[idify(anime.title)] = {
             episode: anime.episode,
@@ -169,7 +168,6 @@ function fetchCalendar() {
 
 function cannotFetchCalendar() {
   return error => {
-    calendarFetched = true;
     var message = error.message || error;
     if (error.status > 0 || filter >= 0) {
       alert(message + "\n\nFilter is showing episodes regardless of whether or not it has been aired.");
@@ -228,11 +226,7 @@ function getAnimeFigure(originalTitle, synonyms, chapter, maxChapter, image, mal
   let aired = isAired(originalTitle, chapter, animeStatus, start);
   var release;
   if (!aired) {
-    if (airingAnime) {
-      release = formatDateTime(airingDate(airingAnime));
-    } else if (start) {
-      release = formatDate(start);
-    }
+    release = getFormattedAiringDate(start, chapter);
   }
   callback(`<article id="anime-${malId}">
     <div>
@@ -257,26 +251,35 @@ function emptyAnime() {
 
 var airingAnime;
 
-function airingDate(anime) {
-  return anime.airingDate.plus({ hours: providerOffsets[provider] });
+function getFormattedAiringDate(start, chapter) {
+  if (airingAnime) {
+    return formatDateTime(airingDate());
+  } else if (start) {
+    return formatDate(estimatedAiringDate(start, chapter));
+  }
+}
+
+function airingDate() {
+  return airingAnime.airingDate.plus({ hours: providerOffsets[provider] });
+}
+
+function estimatedAiringDate(start, chapter) {
+  return start.plus({ weeks: chapter - 1 })
 }
 
 function isAired(title, chapter, animeStatus, start) {
   airingAnime = undefined;
-  function isAiringAired(anime) {
-    return anime.episode > chapter || (anime.episode == chapter && airingDate(anime) < now());
-  }
-  function estimatedAiringDate() {
-    return start.plus({ weeks: chapter - 1 })
+  function isAiringAired() {
+    return airingAnime.episode > chapter || (airingAnime.episode == chapter && airingDate() < now());
   }
   var aired;
   if (animeStatus == 1) {
     title = idify(title);
-    if (title in airingAnimes) { // in calendar
+    if (calendarFetched && title in airingAnimes) { // in calendar
       airingAnime = airingAnimes[title];
       aired = isAiringAired(airingAnime);
     } else if (start) {
-      aired = estimatedAiringDate() <= now();
+      aired = estimatedAiringDate(start, chapter) <= now();
       if (aired) { // estimation
         // TODO: ID (`https://notify.moe/_/anime-search/${title}`) exists?
         // Yes -> aired = Episode chapter has link (https://notify.moe/api/animeepisodes/ID)
@@ -296,7 +299,6 @@ function emptyAndParseAnime() {
 }
 
 function parseAnime(list) {
-  if (calendarFetched) {
     loading(true);
     let animeList = list || animes;
     for (anime of animeList) {
@@ -336,7 +338,6 @@ function parseAnime(list) {
       }
     }
     loading(false);
-  }
 }
 
 function fetchAnimes() {
@@ -444,7 +445,12 @@ function updateAnime(title, synonyms, chapter, maxChapter, image, malId, movie, 
     alert(`Hooray! You've completed ${title}!`);
   } else if (!isAired(title, chapter + 1, animeStatus, start)) {
     removeFigure();
-    alert(`Updated ${title} to episode ${chapter}. Next episode will be available: ${formatDateTime(airingDate(airingAnime))}.`);
+    let updated = `Updated ${title} to episode ${chapter}.`;
+    let release = getFormattedAiringDate(start, chapter + 1);
+    if (release) {
+      updated += ` Next episode will be available: ${release}.`;
+    }
+    alert(updated);
   } else {
     getAnimeFigure(title, synonyms, chapter + 1, maxChapter, image, malId, movie, animeStatus, start, function (figure) {
       $(`#anime-${malId}`).replaceWith(figure);
