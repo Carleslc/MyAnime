@@ -208,7 +208,7 @@ function watchAnime(title, chapter, malId, movie, aired) {
     else if (provider == "lucky-en") return `${baseUrl}?q=!ducky+` + luckyEnglish();
     else if (provider == "google-en") return `${baseUrl}search?btnI&q=` + luckyEnglish();
     else if (provider == "animeid") return `${baseUrl}v/${asUrl(title, chapter)}`;
-    else if (provider == "animeflv") return `https://duckduckgo.com/?q=!ducky+` + encodeURIComponent(`site:animeflv.net inurl:"${asUrl(title, chapter)}"`);
+    else if (provider == "animeflv") return `https://duckduckgo.com/?q=!ducky+` + encodeURIComponent(`site:animeflv.net ${title} inurl:"/ver" inurl:"-${chapter}"`);
     else if (provider == "jkanime") return `${baseUrl}${asUrl(title)}/${chapter}/`;
     else if (provider == "monoschinos") return `${baseUrl}ver/${asUrl(title, chapter)}`;
     else if (provider == "twist") return `${baseUrl}a/${asUrl(title)}/${chapter}`;
