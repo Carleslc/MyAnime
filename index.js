@@ -176,7 +176,7 @@ function cannotFetchCalendar() {
   };
 }
 
-/*unction getTitle(originalTitle, synonymsRaw) {
+/*function getTitle(originalTitle, synonymsRaw) {
   if (useAlternativeTitles && synonymsRaw) {
     let synonyms = synonymsRaw.split('; ').filter(s => s != null && s.trim() != "" && s.trim() != originalTitle);
     if (synonyms.length > 0) {
@@ -202,13 +202,13 @@ function watchAnime(title, chapter, malId, movie, aired) {
       return encodeURIComponent(`${title}${ifNotMovie(` episode${inUrl(chapter)}`)}online english anime -español`);
     }
     let baseUrl = providers[provider];
-    if (provider == "myanimelist") return `${baseUrl}anime/${malId}/${aired && !movie ? '-/video' : ''}`;
+    if (provider == "myanimelist") return `${baseUrl}anime/${malId}/${aired && !movie ? `-/episode/${chapter}` : ''}`;
     else if (provider == "lucky-es") return `${baseUrl}?q=!ducky+` + luckySpanish();
     else if (provider == "google-es") return `${baseUrl}search?btnI&q=` + luckySpanish();
     else if (provider == "lucky-en") return `${baseUrl}?q=!ducky+` + luckyEnglish();
     else if (provider == "google-en") return `${baseUrl}search?btnI&q=` + luckyEnglish();
     else if (provider == "animeid") return `${baseUrl}v/${asUrl(title, chapter)}`;
-    else if (provider == "animeflv") return `https://duckduckgo.com/?q=!ducky+` + encodeURIComponent(`site:animeflv.net ${title} inurl:"/ver" inurl:"-${chapter}"`);
+    else if (provider == "animeflv") return 'https://duckduckgo.com/?q=!ducky+' + encodeURIComponent(`site:animeflv.net ${title} inurl:"/ver" inurl:"-${chapter}"`);
     else if (provider == "jkanime") return `${baseUrl}${asUrl(title)}/${chapter}/`;
     else if (provider == "monoschinos") return `${baseUrl}ver/${asUrl(title, chapter)}`;
     else if (provider == "twist") return `${baseUrl}a/${asUrl(title)}/${chapter}`;
