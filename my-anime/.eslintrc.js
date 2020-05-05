@@ -42,6 +42,8 @@ module.exports = {
       },
     ],
 
+    'prefer-destructuring': ['error', { object: true, array: false }],
+
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'no-param-reassign': 'off',
     'global-require': 'off',
@@ -56,7 +58,6 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
-    'prefer-promise-reject-errors': 'off',
 
     // allow console during development only
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',

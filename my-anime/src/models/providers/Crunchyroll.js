@@ -6,4 +6,4 @@ class Crunchyroll extends Provider {
   }
 }
 
-export default { Crunchyroll: new Crunchyroll() };
+export default { instance: new Crunchyroll() };

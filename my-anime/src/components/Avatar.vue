@@ -10,8 +10,8 @@
         <img :src="image" />
       </q-avatar>
     </q-item-section>
-    <q-item-section v-if="username">
-      <q-item-label class="text-h5">{{ username }}</q-item-label>
+    <q-item-section>
+      <q-item-label class="text-h5">{{ username || 'MyAnimeList' }}</q-item-label>
     </q-item-section>
   </q-item>
 </template>
@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       image: 'statics/mal.jpg',
-      username: 'Carleslc',
+      username: '',
     };
   },
   computed: {

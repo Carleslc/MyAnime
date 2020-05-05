@@ -19,6 +19,12 @@ body {
   flex-wrap: wrap;
 }
 
+.q-drawer {
+  .q-item__section {
+    margin: 0;
+  }
+}
+
 .q-tooltip {
   max-width: 256px;
   text-align: center;
@@ -75,6 +81,12 @@ body {
   }
 }
 
+.gt-xsm {
+  @media (max-width: 750px) {
+    display: none;
+  }
+}
+
 h1 {
   font-size: 42px;
   font-weight: bold;
@@ -90,12 +102,4 @@ h2 {
 
 p {
   text-align: justify;
-}
-
-.icon-only {
-  border-radius: 3px;
-  .q-item__section {
-    padding: 0;
-    min-width: 0;
-  }
 }

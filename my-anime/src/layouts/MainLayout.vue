@@ -1,65 +1,70 @@
 <template>
   <q-layout view="lHr lpR lFr">
     <q-header>
-      <q-toolbar class="row items-center justify-between q-pa-md" color="purple">
-        <div class="col-auto row items-center no-wrap">
-          <q-btn flat icon="menu" class="col-shrink q-mr-md lt-lg" @click="settings = !settings" />
+      <q-toolbar class="row justify-between items-center q-pa-md" color="purple">
+        <div v-if="!settings" class="col-auto row items-center no-wrap">
           <back class="q-mr-md" />
           <div class="row justify-between items-center no-wrap">
-            <avatar v-if="!settings" icon class="col-shrink q-mr-lg" />
+            <avatar icon class="col-shrink q-mr-lg" />
             <user-search class="col-grow" />
           </div>
         </div>
         <div v-if="settings" class="col row justify-around items-center">
-          <q-space />
           <div class="col-auto text-h4">My Anime</div>
-          <q-space />
         </div>
-        <provider-select v-if="!settings" full class="col-auto gt-sm" />
-        <status-select
-          v-if="!settings"
-          icon="movie_filter"
-          caption="Filter anime status"
-          :options="['Already aired', 'Not yet aired']"
-          class="col-auto gt-md"
-        />
-        <status-select
-          v-if="!settings"
-          icon="tv"
-          caption="Filter anime type"
-          :options="['TV', 'OVA', 'Movie', 'Special', 'ONA', 'Music']"
-          class="col-auto gt-md"
-        />
-        <div v-if="!settings" class="col-auto row justify-end q-gutter-x-md">
-          <calendar-button icon class="col-shrink gt-xs" />
+        <div v-else class="col row justify-end items-center no-wrap">
+          <provider-select showTooltip class="col-auto q-mx-auto gt-xsm" />
+          <div class="col-auto q-gutter-x-lg q-mr-auto row justify-between gt-md">
+            <status-select
+              icon="movie_filter"
+              caption="Filter anime status"
+              :options="['Already aired', 'Not yet aired']"
+              class="col-auto gt-md"
+            />
+            <status-select
+              icon="tv"
+              caption="Filter anime type"
+              :options="['TV', 'OVA', 'Movie', 'Special', 'ONA', 'Music']"
+              class="col-auto gt-md"
+            />
+          </div>
+          <div class="col-auto row justify-end q-gutter-x-md">
+            <calendar-button icon class="col-shrink gt-xs" />
+          </div>
         </div>
+        <q-btn flat icon="settings" class="col-shrink q-ml-md q-py-xs" @click="settings = !settings">
+          <q-tooltip transition-show="fade" transition-hide="fade">
+            {{ settings ? 'Close' : 'Open' }} Settings
+          </q-tooltip>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-if="$q.screen.lt.lg"
-      v-model="settings"
-      side="left"
-      :content-class="{ 'bg-primary': $q.screen.lt.md }"
-      class="text-white"
-    >
-      <q-list padding dark>
-        <avatar size="72px" />
-        <q-item-section>
+    <q-drawer v-model="settings" side="right" :content-class="{ 'bg-primary': $q.screen.lt.md }" class="text-white">
+      <q-list dark class="column justify-start full-height">
+        <avatar size="72px" class="col-auto q-py-md" />
+        <q-item-section class="col-auto">
           <calendar-button />
         </q-item-section>
-        <q-item-section>
-          <q-item-label header>Select provider</q-item-label>
-          <provider-select class="full-width" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label header>Anime status</q-item-label>
-          <status-select icon="movie_filter" :options="['Already aired', 'Not yet aired']" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label header>Anime type</q-item-label>
-          <status-select icon="tv" :options="['TV', 'OVA', 'Movie', 'Special', 'ONA', 'Music']" />
-        </q-item-section>
+        <div class="col row q-pt-lg">
+          <div class="col-auto full-width q-px-sm">
+            <q-item-section>
+              <q-item-label header>Select provider</q-item-label>
+              <provider-select />
+            </q-item-section>
+            <q-item-section class="q-pt-lg">
+              <q-item-label header>Anime status</q-item-label>
+              <status-select icon="movie_filter" :options="['Already aired', 'Not yet aired']" />
+            </q-item-section>
+            <q-item-section class="q-pt-sm">
+              <q-item-label header>Anime type</q-item-label>
+              <status-select icon="tv" :options="['TV', 'OVA', 'Movie', 'Special', 'ONA', 'Music']" />
+            </q-item-section>
+          </div>
+          <div class="col-auto row justify-center q-mt-auto full-width">
+            <reset-button class="col-auto full-width q-pb-sm" />
+          </div>
+        </div>
       </q-list>
     </q-drawer>
 
@@ -89,19 +94,6 @@ export default {
       settings: false,
       info: false,
     };
-  },
-  created() {
-    window.addEventListener('resize', this.resize);
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.resize);
-  },
-  methods: {
-    resize() {
-      if (this.settings && window.innerWidth > 1920) {
-        this.settings = false;
-      }
-    },
   },
 };
 </script>

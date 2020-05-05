@@ -10,7 +10,7 @@
   >
     <template v-slot:prepend>
       <q-icon name="cast" />
-      <q-tooltip v-if="full" transition-show="fade" transition-hide="fade">
+      <q-tooltip v-if="showTooltip" transition-show="fade" transition-hide="fade">
         Select which provider must be opened when clicking over an episode, either in Spanish (ES) or English (EN).
         <br /><br />
         Feeling Lucky options are based on search engine, trying to get a proper streamer, but it doesn't mean it always
@@ -33,7 +33,7 @@
       <q-btn flat dense type="a" :href="providerUrl" target="_blank" @click="openProvider">
         <q-icon :name="providerIcon()" />
         <q-tooltip transition-show="fade" transition-hide="fade">
-          {{ providerTooltip }}
+          {{ provider.label }}
         </q-tooltip>
       </q-btn>
     </template>
@@ -47,37 +47,36 @@ import Crunchyroll from '@/models/providers/Crunchyroll.js';
 
 export default {
   props: {
-    full: {
+    showTooltip: {
       type: Boolean,
       default: true,
     },
   },
   data() {
+    const providers = [
+      { label: 'MyAnimeList', value: MyAnimeList.instance },
+      { label: 'Crunchyroll', value: Crunchyroll.instance },
+      { label: 'Netflix', value: { url: 'https://www.netflix.com/' } },
+      { label: 'Voy a tener suerte', value: { url: 'https://duckduckgo.com/' } },
+      { label: 'Google (ES)', value: { url: 'https://www.google.es/' } },
+      { label: 'AnimeID', value: { url: 'https://www.animeid.tv/' } },
+      { label: 'AnimeFLV', value: { url: 'https://animeflv.net/' } },
+      { label: 'jkanime', value: { url: 'http://jkanime.net/' } },
+      { label: 'MonosChinos', value: { url: 'https://monoschinos.com/' } },
+      { label: "I'm feeling lucky", value: { url: 'https://duckduckgo.com/' } },
+      { label: 'Google (EN)', value: { url: 'https://www.google.com/' } },
+      { label: 'Twist', value: { url: 'https://twist.moe/' } },
+      { label: 'Gogoanime', value: { url: 'https://www.gogoanime.pro/' } },
+    ];
+
     return {
-      provider: '',
-      providers: [
-        { label: 'MyAnimeList', value: MyAnimeList },
-        { label: 'Crunchyroll', value: Crunchyroll },
-        { label: 'Netflix', value: { url: 'https://www.netflix.com/' } },
-        { label: 'Voy a tener suerte', value: { url: 'https://duckduckgo.com/' } },
-        { label: 'Google (ES)', value: { url: 'https://www.google.es/' } },
-        { label: 'AnimeID', value: { url: 'https://www.animeid.tv/' } },
-        { label: 'AnimeFLV', value: { url: 'https://animeflv.net/' } },
-        { label: 'jkanime', value: { url: 'http://jkanime.net/' } },
-        { label: 'MonosChinos', value: { url: 'https://monoschinos.com/' } },
-        { label: "I'm feeling lucky", value: { url: 'https://duckduckgo.com/' } },
-        { label: 'Google (EN)', value: { url: 'https://www.google.com/' } },
-        { label: 'Twist', value: { url: 'https://twist.moe/' } },
-        { label: 'Gogoanime', value: { url: 'https://www.gogoanime.pro/' } },
-      ],
+      provider: providers[0],
+      providers,
     };
   },
   computed: {
-    providerTooltip() {
-      return this.provider ? this.provider.label : 'Please, select a provider';
-    },
     providerUrl() {
-      return this.provider ? this.provider.value.url : '';
+      return this.provider.value.url;
     },
   },
   methods: {

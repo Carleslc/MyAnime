@@ -6,4 +6,4 @@ class MyAnimeList extends Provider {
   }
 }
 
-export default { MyAnimeList: new MyAnimeList() };
+export default { instance: new MyAnimeList() };
