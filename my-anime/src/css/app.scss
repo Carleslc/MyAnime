@@ -1,0 +1,101 @@
+body {
+  * {
+    font-size: 1rem;
+  }
+  background-color: $primary;
+  background-image: linear-gradient($primary, $accent);
+  .q-header,
+  .q-drawer,
+  .q-footer {
+    background: transparent;
+  }
+}
+
+.q-btn {
+  color: white;
+}
+
+.q-toolbar {
+  flex-wrap: wrap;
+}
+
+.q-tooltip {
+  max-width: 256px;
+  text-align: center;
+  font-size: 1em;
+  background-color: $dark;
+}
+
+.prefix {
+  font-size: 16px;
+  padding-bottom: 2px;
+}
+
+.user-search {
+  min-width: 175px;
+  max-width: 25vw;
+
+  .q-field__control {
+    padding-right: 0;
+  }
+
+  &.q-field--focused {
+    .q-btn {
+      color: white;
+      background-color: $positive;
+    }
+
+    .q-btn--flat {
+      color: $dark;
+      background-color: transparent;
+    }
+  }
+}
+
+.q-select {
+  .q-field__before,
+  .q-field__prepend {
+    padding-right: 12px;
+  }
+  .q-field__after,
+  .q-field__append {
+    padding-left: 12px;
+  }
+  .q-field__inner {
+    min-width: 42px;
+  }
+}
+
+.filter-options {
+  color: grey;
+
+  .q-item--active {
+    color: $accent;
+    font-weight: bold;
+  }
+}
+
+h1 {
+  font-size: 42px;
+  font-weight: bold;
+  margin: 0;
+}
+
+h2 {
+  font-size: 32px;
+  font-weight: 400;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+p {
+  text-align: justify;
+}
+
+.icon-only {
+  border-radius: 3px;
+  .q-item__section {
+    padding: 0;
+    min-width: 0;
+  }
+}
