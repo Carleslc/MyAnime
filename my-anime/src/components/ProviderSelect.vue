@@ -5,6 +5,7 @@
     dense
     standout
     dark
+    options-selected-class="filter-options"
     :options-dark="false"
     :options="Object.freeze(providers)"
   >
@@ -19,19 +20,19 @@
         If selected provider cannot find an episode try to change the provider.
       </q-tooltip>
     </template>
-    <template slot="option" slot-scope="{ opt }">
-      <q-item v-ripple clickable @click="provider = opt">
+    <template v-slot:option="scope">
+      <q-item v-ripple v-bind="scope.itemProps" v-on="scope.itemEvents">
         <q-item-section avatar>
-          <q-icon :name="providerIcon(opt)" />
+          <q-icon name="screen_share" />
         </q-item-section>
         <q-item-section>
-          <q-item-label>{{ opt.label }}</q-item-label>
+          <q-item-label>{{ scope.opt.label }}</q-item-label>
         </q-item-section>
       </q-item>
     </template>
     <template v-if="provider" v-slot:after>
       <q-btn flat dense type="a" :href="providerUrl" target="_blank" @click="openProvider">
-        <q-icon :name="providerIcon()" />
+        <q-icon name="screen_share" />
         <q-tooltip transition-show="fade" transition-hide="fade">
           {{ provider.label }}
         </q-tooltip>
@@ -79,15 +80,25 @@ export default {
       return this.provider.value.url;
     },
   },
+  mounted() {
+    document.addEventListener('keydown', this.keyListener);
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.keyListener);
+  },
   methods: {
-    providerIcon(provider) {
-      return 'screen_share';
-    },
     openProvider() {
       const url = this.providerUrl;
       if (url) {
         openURL(url);
       } else {
+        this.$refs.providerSelect.showPopup();
+      }
+    },
+    keyListener(e) {
+      const key = e.which || e.keyCode;
+      if (key === 40) {
+        // Down
         this.$refs.providerSelect.showPopup();
       }
     },

@@ -3,4 +3,9 @@ export default class Provider {
     this.url = url;
     this.offset = offset;
   }
+
+  // eslint-disable-next-line
+  episodeUrl(title, episode) {
+    return this.url;
+  }
 }

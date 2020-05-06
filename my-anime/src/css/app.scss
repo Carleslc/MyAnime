@@ -1,14 +1,19 @@
+html,
 body {
   * {
     font-size: 1rem;
   }
   background-color: $primary;
+}
+
+.q-footer,
+.q-page {
+  background: transparent;
+}
+
+.q-page {
+  min-height: 1001px;
   background-image: linear-gradient($primary, $accent);
-  .q-header,
-  .q-drawer,
-  .q-footer {
-    background: transparent;
-  }
 }
 
 .q-btn {
@@ -72,6 +77,10 @@ body {
   }
 }
 
+.q-table__container {
+  color: white;
+}
+
 .filter-options {
   color: grey;
 
@@ -102,4 +111,131 @@ h2 {
 
 p {
   text-align: justify;
+}
+
+.anime-container {
+  display: grid;
+
+  height: 100%;
+  $margin-gap: 0.5%;
+  margin: 0 $margin-gap;
+  column-gap: $margin-gap;
+  row-gap: 1.5%;
+
+  // 100% = 2 * margin + cols * width + (cols - 1) * gap
+  // if margin = gap then 100% = (cols + 1) * margin + cols * width -> width = (100% - (cols + 1) * margin) / cols
+  $col-width: calc((100% - (8 + 1) * 0.5%) / 8);
+  grid-template-columns: repeat(auto-fill, $col-width);
+  justify-content: space-between;
+
+  @media (max-width: $breakpoint-md-max) {
+    $margin-gap: 1%;
+    margin: 0 $margin-gap;
+    column-gap: $margin-gap;
+    $col-width: calc((100% - (6 + 1) * 1%) / 6);
+    grid-template-columns: repeat(auto-fill, $col-width);
+  }
+
+  @media (max-width: $breakpoint-sm-max) {
+    $col-width: calc((100% - (4 + 1) * 1%) / 4);
+    grid-template-columns: repeat(auto-fill, $col-width);
+  }
+
+  @media (max-width: $breakpoint-xs-max) {
+    row-gap: 0.5%;
+    $col-width: calc((100% - (2 + 1) * 1%) / 2);
+    grid-template-columns: repeat(auto-fill, $col-width);
+  }
+
+  .anime-episode.q-card {
+    width: 100%;
+    min-width: 128px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: none;
+    outline: 0;
+
+    h1,
+    h2 {
+      vertical-align: middle;
+      text-align: center;
+      color: white;
+      text-shadow: 0 1px 0 #000;
+      line-height: 1.2em;
+      font-family: Roboto, Helvetica, Arial, sans-serif;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    h2 {
+      font-size: 1em;
+    }
+
+    &.small {
+      h1 {
+        font-size: 1em;
+      }
+      h2 {
+        font-size: 0.8em;
+      }
+    }
+
+    header {
+      position: absolute;
+      top: 0;
+    }
+
+    .q-btn,
+    .q-chip {
+      z-index: 2;
+    }
+
+    .q-image {
+      image-rendering: optimizespeed;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -o-crisp-edges;
+      image-rendering: -webkit-optimize-contrast;
+      -ms-interpolation-mode: nearest-neighbor;
+    }
+  }
+}
+
+.overlay::after {
+  content: '';
+  background: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.on-hover {
+  .hoverable {
+    opacity: 0;
+    -webkit-transition: opacity 200ms ease-in-out;
+    -moz-transition: opacity 200ms ease-in-out;
+    -o-transition: opacity 200ms ease-in-out;
+    -ms-transition: opacity 200ms ease-in-out;
+    transition: opacity 200ms ease-in-out;
+  }
+}
+
+.on-hover {
+  &:hover,
+  &:focus,
+  &:focus-within {
+    .hoverable {
+      opacity: 1;
+      -webkit-transition: opacity 200ms ease-in-out;
+      -moz-transition: opacity 200ms ease-in-out;
+      -o-transition: opacity 200ms ease-in-out;
+      -ms-transition: opacity 200ms ease-in-out;
+      transition: opacity 200ms ease-in-out;
+    }
+  }
 }
