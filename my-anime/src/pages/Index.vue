@@ -1,17 +1,15 @@
 <template>
-  <q-page>
-    <div class="anime-container">
-      <anime-episode
-        v-for="i in 20"
-        :key="animes[i % 2].title"
-        :title="animes[i % 2].title"
-        :img="animes[i % 2].img"
-        :episode="animes[i % 2].episode"
-        :total-episodes="animes[i % 2].totalEpisodes"
-        :airing-date="animes[i % 2].airingDate"
-      />
-    </div>
-  </q-page>
+  <div v-if="!loading" class="anime-container">
+    <anime-episode
+      v-for="i in 20"
+      :key="animes[i % 2].title"
+      :title="animes[i % 2].title"
+      :img="animes[i % 2].img"
+      :episode="animes[i % 2].episode"
+      :total-episodes="animes[i % 2].totalEpisodes"
+      :airing-date="animes[i % 2].airingDate"
+    />
+  </div>
 </template>
 
 <script>
@@ -20,7 +18,7 @@ import { DateTime } from 'luxon';
 export default {
   data() {
     return {
-      loading: false,
+      loading: true,
       animes: [
         {
           title: 'Kaguya-sama wa Kokurasetai?: Tensai-tachi no Renai Zunousen',
@@ -37,6 +35,9 @@ export default {
         },
       ],
     };
+  },
+  mounted() {
+    this.loading = false;
   },
 };
 </script>

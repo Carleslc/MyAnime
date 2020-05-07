@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHr lpR lFr">
-    <q-header>
+  <q-layout view="hHr lpR fFr">
+    <q-header ref="header">
       <q-toolbar class="row justify-between items-center q-pa-md" color="purple">
         <div v-if="!settings" class="col-auto row items-center no-wrap">
           <back class="q-mr-md" />
@@ -50,7 +50,7 @@
         align="justify"
         active-color="white"
         indicator-color="transparent"
-        class="text-grey-7 q-pb-sm"
+        class="text-grey-7"
       >
         <q-tab name="watching" icon="visibility" label="Watching" />
         <q-tab name="on-hold" icon="pause" label="On Hold" />
@@ -86,12 +86,15 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
-      <router-view />
+    <!-- header height -->
+    <q-page-container class="gradient">
+      <q-page padding>
+        <router-view />
+      </q-page>
     </q-page-container>
 
-    <q-footer class="row justify-end fixed-bottom-right" @mousedown.prevent>
-      <q-btn unelevated color="accent" icon="description" @click="info = true">
+    <q-footer class="row justify-end" @mousedown.prevent>
+      <q-btn unelevated color="accent" icon="description" class="square" @click="info = true">
         <q-tooltip transition-show="fade" transition-hide="fade" content-class="bg-primary">
           About this app
         </q-tooltip>
@@ -100,14 +103,16 @@
         <about style="width: 1000px; max-width: 80vw;" />
       </q-dialog>
       <q-btn
+        square
         unelevated
         color="accent"
         type="a"
         icon="fab fa-github"
         href="https://github.com/Carleslc/MyAnime"
         target="_blank"
+        class="square"
       />
-      <support-me class="q-px-sm" />
+      <support-me class="square q-px-sm" />
     </q-footer>
   </q-layout>
 </template>

@@ -1,8 +1,14 @@
 <template>
   <q-card v-if="!isCompleted" v-ripple class="anime-episode" :class="{ small: isSmallElement }">
-    <q-resize-observer @resize="handleResize" debounce="200" />
+    <q-resize-observer @resize="handleResize" debounce="300" />
     <a :href="episodeUrl" target="_blank" @mousedown.prevent>
-      <q-img :src="img" />
+      <!-- Image ratio (h/w): 320/225 -->
+      <q-img
+        :src="img"
+        spinner-color="primary"
+        :style="loading ? `height: ${width * 1.4222}px;` : undefined"
+        @load="loading = false"
+      />
       <header class="column justify-center full-width full-height hoverable overlay q-px-xs">
         <h1 :class="`col-auto ${isAired ? 'q-pt-auto' : 'q-pt-lg'}`">{{ title }}</h1>
         <h2 v-if="!isAired" class="col-auto q-mt-lg">
@@ -86,6 +92,7 @@ export default {
     return {
       nextEpisode: this.episode + 1,
       width: 0,
+      loading: true,
     };
   },
   computed: {
@@ -141,7 +148,10 @@ export default {
       this.$refs.fabNext.$el.blur();
     },
     handleResize(size) {
-      this.width = size.width;
+      if (size.width !== this.width) {
+        // avoid unnecessary updates
+        this.width = size.width;
+      }
     },
   },
 };

@@ -1,4 +1,3 @@
-html,
 body {
   * {
     font-size: 1rem;
@@ -11,8 +10,17 @@ body {
   background: transparent;
 }
 
-.q-page {
-  min-height: 1001px;
+.q-header {
+  height: 136px;
+  .q-toolbar {
+    height: 88px;
+  }
+}
+
+.q-page-container {
+  height: 100%;
+  margin-top: 136px;
+  padding-top: 0 !important;
   background-image: linear-gradient($primary, $accent);
 }
 
@@ -77,10 +85,6 @@ body {
   }
 }
 
-.q-table__container {
-  color: white;
-}
-
 .filter-options {
   color: grey;
 
@@ -114,41 +118,34 @@ p {
 }
 
 .anime-container {
+  overflow: auto;
   display: grid;
-
-  height: 100%;
-  $margin-gap: 0.5%;
-  margin: 0 $margin-gap;
-  column-gap: $margin-gap;
+  column-gap: 0.5%;
   row-gap: 1.5%;
-
   // 100% = 2 * margin + cols * width + (cols - 1) * gap
-  // if margin = gap then 100% = (cols + 1) * margin + cols * width -> width = (100% - (cols + 1) * margin) / cols
-  $col-width: calc((100% - (8 + 1) * 0.5%) / 8);
+  // if margin = 0 then 100% = cols * width + (cols - 1) * gap -> width = (100% - (cols - 1) * gap) / cols
+  $col-width: calc((100% - (8 - 1) * 0.5%) / 8);
   grid-template-columns: repeat(auto-fill, $col-width);
   justify-content: space-between;
 
   @media (max-width: $breakpoint-md-max) {
-    $margin-gap: 1%;
-    margin: 0 $margin-gap;
-    column-gap: $margin-gap;
-    $col-width: calc((100% - (6 + 1) * 1%) / 6);
+    column-gap: 1%;
+    $col-width: calc((100% - (6 - 1) * 1%) / 6);
     grid-template-columns: repeat(auto-fill, $col-width);
   }
 
   @media (max-width: $breakpoint-sm-max) {
-    $col-width: calc((100% - (4 + 1) * 1%) / 4);
+    $col-width: calc((100% - (4 - 1) * 1%) / 4);
     grid-template-columns: repeat(auto-fill, $col-width);
   }
 
   @media (max-width: $breakpoint-xs-max) {
     row-gap: 0.5%;
-    $col-width: calc((100% - (2 + 1) * 1%) / 2);
+    $col-width: calc((100% - (2 - 1) * 1%) / 2);
     grid-template-columns: repeat(auto-fill, $col-width);
   }
 
   .anime-episode.q-card {
-    width: 100%;
     min-width: 128px;
     border-radius: 12px;
     overflow: hidden;
@@ -238,4 +235,12 @@ p {
       transition: opacity 200ms ease-in-out;
     }
   }
+}
+
+.q-skeleton::before {
+  content: '';
+}
+
+.square {
+  border-radius: 0;
 }
