@@ -5,9 +5,14 @@ body {
   background-color: $primary;
 }
 
-.q-footer,
-.q-page {
+.q-page,
+.q-footer {
   background: transparent;
+}
+
+.q-footer {
+  width: fit-content;
+  left: initial;
 }
 
 .q-header {
@@ -56,6 +61,7 @@ $breakpoint-xxs-max: 349px;
   max-width: 256px;
   text-align: center;
   font-size: 1em;
+  z-index: 4;
   background-color: $dark;
 }
 
@@ -123,13 +129,13 @@ $breakpoint-xxs-max: 349px;
 }
 
 h1 {
-  font-size: 42px;
+  font-size: 3em;
   font-weight: bold;
   margin: 0;
 }
 
 h2 {
-  font-size: 32px;
+  font-size: 2em;
   font-weight: 400;
   margin-top: 0;
   margin-bottom: 0.5em;
@@ -148,6 +154,11 @@ p {
   $col-width: calc((100% - (8 - 1) * 0.5%) / 8);
   grid-template-columns: repeat(auto-fill, $col-width);
   justify-content: space-between;
+
+  @media (min-width: $breakpoint-xl-min * 1.2) {
+    $col-width: calc((100% - (12 - 1) * 0.5%) / 12);
+    grid-template-columns: repeat(auto-fill, $col-width);
+  }
 
   @media (max-width: $breakpoint-md-max) {
     column-gap: 1%;

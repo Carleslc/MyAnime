@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHr lpR fFh">
+  <q-layout view="hHr lpR fFr">
     <q-header ref="header">
       <q-toolbar class="row justify-between items-center q-pa-md no-wrap scroll" color="purple">
         <div v-if="!settings" class="col-auto row items-center no-wrap">
@@ -99,7 +99,7 @@
       </q-page>
     </q-page-container>
 
-    <q-footer class="row justify-end" @mousedown.prevent>
+    <q-footer class="row justify-end fixed-bottom-right" @mousedown.prevent>
       <q-btn unelevated color="accent" icon="description" class="square" @click="info = true">
         <q-tooltip transition-show="fade" transition-hide="fade" content-class="bg-primary">
           About this app
