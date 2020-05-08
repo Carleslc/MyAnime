@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import fitty from 'fitty';
 import { DateTime } from 'luxon';
 
 export default {
@@ -131,18 +130,13 @@ export default {
   },
   mounted() {
     this.width = this.$el.offsetWidth;
-    this.fitAiringDate();
   },
   methods: {
     handleResize(size) {
       if (size.width !== this.width) {
         // avoid unnecessary updates
         this.width = size.width;
-        this.fitAiringDate();
       }
-    },
-    fitAiringDate() {
-      fitty('.fit-text', { minSize: 12 });
     },
     updateEpisode() {
       const notification = {};

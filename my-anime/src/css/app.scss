@@ -1,3 +1,5 @@
+$header-height: 136px;
+
 body {
   * {
     font-size: 1rem;
@@ -12,21 +14,26 @@ body {
 
 .q-footer {
   width: fit-content;
-  left: initial;
+  left: auto;
 }
 
 .q-header {
-  height: 136px;
+  background-color: $primary;
+  height: $header-height;
+  z-index: 5;
+
   .q-toolbar {
     height: 88px;
   }
 }
 
-.q-page-container {
-  height: 100%;
-  margin-top: 136px;
-  padding-top: 0 !important;
+.gradient {
   background-image: linear-gradient($primary, $accent);
+  background-color: $primary;
+}
+
+.q-page-container {
+  padding-bottom: 0 !important; // overlap footer
 }
 
 .q-btn {
@@ -61,7 +68,7 @@ $breakpoint-xxs-max: 349px;
   max-width: 256px;
   text-align: center;
   font-size: 1em;
-  z-index: 4;
+  z-index: 10;
   background-color: $dark;
 }
 
@@ -147,33 +154,30 @@ p {
 
 .anime-container {
   display: grid;
-  column-gap: 0.5%;
-  row-gap: 1.5%;
+  grid-gap: 10px;
   // 100% = 2 * margin + cols * width + (cols - 1) * gap
   // if margin = 0 then 100% = cols * width + (cols - 1) * gap -> width = (100% - (cols - 1) * gap) / cols
-  $col-width: calc((100% - (8 - 1) * 0.5%) / 8);
+  $col-width: calc((100% - (8 - 1) * 10px) / 8);
   grid-template-columns: repeat(auto-fill, $col-width);
   justify-content: space-between;
 
   @media (min-width: $breakpoint-xl-min * 1.2) {
-    $col-width: calc((100% - (12 - 1) * 0.5%) / 12);
+    $col-width: calc((100% - (12 - 1) * 10px) / 12);
     grid-template-columns: repeat(auto-fill, $col-width);
   }
 
   @media (max-width: $breakpoint-md-max) {
-    column-gap: 1%;
-    $col-width: calc((100% - (6 - 1) * 1%) / 6);
+    $col-width: calc((100% - (6 - 1) * 10px) / 6);
     grid-template-columns: repeat(auto-fill, $col-width);
   }
 
   @media (max-width: $breakpoint-sm-max) {
-    $col-width: calc((100% - (4 - 1) * 1%) / 4);
+    $col-width: calc((100% - (4 - 1) * 10px) / 4);
     grid-template-columns: repeat(auto-fill, $col-width);
   }
 
   @media (max-width: $breakpoint-xs-max) {
-    row-gap: 0.5%;
-    $col-width: calc((100% - (2 - 1) * 1%) / 2);
+    $col-width: calc((100% - (2 - 1) * 10px) / 2);
     grid-template-columns: repeat(auto-fill, $col-width);
   }
 

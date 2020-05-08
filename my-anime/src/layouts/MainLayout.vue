@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHr lpR fFr">
-    <q-header ref="header">
+    <q-header>
       <q-toolbar class="row justify-between items-center q-pa-md no-wrap scroll" color="purple">
         <div v-if="!settings" class="col-auto row items-center no-wrap">
           <back class="q-mr-md" />
@@ -33,8 +33,8 @@
           </div>
         </div>
         <q-btn
-          flat
           id="settings"
+          flat
           icon="settings"
           class="col-shrink q-ml-md q-py-xs"
           @click="settings = !settings"
@@ -64,7 +64,7 @@
       </q-tabs>
     </q-header>
 
-    <q-drawer v-model="settings" :breakpoint="1152" elevated side="right" content-class="bg-primary" class="text-white">
+    <q-drawer v-model="settings" :breakpoint="1152" side="right" content-class="bg-primary" class="text-white">
       <q-list v-if="settings" dark class="column justify-start full-height">
         <avatar size="72px" class="col-auto q-py-md" />
         <q-item-section class="col-auto">
@@ -92,9 +92,8 @@
       </q-list>
     </q-drawer>
 
-    <!-- header height -->
-    <q-page-container class="gradient">
-      <q-page padding>
+    <q-page-container>
+      <q-page padding class="gradient" :style-fn="overlappingFooter">
         <router-view />
       </q-page>
     </q-page-container>
@@ -146,8 +145,11 @@ export default {
       },
     };
   },
-  mounted() {
-    console.log(Object.entries(this.statuses));
+  methods: {
+    overlappingFooter(offset) {
+      const footerHeight = '41px';
+      return { minHeight: `calc(100vh - ${offset}px + ${footerHeight})` };
+    },
   },
 };
 </script>

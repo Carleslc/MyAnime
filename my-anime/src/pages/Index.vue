@@ -1,13 +1,13 @@
 <template>
   <div v-if="!loading" class="anime-container">
     <anime-episode
-      v-for="i in 20"
-      :key="animes[i % 2].title"
-      :title="animes[i % 2].title"
-      :img="animes[i % 2].img"
-      :episode="animes[i % 2].episode"
-      :total-episodes="animes[i % 2].totalEpisodes"
-      :airing-date="animes[i % 2].airingDate"
+      v-for="(anime, i) in animes"
+      :key="i"
+      :title="anime.title"
+      :img="anime.img"
+      :episode="anime.episode"
+      :total-episodes="anime.totalEpisodes"
+      :airing-date="anime.airingDate"
     />
   </div>
 </template>
