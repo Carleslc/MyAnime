@@ -1,11 +1,11 @@
 <template>
-  <q-layout view="hHr lpR fFr">
+  <q-layout view="hHr lpR fFh">
     <q-header ref="header">
-      <q-toolbar class="row justify-between items-center q-pa-md" color="purple">
+      <q-toolbar class="row justify-between items-center q-pa-md no-wrap scroll" color="purple">
         <div v-if="!settings" class="col-auto row items-center no-wrap">
           <back class="q-mr-md" />
           <div class="row justify-between items-center no-wrap">
-            <avatar icon class="col-shrink q-mr-lg" />
+            <avatar icon class="col-shrink q-mr-lg gt-xxs" />
             <user-search class="col-grow" />
           </div>
         </div>
@@ -34,6 +34,7 @@
         </div>
         <q-btn
           flat
+          id="settings"
           icon="settings"
           class="col-shrink q-ml-md q-py-xs"
           @click="settings = !settings"
@@ -52,13 +53,18 @@
         indicator-color="transparent"
         class="text-grey-7"
       >
-        <q-tab name="watching" icon="visibility" label="Watching" />
-        <q-tab name="on-hold" icon="pause" label="On Hold" />
-        <q-tab name="plan-to-watch" icon="watch_later" label="Plan to Watch" />
+        <q-tab
+          v-for="(s, k) in statuses"
+          :key="k"
+          :name="k"
+          :icon="s.icon"
+          :label="s.label"
+          :class="{ 'q-px-xs': $q.screen.lt.sm }"
+        />
       </q-tabs>
     </q-header>
 
-    <q-drawer elevated v-model="settings" side="right" content-class="bg-primary" class="text-white">
+    <q-drawer v-model="settings" :breakpoint="1152" elevated side="right" content-class="bg-primary" class="text-white">
       <q-list v-if="settings" dark class="column justify-start full-height">
         <avatar size="72px" class="col-auto q-py-md" />
         <q-item-section class="col-auto">
@@ -124,7 +130,24 @@ export default {
       settings: false,
       info: false,
       status: 'watching',
+      statuses: {
+        watching: {
+          label: 'Watching',
+          icon: 'visibility',
+        },
+        'on-hold': {
+          label: 'On Hold',
+          icon: 'pause',
+        },
+        'plan-to-watch': {
+          label: 'Plan to Watch',
+          icon: 'watch_later',
+        },
+      },
     };
+  },
+  mounted() {
+    console.log(Object.entries(this.statuses));
   },
 };
 </script>

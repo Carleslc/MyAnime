@@ -23,15 +23,14 @@ export default {
         {
           title: 'Kaguya-sama wa Kokurasetai?: Tensai-tachi no Renai Zunousen',
           img: 'https://cdn.myanimelist.net/images/anime/1764/106659.jpg',
-          episode: 4,
+          episode: 10,
           totalEpisodes: 12,
-          airingDate: DateTime.local().plus({ days: 1 }).toJSDate(),
         },
         {
-          title: 'Kaguya-sama wa Kokurasetai?: Tensai-tachi no Renai Zunousen',
-          img: 'https://cdn.myanimelist.net/images/anime/1764/106659.jpg',
-          episode: 11,
-          totalEpisodes: 12,
+          title: 'One Piece',
+          img: 'https://cdn.myanimelist.net/images/anime/6/73245.jpg',
+          episode: 923,
+          airingDate: DateTime.local().plus({ days: 1, hours: 5 }).toJSDate(),
         },
       ],
     };

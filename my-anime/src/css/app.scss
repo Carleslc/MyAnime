@@ -28,11 +28,25 @@ body {
   color: white;
 }
 
-.q-toolbar {
-  flex-wrap: wrap;
+$breakpoint-xxs-max: 349px;
+
+@media (max-width: $breakpoint-xxs-max) {
+  #settings {
+    min-width: 30px;
+  }
+
+  .gt-xxs {
+    display: none;
+  }
+
+  .q-drawer__opener {
+    width: 4px;
+  }
 }
 
 .q-drawer {
+  max-width: 100vw;
+
   .q-item__section {
     margin: 0;
   }
@@ -51,7 +65,7 @@ body {
 }
 
 .user-search {
-  min-width: 175px;
+  min-width: 192px;
   max-width: 25vw;
 
   .q-field__control {
@@ -67,6 +81,14 @@ body {
     .q-btn--flat {
       color: $dark;
       background-color: transparent;
+    }
+  }
+
+  @media (max-width: $breakpoint-xxs-max) {
+    min-width: 152px;
+
+    .q-btn {
+      width: 40px;
     }
   }
 }
@@ -118,7 +140,6 @@ p {
 }
 
 .anime-container {
-  overflow: auto;
   display: grid;
   column-gap: 0.5%;
   row-gap: 1.5%;
@@ -142,6 +163,11 @@ p {
   @media (max-width: $breakpoint-xs-max) {
     row-gap: 0.5%;
     $col-width: calc((100% - (2 - 1) * 1%) / 2);
+    grid-template-columns: repeat(auto-fill, $col-width);
+  }
+
+  @media (max-width: 288px) {
+    $col-width: 100%;
     grid-template-columns: repeat(auto-fill, $col-width);
   }
 
@@ -179,11 +205,6 @@ p {
       h2 {
         font-size: 0.8em;
       }
-    }
-
-    header {
-      position: absolute;
-      top: 0;
     }
 
     .q-btn,
@@ -243,4 +264,8 @@ p {
 
 .square {
   border-radius: 0;
+}
+
+.fit-width {
+  width: 100%;
 }
