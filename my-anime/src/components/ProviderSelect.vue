@@ -64,6 +64,7 @@ export default {
       { label: 'AnimeFLV', value: { url: 'https://animeflv.net/' } },
       { label: 'jkanime', value: { url: 'http://jkanime.net/' } },
       { label: 'MonosChinos', value: { url: 'https://monoschinos.com/' } },
+      { label: 'AnimeFenix', value: { url: 'https://animefenix.com/' } },
       { label: "I'm feeling lucky", value: { url: 'https://duckduckgo.com/' } },
       { label: 'Google (EN)', value: { url: 'https://www.google.com/' } },
       { label: 'Twist', value: { url: 'https://twist.moe/' } },
