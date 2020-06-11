@@ -2,11 +2,14 @@
   <q-item
     v-ripple
     clickable
+    :dense="dense"
     :tag="isLink ? 'a' : 'span'"
     :href="isLink ? href : undefined"
     :target="isLink ? target : undefined"
-    :dense="dense"
+    :draggable="isLink ? false : undefined"
+    class="non-selectable"
     :class="{ 'icon-only': icon && !label }"
+    @click="$emit('click')"
   >
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
@@ -26,6 +29,7 @@
 <style lang="scss">
 .icon-only {
   border-radius: 3px;
+
   .q-item__section {
     padding: 0;
     min-width: 0;

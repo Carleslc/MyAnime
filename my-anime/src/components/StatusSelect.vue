@@ -25,7 +25,10 @@
 </template>
 
 <script>
+import bind from '@/mixins/bind';
+
 export default {
+  mixins: [bind('selected', Array)],
   props: {
     options: {
       type: Array,
@@ -39,11 +42,6 @@ export default {
       type: String,
       default: '',
     },
-  },
-  data() {
-    return {
-      selected: this.options.slice(),
-    };
   },
   methods: {
     isSelected(selected) {

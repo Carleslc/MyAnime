@@ -6,25 +6,27 @@
           <back class="q-mr-md" />
           <div class="row justify-between items-center no-wrap">
             <avatar icon class="col-shrink q-mr-lg gt-xxs" />
-            <user-search class="col-grow" />
+            <user-search v-model="username" class="col-grow" />
           </div>
         </div>
         <div v-if="settings" class="col row justify-around items-center">
           <div class="col-auto text-h4">My Anime</div>
         </div>
         <div v-else class="col row justify-end items-center no-wrap" @mousedown.prevent>
-          <provider-select show-tooltip class="col-auto q-mx-auto gt-xsm" />
+          <provider-select v-model="provider" class="col-auto q-mx-auto gt-xsm" />
           <div class="col-auto q-gutter-x-lg q-mr-auto row justify-between gt-md">
             <status-select
+              v-model="airingStatusFilter"
               icon="movie_filter"
               caption="Filter anime status"
-              :options="['Already aired', 'Not yet aired']"
+              :options="config.airingStatuses"
               class="col-auto gt-md"
             />
             <status-select
+              v-model="typeFilter"
               icon="tv"
               caption="Filter anime type"
-              :options="['TV', 'OVA', 'Movie', 'Special', 'ONA', 'Music']"
+              :options="config.animeTypes"
               class="col-auto gt-md"
             />
           </div>
@@ -54,7 +56,7 @@
         class="text-grey-7"
       >
         <q-tab
-          v-for="(s, k) in statuses"
+          v-for="(s, k) in config.statuses"
           :key="k"
           :name="k"
           :icon="s.icon"
@@ -74,19 +76,19 @@
           <div class="col-auto full-width q-px-sm">
             <q-item-section>
               <q-item-label header>Select provider</q-item-label>
-              <provider-select />
+              <provider-select v-model="provider" />
             </q-item-section>
             <q-item-section class="q-pt-lg">
               <q-item-label header>Anime status</q-item-label>
-              <status-select icon="movie_filter" :options="['Already aired', 'Not yet aired']" />
+              <status-select v-model="airingStatusFilter" icon="movie_filter" :options="config.airingStatuses" />
             </q-item-section>
             <q-item-section class="q-pt-sm">
               <q-item-label header>Anime type</q-item-label>
-              <status-select icon="tv" :options="['TV', 'OVA', 'Movie', 'Special', 'ONA', 'Music']" />
+              <status-select v-model="typeFilter" icon="tv" :options="config.animeTypes" />
             </q-item-section>
           </div>
           <div class="col-auto row justify-center q-mt-auto full-width">
-            <reset-button class="col-auto full-width q-pb-sm" />
+            <reset-button class="col-auto full-width q-pb-sm" @click="reset" />
           </div>
         </div>
       </q-list>
@@ -123,27 +125,18 @@
 </template>
 
 <script>
+import config from '@/mixins/configuration';
+
 export default {
+  mixins: [config],
   data() {
     return {
       settings: false,
       info: false,
-      status: 'watching',
-      statuses: {
-        watching: {
-          label: 'Watching',
-          icon: 'visibility',
-        },
-        'on-hold': {
-          label: 'On Hold',
-          icon: 'pause',
-        },
-        'plan-to-watch': {
-          label: 'Plan to Watch',
-          icon: 'watch_later',
-        },
-      },
     };
+  },
+  created() {
+    this.info = !this.isRecurringUser;
   },
   methods: {
     overlappingFooter(offset) {

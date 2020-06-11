@@ -1,15 +1,13 @@
 <template>
-  <item-button dense icon="delete" label="Reset settings" caption="Clean user data and filters" @click="reset" />
+  <item-button
+    dense
+    icon="delete"
+    label="Reset settings"
+    caption="Clean user data and filters"
+    @click="$emit('click')"
+  />
 </template>
 
 <script>
-import { LocalStorage } from 'quasar';
-
-export default {
-  methods: {
-    reset() {
-      LocalStorage.clear();
-    },
-  },
-};
+export default {};
 </script>

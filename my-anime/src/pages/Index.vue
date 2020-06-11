@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading" class="anime-container">
+  <div class="anime-container">
     <anime-episode
       v-for="(anime, i) in animes"
       :key="i"
@@ -18,7 +18,6 @@ import { DateTime } from 'luxon';
 export default {
   data() {
     return {
-      loading: true,
       animes: [
         {
           title: 'Kaguya-sama wa Kokurasetai?: Tensai-tachi no Renai Zunousen',
@@ -34,9 +33,6 @@ export default {
         },
       ],
     };
-  },
-  mounted() {
-    this.loading = false;
   },
 };
 </script>

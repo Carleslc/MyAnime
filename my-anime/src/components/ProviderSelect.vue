@@ -7,11 +7,11 @@
     dark
     options-selected-class="filter-options"
     :options-dark="false"
-    :options="Object.freeze(providers)"
+    :options="providers"
   >
     <template v-slot:prepend>
       <q-icon name="cast" />
-      <q-tooltip v-if="showTooltip" transition-show="fade" transition-hide="fade">
+      <q-tooltip transition-show="fade" transition-hide="fade">
         Select which provider must be opened when clicking over an episode, either in Spanish (ES) or English (EN).
         <br /><br />
         Feeling Lucky options are based on search engine, trying to get a proper streamer, but it doesn't mean it always
@@ -43,36 +43,25 @@
 
 <script>
 import { openURL } from 'quasar';
-import MyAnimeList from '@/models/providers/MyAnimeList.js';
-import Crunchyroll from '@/models/providers/Crunchyroll.js';
+import { registerKeyListeners } from '@/mixins/keyboard';
+import { providers } from '@/mixins/configuration';
+import bind from '@/mixins/bind';
 
 export default {
+  mixins: [
+    bind('provider', Object),
+    registerKeyListeners({
+      down: 'showProviderPopup',
+    }),
+  ],
   props: {
-    showTooltip: {
-      type: Boolean,
-      default: true,
+    value: {
+      type: Object,
+      required: true,
     },
   },
   data() {
-    const providers = [
-      { label: 'MyAnimeList', value: MyAnimeList.instance },
-      { label: 'Crunchyroll', value: Crunchyroll.instance },
-      { label: 'Netflix', value: { url: 'https://www.netflix.com/' } },
-      { label: 'Voy a tener suerte', value: { url: 'https://duckduckgo.com/' } },
-      { label: 'Google (ES)', value: { url: 'https://www.google.es/' } },
-      { label: 'AnimeID', value: { url: 'https://www.animeid.tv/' } },
-      { label: 'AnimeFLV', value: { url: 'https://animeflv.net/' } },
-      { label: 'jkanime', value: { url: 'http://jkanime.net/' } },
-      { label: 'MonosChinos', value: { url: 'https://monoschinos.com/' } },
-      { label: 'AnimeFenix', value: { url: 'https://animefenix.com/' } },
-      { label: "I'm feeling lucky", value: { url: 'https://duckduckgo.com/' } },
-      { label: 'Google (EN)', value: { url: 'https://www.google.com/' } },
-      { label: 'Twist', value: { url: 'https://twist.moe/' } },
-      { label: 'Gogoanime', value: { url: 'https://www.gogoanime.pro/' } },
-    ];
-
     return {
-      provider: providers[0],
       providers,
     };
   },
@@ -81,27 +70,17 @@ export default {
       return this.provider.value.url;
     },
   },
-  mounted() {
-    document.addEventListener('keydown', this.keyListener);
-  },
-  beforeDestroy() {
-    document.removeEventListener('keydown', this.keyListener);
-  },
   methods: {
     openProvider() {
       const url = this.providerUrl;
       if (url) {
         openURL(url);
       } else {
-        this.$refs.providerSelect.showPopup();
+        this.showProviderPopup();
       }
     },
-    keyListener(e) {
-      const key = e.which || e.keyCode;
-      if (key === 40) {
-        // Down
-        this.$refs.providerSelect.showPopup();
-      }
+    showProviderPopup() {
+      this.$refs.providerSelect.showPopup();
     },
   },
 };

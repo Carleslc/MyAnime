@@ -28,12 +28,14 @@
 </template>
 
 <script>
+import bind from '@/mixins/bind';
+
 export default {
+  mixins: [bind('searched', String)],
   data() {
     return {
-      username: '',
+      username: this.value,
       searching: false,
-      searched: '',
     };
   },
   computed: {
@@ -43,12 +45,9 @@ export default {
   },
   methods: {
     searchUser() {
-      if (this.$router.name !== 'home') {
-        this.$router.push({ name: 'home' });
-      }
       this.searched = this.username;
       this.searching = true;
-      alert(this.username);
+      // TODO: GET animes & Update animes in vuex store
       this.searching = false;
     },
   },
