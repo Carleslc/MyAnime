@@ -1,5 +1,5 @@
-import { MyAnimeList } from '@/model/providers/MyAnimeList';
-import { Crunchyroll } from '@/model/providers/Crunchyroll';
+import { MyAnimeList } from '@/providers/MyAnimeList';
+import { Crunchyroll } from '@/providers/Crunchyroll';
 
 export const providers = Object.freeze([
   { label: 'MyAnimeList', value: new MyAnimeList() },
