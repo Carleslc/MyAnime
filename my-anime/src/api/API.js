@@ -7,11 +7,16 @@ const CORS_PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
 
 const AUTH_KEY = 'auth';
 
-export default class API {
+export function encodeParams(params) {
+  return qs.stringify(params);
+}
+
+export class API {
   constructor(baseUrl, headers, cors = false) {
     if (cors) {
       baseUrl = CORS_PROXY_URL + baseUrl;
     }
+
     this.axios = axios.create({
       baseURL: baseUrl,
       headers: {
@@ -21,16 +26,27 @@ export default class API {
         ...headers,
       },
     });
+
     /* this.axios.interceptors.request.use((request) => {
       console.log(request);
       return request;
     }); */
+
+    this.loadAuthInfo();
+  }
+
+  get isAuthenticated() {
+    if (!this.expiration) {
+      return false;
+    }
+    const now = DateTime.utc();
+    return this.expiration > now;
   }
 
   /**
    * @param {String} accessToken
    * @param {String} refreshToken
-   * @param {DateTime} expiration luxon DateTime
+   * @param {DateTime} expiration
    */
   setAuthInfo(accessToken, refreshToken, expiration) {
     this.accessToken = accessToken;
@@ -58,16 +74,8 @@ export default class API {
     }
   }
 
-  isAuthenticated() {
-    if (!this.expiration) {
-      return false;
-    }
-    const now = DateTime.utc();
-    return this.expiration > now;
-  }
-
   postFormEncoded(endpoint, data, headers) {
-    return this.axios.post(endpoint, qs.stringify(data), {
+    return this.axios.post(endpoint, encodeParams(data), {
       ...headers,
       'Content-Type': 'application/x-www-form-urlencoded',
     });

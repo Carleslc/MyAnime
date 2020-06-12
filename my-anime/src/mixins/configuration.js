@@ -1,5 +1,5 @@
-import { MyAnimeList } from '@/providers/MyAnimeList';
-import { Crunchyroll } from '@/providers/Crunchyroll';
+import { MyAnimeList } from '@/model/providers/MyAnimeList';
+import { Crunchyroll } from '@/model/providers/Crunchyroll';
 
 export const providers = Object.freeze([
   { label: 'MyAnimeList', value: new MyAnimeList() },
@@ -18,7 +18,7 @@ export const providers = Object.freeze([
   { label: 'Gogoanime', value: { url: 'https://www.gogoanime.pro/' } },
 ]);
 
-const config = Object.freeze({
+export const config = Object.freeze({
   airingStatuses: ['Already aired', 'Not yet aired'],
   animeTypes: ['TV', 'OVA', 'Movie', 'Special', 'ONA', 'Music'],
   statuses: {

@@ -12,3 +12,9 @@ export function notifyError(message) {
     message: message || i18n.t('error'),
   });
 }
+
+export class AuthenticationNeededException extends Error {
+  constructor(message) {
+    super(message || 'Unauthenticated');
+  }
+}

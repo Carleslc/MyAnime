@@ -29,6 +29,7 @@
 
 <script>
 import bind from '@/mixins/bind';
+import { notifyError } from '@/utils/errors';
 
 export default {
   mixins: [bind('searched', String)],
@@ -47,8 +48,16 @@ export default {
     searchUser() {
       this.searched = this.username;
       this.searching = true;
-      // TODO: GET animes & Update animes in vuex store
-      this.searching = false;
+      this.$api
+        .getAnimes(this.username, 'watching')
+        .then((animes) => {
+          console.log(animes);
+          // TODO: Update animes in vuex store
+        })
+        .catch(notifyError)
+        .finally(() => {
+          this.searching = false;
+        });
     },
   },
 };

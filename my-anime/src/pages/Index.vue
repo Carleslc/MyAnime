@@ -1,36 +1,31 @@
 <template>
   <div class="anime-container">
-    <anime-episode
-      v-for="(anime, i) in animes"
-      :key="i"
-      :title="anime.title"
-      :img="anime.img"
-      :episode="anime.episode"
-      :total-episodes="anime.totalEpisodes"
-      :airing-date="anime.airingDate"
-    />
+    <anime-episode v-for="anime in animes" :key="anime.title" :anime="anime" />
   </div>
 </template>
 
 <script>
-import { DateTime } from 'luxon';
+import { Anime } from '@/model/Anime';
 
 export default {
   data() {
     return {
       animes: [
-        {
+        new Anime({
           title: 'Kaguya-sama wa Kokurasetai?: Tensai-tachi no Renai Zunousen',
-          img: 'https://cdn.myanimelist.net/images/anime/1764/106659.jpg',
-          episode: 10,
+          cover: 'https://cdn.myanimelist.net/images/anime/1764/106659.jpg',
+          lastWatchedEpisode: 10,
           totalEpisodes: 12,
-        },
-        {
+        }),
+        new Anime({
           title: 'One Piece',
-          img: 'https://cdn.myanimelist.net/images/anime/6/73245.jpg',
-          episode: 923,
-          airingDate: DateTime.local().plus({ days: 1, hours: 5 }).toJSDate(),
-        },
+          cover: 'https://cdn.myanimelist.net/images/anime/6/73245.jpg',
+          lastWatchedEpisode: 923,
+          broadcast: {
+            weekday: 'sunday',
+            time: '09:30',
+          },
+        }),
       ],
     };
   },
