@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 import { LocalStorage } from 'quasar';
 import { DateTime } from 'luxon';
 
@@ -63,5 +64,12 @@ export default class API {
     }
     const now = DateTime.utc();
     return this.expiration > now;
+  }
+
+  postFormEncoded(endpoint, data, headers) {
+    return this.axios.post(endpoint, qs.stringify(data), {
+      ...headers,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
   }
 }
