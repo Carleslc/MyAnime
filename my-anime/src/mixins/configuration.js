@@ -1,9 +1,11 @@
-import { MyAnimeList } from '@/model/providers/MyAnimeList';
-import { Crunchyroll } from '@/model/providers/Crunchyroll';
+import MyAnimeList from '@/model/providers/MyAnimeList';
+import Crunchyroll from '@/model/providers/Crunchyroll';
+import { mapMutations } from 'vuex';
+import { mapFields } from 'vuex-map-fields';
 
 export const providers = Object.freeze([
-  { label: 'MyAnimeList', value: new MyAnimeList() },
-  { label: 'Crunchyroll', value: new Crunchyroll() },
+  { label: 'MyAnimeList', value: MyAnimeList },
+  { label: 'Crunchyroll', value: Crunchyroll },
   { label: 'Netflix', value: { url: 'https://www.netflix.com/' } },
   { label: 'Voy a tener suerte', value: { url: 'https://duckduckgo.com/' } },
   { label: 'Google (ES)', value: { url: 'https://www.google.es/' } },
@@ -37,25 +39,27 @@ export const config = Object.freeze({
   },
 });
 
-const defaults = {
+export const defaults = {
   username: '',
+  status: 'watching',
   provider: providers[0],
   airingStatusFilter: config.airingStatuses.slice(),
   typeFilter: config.animeTypes.slice(),
-  status: 'watching',
 };
 
 export default {
   data() {
-    const data = {
+    return {
       config,
-      ...defaults,
+      isRecurringUser: !this.$q.localStorage.isEmpty(),
     };
-
-    this.isRecurringUser = !this.$q.localStorage.isEmpty();
-
+  },
+  computed: {
+    ...mapFields('store', Object.keys(defaults)),
+  },
+  created() {
+    // restore saved configuration
     if (!this.isRecurrentUser) {
-      // restore saved configuration
       Object.keys(defaults).forEach((key) => {
         if (this.$q.localStorage.has(key)) {
           let value = this.$q.localStorage.getItem(key);
@@ -66,21 +70,19 @@ export default {
           }
 
           if (value !== undefined && value !== null) {
-            data[key] = value;
+            this[key] = value;
           }
         }
       });
     }
 
-    return data;
-  },
-  created() {
     // add watchers to save configuration
     Object.keys(defaults)
       .filter((key) => key !== 'provider') // avoid saving entire object
       .forEach((key) => this.$watch(key, (value) => this.$q.localStorage.set(key, value)));
   },
   methods: {
+    ...mapMutations('store', ['set']),
     // reset configuration
     reset() {
       this.$q.localStorage.clear();

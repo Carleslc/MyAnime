@@ -19,7 +19,8 @@
     "prettier": "^2.0.5",
     "qs": "^6.9.4",
     "quasar": "^1.12.4",
-    "vue-i18n": "^8.0.0"
+    "vue-i18n": "^8.0.0",
+    "vuex-map-fields": "^1.4.0"
   },
   "devDependencies": {
     "@quasar/app": "^1.9.6",

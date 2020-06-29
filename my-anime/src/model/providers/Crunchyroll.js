@@ -1,7 +1,9 @@
 import Provider from './Provider.js';
 
-export class Crunchyroll extends Provider {
+class Crunchyroll extends Provider {
   constructor() {
     super('https://www.crunchyroll.com/');
   }
 }
+
+export default new Crunchyroll();

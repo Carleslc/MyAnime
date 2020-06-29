@@ -1,12 +1,9 @@
 import { DateTime } from 'luxon';
-import { AuthenticationNeededException } from '@/utils/errors';
-import { config } from '@/mixins/configuration';
+import { AuthenticationNeededException, notifyError } from '@/utils/errors';
 import { Anime } from '@/model/Anime';
 import { API, encodeParams } from './API';
 
 function parseAnimes(animes) {
-  const animeTypesLowerCase = config.animeTypes.map((type) => type.toLowerCase());
-
   return animes.map((data) => {
     const anime = data.node;
 
@@ -15,22 +12,19 @@ function parseAnimes(animes) {
       title: anime.title,
       synonyms: anime.alternative_titles.synonyms,
       cover: anime.main_picture.medium,
-      status: anime.my_list_status.status.replace('_', '-'),
+      status: anime.my_list_status.status.replace(/_/g, '-'),
+      type: anime.media_type.toLowerCase(),
       lastWatchedEpisode: anime.my_list_status.num_episodes_watched,
+      startDate: anime.start_date,
+      updatedAt: anime.my_list_status.updated_at,
     };
-
-    const mediaType = anime.media_type.toLowerCase();
-    const typeIndex = animeTypesLowerCase.findIndex((type) => type === mediaType);
-    if (typeIndex >= 0) {
-      fields.type = config.animeTypes[typeIndex];
-    }
 
     if (anime.num_episodes > 0) {
       fields.totalEpisodes = anime.num_episodes;
     }
 
-    if (anime.start_date) {
-      fields.airingDate = DateTime.fromFormat(anime.start_date, 'yyyy-MM-dd');
+    if (anime.status) {
+      fields.airingStatus = anime.status.replace(/_/g, ' ');
     }
 
     if (anime.broadcast) {
@@ -49,13 +43,19 @@ const client = '6114d00ca681b7701d1e15fe11a4987e';
 class MyAnimeList extends API {
   constructor() {
     super(
-      'https://api.myanimelist.net',
+      'MyAnimeList',
+      'https://apimyanimelist.net',
       {
         'X-MAL-Client-ID': client,
       },
       true // cors
     );
+    this.image = 'statics/mal.jpg';
     this.version = 'v2';
+    this.resetOffsets();
+  }
+
+  resetOffsets() {
     this.offsets = {};
   }
 
@@ -64,22 +64,26 @@ class MyAnimeList extends API {
   }
 
   async auth(username, password) {
-    const { data } = await this.postFormEncoded(this.url('/auth/token'), {
+    const response = await this.postFormEncoded(this.url('/auth/token'), {
       client_id: client,
       grant_type: 'password',
       username,
       password,
     });
-    this.updateAuthInfo(data);
+    if (response) {
+      this.updateAuthInfo(response.data);
+    }
   }
 
   async refreshAccessToken() {
-    const { data } = await this.postFormEncoded('/v1/oauth2/token', {
+    const response = await this.postFormEncoded('/v1/oauth2/token', {
       client_id: client,
       grant_type: 'refresh_token',
       refresh_token: this.refreshToken,
     });
-    this.updateAuthInfo(data);
+    if (response) {
+      this.updateAuthInfo(response.data);
+    }
   }
 
   updateAuthInfo(data) {
@@ -101,23 +105,64 @@ class MyAnimeList extends API {
   }
 
   get(endpoint) {
-    return this.axios.get(this.url(endpoint));
+    return this.axios.get(this.url(endpoint)).catch((e) => {
+      this.error = e;
+      notifyError(e);
+    });
+  }
+
+  async getUserPicture() {
+    await this.authenticated();
+
+    const response = await this.get('/users/@me');
+
+    if (response) {
+      return response.data.picture;
+    }
+    return null;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getUserProfileUrl(username) {
+    const suffix = username ? `profile/${username}` : '';
+    return `https://myanimelist.net/${suffix}`;
+  }
+
+  isFetched(username, status = null) {
+    const currentOffsets = this.offsets[username];
+    return !!currentOffsets && !!currentOffsets[status];
+  }
+
+  hasNext(username, status = null) {
+    const currentOffsets = this.offsets[username];
+    return !currentOffsets || !currentOffsets[status] || currentOffsets[status].hasNext;
   }
 
   async getAnimes(username, status = null, next = false) {
+    if (next && !this.hasNext(username, status)) {
+      return [];
+    }
+
     await this.authenticated();
 
-    let offset = 0;
     let currentOffsets = this.offsets[username];
 
-    if (next && currentOffsets && currentOffsets[status]) {
-      offset = currentOffsets[status];
+    if (!currentOffsets) {
+      currentOffsets = {};
+      this.offsets[username] = currentOffsets;
+    }
+
+    if (!next || !currentOffsets[status]) {
+      currentOffsets[status] = {
+        hasNext: true,
+        offset: 0,
+      };
     }
 
     const filters = {
       sort: 'list_updated_at',
-      offset,
-      limit: 500,
+      offset: currentOffsets[status].offset,
+      limit: 50,
       fields: [
         'id',
         'title',
@@ -129,25 +174,27 @@ class MyAnimeList extends API {
         'end_date',
         'broadcast',
         'num_episodes',
-        'my_list_status',
+        'my_list_status{num_episodes_watched,status,updated_at}',
       ].join(','),
     };
 
     if (status) {
-      filters.status = status.replace('-', '_');
+      filters.status = status.replace(/-/g, '_');
     }
 
-    const { data } = await this.get(`/users/${username}/animelist?${encodeParams(filters)}`);
+    const response = await this.get(`/users/${username}/animelist?${encodeParams(filters)}`);
 
-    if (data.paging.next) {
-      if (!currentOffsets) {
-        currentOffsets = {};
-        this.offsets[username] = currentOffsets;
-      }
-      currentOffsets[status] = (currentOffsets[status] || 0) + filters.limit;
+    if (!response) {
+      return [];
     }
 
-    return parseAnimes(data.data);
+    if (response.data.paging.next) {
+      currentOffsets[status].offset += filters.limit;
+    } else {
+      currentOffsets[status].hasNext = false;
+    }
+
+    return parseAnimes(response.data.data);
   }
 }
 

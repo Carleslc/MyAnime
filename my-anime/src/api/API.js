@@ -2,6 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { LocalStorage } from 'quasar';
 import { DateTime } from 'luxon';
+import { notifyError } from '@/utils/errors';
 
 const CORS_PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
 
@@ -12,7 +13,9 @@ export function encodeParams(params) {
 }
 
 export class API {
-  constructor(baseUrl, headers, cors = false) {
+  constructor(name, baseUrl, headers, cors = false) {
+    this.name = name;
+
     if (cors) {
       baseUrl = CORS_PROXY_URL + baseUrl;
     }
@@ -75,9 +78,14 @@ export class API {
   }
 
   postFormEncoded(endpoint, data, headers) {
-    return this.axios.post(endpoint, encodeParams(data), {
-      ...headers,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    });
+    return this.axios
+      .post(endpoint, encodeParams(data), {
+        ...headers,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
+      .catch((e) => {
+        this.error = e;
+        notifyError(e);
+      });
   }
 }

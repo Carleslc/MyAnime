@@ -1,13 +1,20 @@
 <template>
   <q-card
-    v-if="!anime.isCompleted"
+    v-if="display"
     v-ripple
     class="anime-episode"
     :class="{ small: isSmallElement, 'on-hover': $q.platform.is.desktop }"
   >
     <q-resize-observer debounce="200" @resize="handleResize" />
     <a :href="episodeUrl" target="_blank" class="column justify-between full-height" @mousedown.prevent>
-      <q-img :src="anime.cover" spinner-color="primary" class="full-height" />
+      <q-img
+        :src="anime.cover"
+        basic
+        spinner-color="primary"
+        class="full-height"
+        @load="$emit('loaded', anime.title)"
+        @error="$emit('loaded', anime.title)"
+      />
       <div class="absolute-full hoverable overlay column justify-center">
         <q-btn
           ref="fabNext"
@@ -34,7 +41,7 @@
         <h1 class="col-auto full-width q-px-xs q-mt-auto q-pt-xl">{{ anime.title }}</h1>
         <div :class="`column full-width q-pa-${isSmallElement ? 'xs' : 'sm'} q-mt-auto`">
           <div
-            v-if="anime.nextEpisodeAiringDate"
+            v-if="formattedAiringDate"
             class="row justify-center full-width"
             :class="`q-mb-${isSmallElement ? 'sm' : 'md'}`"
           >
@@ -48,7 +55,7 @@
           >
             <div class="row justify-center full-width">
               Episode {{ anime.nextEpisode }}
-              <span v-if="anime.totalEpisodes && !isSmallElement"> / {{ anime.totalEpisodes }} </span>
+              <span v-if="anime.totalEpisodes && !isSmallElement" class="q-pl-xs">/ {{ anime.totalEpisodes }}</span>
             </div>
             <q-linear-progress
               v-if="anime.totalEpisodes"
@@ -65,6 +72,7 @@
 
 <script>
 import { DateTime } from 'luxon';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   props: {
@@ -80,21 +88,81 @@ export default {
     };
   },
   computed: {
-    formattedAiringDate() {
-      const now = DateTime.local();
-      const episodeAiringDate = this.anime.nextEpisodeAiringDate;
-      const hours = Math.ceil(Math.abs(episodeAiringDate.diff(now, 'hours').toObject().hours));
-      if (hours <= 24) {
-        return episodeAiringDate.day === now.day
-          ? episodeAiringDate.toRelative()
-          : episodeAiringDate.toRelativeCalendar();
+    ...mapState('store', {
+      provider: (state) => state.provider.value,
+      typeFilter: (state) => state.typeFilter.map((filterType) => filterType.toLowerCase()),
+      airingStatusFilter: 'airingStatusFilter',
+    }),
+    display() {
+      return (
+        !this.anime.isCompleted &&
+        ((this.anime.isAired && this.airingStatusFilter.includes('Already aired')) ||
+          (!this.anime.isAired && this.airingStatusFilter.includes('Not yet aired'))) &&
+        this.typeFilter.includes(this.anime.type)
+      );
+    },
+    broadcast() {
+      if (this.anime.broadcast && this.anime.broadcast.weekday) {
+        let estimation = DateTime.fromFormat(
+          `${this.anime.broadcast.weekday} ${this.anime.broadcast.time || '23:59'}`,
+          'EEEE HH:mm',
+          { zone: 'Asia/Tokyo' }
+        ).toLocal();
+        if (this.anime.airingDate) {
+          estimation = this.anime.airingDate.plus({
+            weeks: this.anime.nextEpisode - 1,
+            hours: estimation.hour + this.provider.offset,
+            minutes: estimation.minute,
+          });
+        }
+        return estimation;
       }
-      const weekday = episodeAiringDate.weekdayLong;
-      const date = episodeAiringDate.toLocaleString(this.isSmallElement ? DateTime.DATE_FULL : DateTime.DATE_MED);
-      return this.isSmallElement ? date : `${weekday} ${date}`;
+      return null;
+    },
+    nextEpisodeAiringDate() {
+      if (this.anime.airingStatus === 'currently airing' && this.broadcast) {
+        return {
+          date: this.broadcast,
+          precision: 'day',
+        };
+      }
+      if (this.anime.airingDate) {
+        return {
+          date: this.anime.airingDate.plus(0), // make a copy to avoid mutations outside vuex
+          precision: this.anime.airingDatePrecision,
+        };
+      }
+      return null;
+    },
+    nextEpisodeIsAired() {
+      return this.nextEpisodeAiringDate && this.nextEpisodeAiringDate.date <= DateTime.local();
+    },
+    formattedAiringDate() {
+      if (this.nextEpisodeIsAired) {
+        return null;
+      }
+      if (!this.nextEpisodeAiringDate) {
+        return '?';
+      }
+      const { date, precision } = this.nextEpisodeAiringDate;
+      const now = DateTime.local();
+      const hours = Math.ceil(Math.abs(date.diff(now, 'hours').toObject().hours));
+      if (hours <= 24) {
+        // less than a day
+        return date.day === now.day ? date.toRelative() : date.toRelativeCalendar();
+      }
+      if (precision === 'day') {
+        const weekday = date.weekdayLong;
+        const formattedDate = date.toLocaleString(this.isSmallElement ? DateTime.DATE_FULL : DateTime.DATE_MED);
+        return this.isSmallElement ? date : `${weekday} ${formattedDate}`;
+      }
+      if (precision === 'month') {
+        return date.toLocaleString({ month: 'long', year: 'numeric' });
+      }
+      return date.toLocaleString({ year: 'numeric' });
     },
     episodeUrl() {
-      return this.anime.cover; // TODO
+      return this.provider.episodeUrl(this.anime);
     },
     isSmallElement() {
       return this.width < 176;
@@ -102,8 +170,13 @@ export default {
   },
   mounted() {
     this.width = this.$el.offsetWidth;
+
+    if (!this.display) {
+      this.$emit('loaded', this.anime.title);
+    }
   },
   methods: {
+    ...mapMutations('store', ['nextEpisode']),
     handleResize(size) {
       // avoid unnecessary updates
       if (size.width !== this.width) {
@@ -122,7 +195,7 @@ export default {
         notification.color = 'primary';
       }
 
-      this.anime.lastWatchedEpisode = this.anime.nextEpisode;
+      this.nextEpisode(this.anime);
 
       this.$q.notify(notification);
 

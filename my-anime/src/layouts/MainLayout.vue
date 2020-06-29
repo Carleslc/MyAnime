@@ -6,7 +6,7 @@
           <back class="q-mr-md" />
           <div class="row justify-between items-center no-wrap">
             <avatar icon class="col-shrink q-mr-lg gt-xxs" />
-            <user-search v-model="username" class="col-grow" />
+            <user-search class="col-grow" />
           </div>
         </div>
         <div v-if="settings" class="col row justify-around items-center">
@@ -126,6 +126,7 @@
 
 <script>
 import config from '@/mixins/configuration';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   mixins: [config],
@@ -135,10 +136,21 @@ export default {
       info: false,
     };
   },
+  watch: {
+    status() {
+      if (!this.isLoading() && !this.isFetched()) {
+        this.fetchAnimes();
+      }
+    },
+  },
   created() {
     this.info = !this.isRecurringUser;
+    this.loading(); // loaded after initial user search
   },
   methods: {
+    ...mapGetters('store', ['isLoading', 'isFetched']),
+    ...mapMutations('store', ['loading']),
+    ...mapActions('store', ['fetchAnimes']),
     overlappingFooter(offset) {
       const footerHeight = '41px';
       return { minHeight: `calc(100vh - ${offset}px + ${footerHeight})` };

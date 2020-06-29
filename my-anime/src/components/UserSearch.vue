@@ -1,6 +1,6 @@
 <template>
-  <q-form @submit="searchUser">
-    <q-input v-model="username" dark dense standout placeholder="Username" class="user-search">
+  <q-form @submit="searchUserInput">
+    <q-input v-model="input" dark dense standout placeholder="Username" class="user-search">
       <template v-slot:prepend>
         <span class="prefix">@</span>
         <q-tooltip
@@ -15,12 +15,12 @@
       </template>
       <template v-slot:append>
         <q-btn
-          :flat="searched === username || !filled"
-          :loading="searching"
+          :flat="username === input || !filled"
+          :loading="isLoading()"
           :disabled="!filled"
           icon="search"
           type="submit"
-          @click="searchUser"
+          @click="searchUserInput"
         />
       </template>
     </q-input>
@@ -28,36 +28,33 @@
 </template>
 
 <script>
-import bind from '@/mixins/bind';
-import { notifyError } from '@/utils/errors';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
-  mixins: [bind('searched', String)],
   data() {
     return {
-      username: this.value,
-      searching: false,
+      input: '',
     };
   },
   computed: {
+    ...mapState('store', ['username']),
     filled() {
-      return this.username.length > 0;
+      return this.input.length > 0;
     },
   },
+  created() {
+    if (this.username) {
+      this.input = this.username;
+      this.searchUserInput();
+    }
+    this.loaded();
+  },
   methods: {
-    searchUser() {
-      this.searched = this.username;
-      this.searching = true;
-      this.$api
-        .getAnimes(this.username, 'watching')
-        .then((animes) => {
-          console.log(animes);
-          // TODO: Update animes in vuex store
-        })
-        .catch(notifyError)
-        .finally(() => {
-          this.searching = false;
-        });
+    ...mapGetters('store', ['isLoading']),
+    ...mapMutations('store', ['loaded']),
+    ...mapActions('store', ['searchUser']),
+    searchUserInput() {
+      this.searchUser(this.input);
     },
   },
 };
