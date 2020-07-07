@@ -7,7 +7,7 @@ class MonosChinos extends Provider {
 
   episodeUrl(anime, episode) {
     const param = `${anime.title}-${episode}`;
-    return `${this.url}ver/${this.encode(param)}`;
+    return `${this.url}ver/${Provider.encode(param)}`;
   }
 }
 

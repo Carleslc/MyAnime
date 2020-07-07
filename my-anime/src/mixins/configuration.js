@@ -1,4 +1,6 @@
-import { MyAnimeList, Crunchyroll } from '@/model/providers';
+import MyAnimeList from '@/model/providers/MyAnimeList';
+import Crunchyroll from '@/model/providers/Crunchyroll';
+import MonosChinos from '@/model/providers/MonosChinos';
 import { mapMutations } from 'vuex';
 import { mapFields } from 'vuex-map-fields';
 
@@ -11,7 +13,7 @@ export const providers = Object.freeze([
   { label: 'AnimeID', value: { url: 'https://www.animeid.tv/' } },
   { label: 'AnimeFLV', value: { url: 'https://animeflv.net/' } },
   { label: 'jkanime', value: { url: 'http://jkanime.net/' } },
-  { label: 'MonosChinos', value: { url: 'https://monoschinos.com/' } },
+  { label: 'MonosChinos', value: MonosChinos },
   { label: 'AnimeFenix', value: { url: 'https://animefenix.com/' } },
   { label: "I'm feeling lucky", value: { url: 'https://duckduckgo.com/' } },
   { label: 'Google (EN)', value: { url: 'https://www.google.com/' } },
