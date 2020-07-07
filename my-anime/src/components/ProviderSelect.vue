@@ -23,7 +23,9 @@
     <template v-slot:option="scope">
       <q-item v-ripple v-bind="scope.itemProps" v-on="scope.itemEvents">
         <q-item-section avatar>
-          <q-icon name="screen_share" />
+          <q-avatar square size="sm">
+            <img :src="scope.opt.value.icon">
+          </q-avatar>
         </q-item-section>
         <q-item-section>
           <q-item-label>{{ scope.opt.label }}</q-item-label>
@@ -32,7 +34,10 @@
     </template>
     <template v-if="provider" v-slot:after>
       <q-btn flat dense type="a" :href="providerUrl" target="_blank" @click="openProvider">
-        <q-icon name="screen_share" />
+        <!-- <q-icon name="screen_share" /> -->
+        <q-avatar square size="sm">
+          <img :src="provider.value.icon">
+        </q-avatar>
         <q-tooltip transition-show="fade" transition-hide="fade">
           {{ provider.label }}
         </q-tooltip>

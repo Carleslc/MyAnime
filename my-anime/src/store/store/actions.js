@@ -1,21 +1,24 @@
+function withLoading(commit, promise) {
+  commit('loading');
+  return promise.finally(() => {
+    commit('loaded');
+  });
+}
+
 export default {
   async login({ state }, { username, password }) {
     await state.api.auth(username, password);
   },
   fetchAnimes({ commit, state: { api, username, status } }, next = false) {
-    commit('loading');
-    return api
-      .getAnimes(username, status, next)
-      .then((animes) => {
+    return withLoading(commit,
+      api.getAnimes(username, status, next).then((animes) => {
         commit(next ? 'addAnimes' : 'setAnimes', {
           status,
           animes,
         });
         return animes;
       })
-      .finally(() => {
-        commit('loaded');
-      });
+    );
   },
   async fetchMoreAnimes({ dispatch, state: { api, username, status } }) {
     if (api.hasNext(username, status)) {
@@ -30,10 +33,17 @@ export default {
     dispatch('fetchAnimes');
   },
   updatePicture({ commit, state: { api, username } }) {
-    commit('loading');
-    api.getUserPicture(username).then((picture) => {
-      commit('setPicture', picture || api.image);
-      commit('loaded');
-    });
+    return withLoading(commit,
+      api.getUserPicture(username).then((picture) => {
+        commit('setPicture', picture || api.image);
+      })
+    );
   },
+  updateEpisode({ commit, state: { api } }, anime) {
+    return withLoading(commit,
+      api.updateEpisode(anime).then(() => {
+        commit('nextEpisode', anime);
+      })
+    );
+  }
 };

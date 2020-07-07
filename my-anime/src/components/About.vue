@@ -54,6 +54,7 @@
         <li>🇪🇸 Voy a tener suerte</li>
         <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>
         <li>🇪🇸 <a href="https://www.animeid.tv/" target="_blank">AnimeID</a></li>
+        <li>🇪🇸 <a href="https://animefenix.com/" target="_blank">AnimeFenix</a></li>
         <li>🇪🇸 <a href="http://jkanime.net/" target="_blank">jkanime</a></li>
         <li>🇪🇸 <a href="https://monoschinos.com/" target="_blank">MonosChinos</a></li>
         <li>🇬🇧 I&#39;m Feeling Lucky</li>

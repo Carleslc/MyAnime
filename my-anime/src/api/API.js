@@ -106,16 +106,23 @@ export class API {
     });
   }
 
+  formEncoded(action, endpoint, data, headers) {
+    return action.call(this.axios, endpoint, encodeParams(data), {
+      ...headers,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    })
+    .catch((e) => {
+      this.error = e;
+      notifyError(e);
+    });
+  }
+
   postFormEncoded(endpoint, data, headers) {
-    return this.axios
-      .post(endpoint, encodeParams(data), {
-        ...headers,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      })
-      .catch((e) => {
-        this.error = e;
-        notifyError(e);
-      });
+    return this.formEncoded(this.axios.post, endpoint, data, headers);
+  }
+
+  putFormEncoded(endpoint, data, headers) {
+    return this.formEncoded(this.axios.put, endpoint, data, headers);
   }
 
   resetOffsets() {
@@ -171,4 +178,6 @@ export class API {
     currentOffset.hasNext = false;
     return [];
   }
+
+  async updateEpisode(anime) {}
 }

@@ -4,6 +4,10 @@ export default class Provider {
     this.offset = offset;
   }
 
+  get icon() {
+    return `${this.url}favicon.ico`;
+  }
+
   // eslint-disable-next-line no-unused-vars
   episodeUrl(title, episode) {
     return this.url;

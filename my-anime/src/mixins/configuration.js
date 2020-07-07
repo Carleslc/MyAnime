@@ -1,24 +1,33 @@
 import MyAnimeList from '@/model/providers/MyAnimeList';
 import Crunchyroll from '@/model/providers/Crunchyroll';
+import Netflix from '@/model/providers/Netflix';
+import AnimeID from '@/model/providers/AnimeID';
+import AnimeFLV from '@/model/providers/AnimeFLV';
+import jkAnime from '@/model/providers/jkAnime';
 import MonosChinos from '@/model/providers/MonosChinos';
+import AnimeFenix from '@/model/providers/AnimeFenix';
+import Twist from '@/model/providers/Twist';
+import Gogoanime from '@/model/providers/Gogoanime';
+import { FeelingDuckyES, FeelingDuckyEN, FeelingLuckyES, FeelingLuckyEN } from '@/model/providers/FeelingLucky';
+
 import { mapMutations } from 'vuex';
 import { mapFields } from 'vuex-map-fields';
 
 export const providers = Object.freeze([
   { label: 'MyAnimeList', value: MyAnimeList },
   { label: 'Crunchyroll', value: Crunchyroll },
-  { label: 'Netflix', value: { url: 'https://www.netflix.com/' } },
-  { label: 'Voy a tener suerte', value: { url: 'https://duckduckgo.com/' } },
-  { label: 'Google (ES)', value: { url: 'https://www.google.es/' } },
-  { label: 'AnimeID', value: { url: 'https://www.animeid.tv/' } },
-  { label: 'AnimeFLV', value: { url: 'https://animeflv.net/' } },
-  { label: 'jkanime', value: { url: 'http://jkanime.net/' } },
+  { label: 'Netflix', value: Netflix },
+  { label: 'Voy a tener suerte', value: FeelingDuckyES },
+  { label: 'Google (ES)', value: FeelingLuckyES },
+  { label: 'AnimeFLV', value: AnimeFLV },
+  { label: 'AnimeFenix', value: AnimeFenix },
+  { label: 'AnimeID', value: AnimeID },
+  { label: 'jkanime', value: jkAnime },
   { label: 'MonosChinos', value: MonosChinos },
-  { label: 'AnimeFenix', value: { url: 'https://animefenix.com/' } },
-  { label: "I'm feeling lucky", value: { url: 'https://duckduckgo.com/' } },
-  { label: 'Google (EN)', value: { url: 'https://www.google.com/' } },
-  { label: 'Twist', value: { url: 'https://twist.moe/' } },
-  { label: 'Gogoanime', value: { url: 'https://www.gogoanime.pro/' } },
+  { label: "I'm feeling ducky", value: FeelingDuckyEN },
+  { label: 'Google (EN)', value: FeelingLuckyEN },
+  { label: 'Gogoanime', value: Gogoanime },
+  { label: 'Twist', value: Twist },
 ]);
 
 export const config = Object.freeze({

@@ -24,8 +24,8 @@
           :icon="anime.isLastEpisode ? 'library_add_check' : 'queue_play_next'"
           color="white"
           class="absolute-top-right q-ma-sm"
-          taxindex="0"
-          @click.prevent="updateEpisode"
+          tabindex="0"
+          @click.prevent="nextEpisode"
         >
           <q-badge v-if="!anime.isLastEpisode" color="secondary" floating>{{ anime.nextEpisode }}</q-badge>
           <q-tooltip
@@ -72,7 +72,7 @@
 
 <script>
 import { DateTime } from 'luxon';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   props: {
@@ -176,28 +176,28 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('store', ['nextEpisode']),
+    ...mapActions('store', ['updateEpisode']),
     handleResize(size) {
       // avoid unnecessary updates
       if (size.width !== this.width) {
         this.width = size.width;
       }
     },
-    updateEpisode() {
-      const notification = {};
+    nextEpisode() {
       const completed = this.anime.isLastEpisode;
+      const episode = this.anime.nextEpisode;
 
-      if (completed) {
-        notification.message = `Hooray! You've completed ${this.anime.title}!`;
-        notification.type = 'positive';
-      } else {
-        notification.message = `Updated ${this.anime.title} to episode ${this.anime.nextEpisode}.`;
-        notification.color = 'primary';
-      }
-
-      this.nextEpisode(this.anime);
-
-      this.$q.notify(notification);
+      this.udpateEpisode(this.anime).then(() => {
+        const notification = {};
+        if (completed) {
+          notification.message = `Hooray! You've completed ${this.anime.title}!`;
+          notification.type = 'positive';
+        } else {
+          notification.message = `Updated ${this.anime.title} to episode ${episode}.`;
+          notification.color = 'primary';
+        }
+        this.$q.notify(notification);
+      });
 
       // prevent focus state
       this.$refs.fabNext.$el.focus();
