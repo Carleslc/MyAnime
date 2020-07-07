@@ -4,7 +4,11 @@ export default class Provider {
     this.offset = offset;
   }
 
-  episodeUrl() {
+  episodeUrl(title, episode) {
     return this.url;
+  }
+
+  encode(s) {
+    return encodeURIComponent(s.toLowerCase().replace(/[^-a-z0-9]+/g, '-').replace(/-{2,}/, '-'));
   }
 }

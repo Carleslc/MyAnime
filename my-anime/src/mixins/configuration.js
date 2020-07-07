@@ -1,5 +1,4 @@
-import MyAnimeList from '@/model/providers/MyAnimeList';
-import Crunchyroll from '@/model/providers/Crunchyroll';
+import { MyAnimeList, Crunchyroll } from '@/model/providers';
 import { mapMutations } from 'vuex';
 import { mapFields } from 'vuex-map-fields';
 

@@ -96,8 +96,8 @@ export default {
     display() {
       return (
         !this.anime.isCompleted &&
-        ((this.anime.isAired && this.airingStatusFilter.includes('Already aired')) ||
-          (!this.anime.isAired && this.airingStatusFilter.includes('Not yet aired'))) &&
+        ((this.nextEpisodeIsAired && this.airingStatusFilter.includes('Already aired')) ||
+          (!this.nextEpisodeIsAired && this.airingStatusFilter.includes('Not yet aired'))) &&
         this.typeFilter.includes(this.anime.type)
       );
     },
@@ -135,7 +135,7 @@ export default {
       return null;
     },
     nextEpisodeIsAired() {
-      return this.nextEpisodeAiringDate && this.nextEpisodeAiringDate.date <= DateTime.local();
+      return this.anime.isAired && this.nextEpisodeAiringDate && this.nextEpisodeAiringDate.date <= DateTime.local();
     },
     formattedAiringDate() {
       if (this.nextEpisodeIsAired) {
@@ -162,7 +162,7 @@ export default {
       return date.toLocaleString({ year: 'numeric' });
     },
     episodeUrl() {
-      return this.provider.episodeUrl(this.anime);
+      return this.provider.episodeUrl(this.anime, this.anime.nextEpisode);
     },
     isSmallElement() {
       return this.width < 176;
