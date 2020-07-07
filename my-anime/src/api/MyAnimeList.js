@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon';
-import { AuthenticationNeededException, notifyError } from '@/utils/errors';
 import { Anime } from '@/model/Anime';
 import { API, encodeParams } from './API';
 
@@ -44,7 +43,7 @@ class MyAnimeList extends API {
   constructor() {
     super(
       'MyAnimeList',
-      'https://apimyanimelist.net',
+      'https://api.myanimelist.net',
       {
         'X-MAL-Client-ID': client,
       },
@@ -52,15 +51,6 @@ class MyAnimeList extends API {
     );
     this.image = 'statics/mal.jpg';
     this.version = 'v2';
-    this.resetOffsets();
-  }
-
-  resetOffsets() {
-    this.offsets = {};
-  }
-
-  url(endpoint) {
-    return `/${this.version}${endpoint}`;
   }
 
   async auth(username, password) {
@@ -76,7 +66,7 @@ class MyAnimeList extends API {
   }
 
   async refreshAccessToken() {
-    const response = await this.postFormEncoded('/v1/oauth2/token', {
+    const response = await this.postFormEncoded(this.url('/oauth2/token', 'v1'), {
       client_id: client,
       grant_type: 'refresh_token',
       refresh_token: this.refreshToken,
@@ -91,30 +81,10 @@ class MyAnimeList extends API {
     this.saveAuthInfo();
   }
 
-  authenticated() {
-    return new Promise((resolve, reject) => {
-      if (this.isAuthenticated) {
-        resolve();
-      } else if (this.expiration && this.refreshToken) {
-        // Token expired
-        this.refreshAccessToken().then(resolve).catch(reject);
-      } else {
-        reject(new AuthenticationNeededException());
-      }
-    });
-  }
-
-  get(endpoint) {
-    return this.axios.get(this.url(endpoint)).catch((e) => {
-      this.error = e;
-      notifyError(e);
-    });
-  }
-
   async getUserPicture() {
     await this.authenticated();
 
-    const response = await this.get('/users/@me');
+    const response = await this.get(this.url('/users/@me'));
 
     if (response) {
       return response.data.picture;
@@ -128,16 +98,6 @@ class MyAnimeList extends API {
     return `https://myanimelist.net/${suffix}`;
   }
 
-  isFetched(username, status = null) {
-    const currentOffsets = this.offsets[username];
-    return !!currentOffsets && !!currentOffsets[status];
-  }
-
-  hasNext(username, status = null) {
-    const currentOffsets = this.offsets[username];
-    return !currentOffsets || !currentOffsets[status] || currentOffsets[status].hasNext;
-  }
-
   async getAnimes(username, status = null, next = false) {
     if (next && !this.hasNext(username, status)) {
       return [];
@@ -145,23 +105,11 @@ class MyAnimeList extends API {
 
     await this.authenticated();
 
-    let currentOffsets = this.offsets[username];
-
-    if (!currentOffsets) {
-      currentOffsets = {};
-      this.offsets[username] = currentOffsets;
-    }
-
-    if (!next || !currentOffsets[status]) {
-      currentOffsets[status] = {
-        hasNext: true,
-        offset: 0,
-      };
-    }
+    const currentOffset = this.getCurrentOffset(username, status, next);
 
     const filters = {
       sort: 'list_updated_at',
-      offset: currentOffsets[status].offset,
+      offset: currentOffset.offset,
       limit: 50,
       fields: [
         'id',
@@ -182,16 +130,16 @@ class MyAnimeList extends API {
       filters.status = status.replace(/-/g, '_');
     }
 
-    const response = await this.get(`/users/${username}/animelist?${encodeParams(filters)}`);
+    const response = await this.get(this.url(`/users/${username}/animelist?${encodeParams(filters)}`));
 
     if (!response) {
       return [];
     }
 
     if (response.data.paging.next) {
-      currentOffsets[status].offset += filters.limit;
+      currentOffset.offset += filters.limit;
     } else {
-      currentOffsets[status].hasNext = false;
+      currentOffset.hasNext = false;
     }
 
     return parseAnimes(response.data.data);

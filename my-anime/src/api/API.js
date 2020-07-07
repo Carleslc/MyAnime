@@ -2,9 +2,9 @@ import axios from 'axios';
 import qs from 'qs';
 import { LocalStorage } from 'quasar';
 import { DateTime } from 'luxon';
-import { notifyError } from '@/utils/errors';
+import { AuthenticationNeededException, notifyError } from '@/utils/errors';
 
-const CORS_PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
+const CORS_PROXY_URL = 'https://cors-api-proxy.herokuapp.com/';
 
 const AUTH_KEY = 'auth';
 
@@ -19,6 +19,8 @@ export class API {
     if (cors) {
       baseUrl = CORS_PROXY_URL + baseUrl;
     }
+
+    this.resetOffsets();
 
     this.axios = axios.create({
       baseURL: baseUrl,
@@ -36,6 +38,13 @@ export class API {
     }); */
 
     this.loadAuthInfo();
+  }
+
+  url(endpoint, version) {
+    if (version === undefined) {
+      version = this.version;
+    }
+    return version ? `/${version}${endpoint}` : endpoint;
   }
 
   get isAuthenticated() {
@@ -77,6 +86,26 @@ export class API {
     }
   }
 
+  authenticated() {
+    return new Promise((resolve, reject) => {
+      if (this.isAuthenticated) {
+        resolve();
+      } else if (this.expiration && this.refreshToken && this.refreshAccessToken) {
+        // Token expired
+        this.refreshAccessToken().then(resolve).catch(reject);
+      } else {
+        reject(new AuthenticationNeededException());
+      }
+    });
+  }
+
+  get(endpoint, headers) {
+    return this.axios.get(endpoint, headers).catch((e) => {
+      this.error = e;
+      notifyError(e);
+    });
+  }
+
   postFormEncoded(endpoint, data, headers) {
     return this.axios
       .post(endpoint, encodeParams(data), {
@@ -87,5 +116,59 @@ export class API {
         this.error = e;
         notifyError(e);
       });
+  }
+
+  resetOffsets() {
+    this.offsets = {};
+  }
+
+  getCurrentOffset(username, status, next) {
+    let currentOffsets = this.offsets[username];
+
+    if (!currentOffsets) {
+      currentOffsets = {};
+      this.offsets[username] = currentOffsets;
+    }
+
+    if (!next || !currentOffsets[status]) {
+      currentOffsets[status] = {
+        hasNext: true,
+        offset: 0,
+      };
+    }
+
+    return currentOffsets[status];
+  }
+
+  isFetched(username, status = null) {
+    const currentOffsets = this.offsets[username];
+    return !!currentOffsets && !!currentOffsets[status];
+  }
+
+  hasNext(username, status = null) {
+    const currentOffsets = this.offsets[username];
+    return !currentOffsets || !currentOffsets[status] || currentOffsets[status].hasNext;
+  }
+
+  // Template
+
+  /* eslint-disable no-empty-function */
+  /* eslint-disable no-unused-vars */
+  /* eslint-disable class-methods-use-this */
+
+  async auth(username, password) {}
+
+  async getUserPicture(username) {
+    return null;
+  }
+
+  getUserProfileUrl(username) {
+    return '#';
+  }
+
+  async getAnimes(username, status = null, next = false) {
+    const currentOffset = this.getCurrentOffset(username, status, next);
+    currentOffset.hasNext = false;
+    return [];
   }
 }

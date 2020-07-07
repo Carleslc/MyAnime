@@ -16,7 +16,7 @@
       <template v-slot:append>
         <q-btn
           :flat="username === input || !filled"
-          :loading="isLoading()"
+          :loading="isLoading"
           :disabled="!filled"
           icon="search"
           type="submit"
@@ -38,6 +38,7 @@ export default {
   },
   computed: {
     ...mapState('store', ['username']),
+    ...mapGetters('store', ['isLoading']),
     filled() {
       return this.input.length > 0;
     },
@@ -50,7 +51,6 @@ export default {
     this.loaded();
   },
   methods: {
-    ...mapGetters('store', ['isLoading']),
     ...mapMutations('store', ['loaded']),
     ...mapActions('store', ['searchUser']),
     searchUserInput() {

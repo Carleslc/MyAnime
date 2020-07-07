@@ -15,7 +15,6 @@ export default {
       })
       .finally(() => {
         commit('loaded');
-        console.log('fetchAnimes loaded');
       });
   },
   async fetchMoreAnimes({ dispatch, state: { api, username, status } }) {
@@ -35,7 +34,6 @@ export default {
     api.getUserPicture(username).then((picture) => {
       commit('setPicture', picture || api.image);
       commit('loaded');
-      console.log('updatePicture loaded');
     });
   },
 };

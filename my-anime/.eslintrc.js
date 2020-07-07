@@ -44,7 +44,7 @@ module.exports = {
       },
     ],
 
-    'prefer-destructuring': ['error', { object: true, array: false }],
+    'prefer-destructuring': 'off', // 'error', { object: true, array: false }
 
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'no-param-reassign': 'off',

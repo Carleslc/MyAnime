@@ -136,9 +136,12 @@ export default {
       info: false,
     };
   },
+  computed: {
+    ...mapGetters('store', ['isLoading', 'isFetched']),
+  },
   watch: {
     status() {
-      if (!this.isLoading() && !this.isFetched()) {
+      if (!this.isLoading && !this.isFetched) {
         this.fetchAnimes();
       }
     },
@@ -148,7 +151,6 @@ export default {
     this.loading(); // loaded after initial user search
   },
   methods: {
-    ...mapGetters('store', ['isLoading', 'isFetched']),
     ...mapMutations('store', ['loading']),
     ...mapActions('store', ['fetchAnimes']),
     overlappingFooter(offset) {

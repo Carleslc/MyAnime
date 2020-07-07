@@ -48,12 +48,10 @@ export default {
   },
   loading(state) {
     state.loading += 1;
-    console.log(state.loading);
   },
   loaded(state) {
     if (state.loading > 0) {
       state.loading -= 1;
-      console.log(state.loading);
     }
   },
 };
