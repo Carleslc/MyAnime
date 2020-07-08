@@ -5,6 +5,7 @@ const DEFAULT_API = MyAnimeList;
 
 export default function () {
   return {
+    authNeeded: false,
     api: DEFAULT_API,
     picture: DEFAULT_API.image,
     username: defaults.username,

@@ -24,10 +24,12 @@
         />
       </template>
     </q-input>
+    <password-dialog />
   </q-form>
 </template>
 
 <script>
+import { isBlank, trim } from '@/utils/strings';
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
@@ -38,13 +40,13 @@ export default {
   },
   computed: {
     ...mapState('store', ['username']),
-    ...mapGetters('store', ['isLoading']),
+    ...mapGetters('store', ['isLoading', 'hasUsername']),
     filled() {
-      return this.input.length > 0;
+      return !isBlank(this.input);
     },
   },
   created() {
-    if (this.username) {
+    if (this.hasUsername) {
       this.input = this.username;
       this.searchUserInput();
     }
@@ -54,7 +56,7 @@ export default {
     ...mapMutations('store', ['loaded']),
     ...mapActions('store', ['searchUser']),
     searchUserInput() {
-      this.searchUser(this.input);
+      this.searchUser(trim(this.input));
     },
   },
 };

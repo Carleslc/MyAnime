@@ -1,3 +1,4 @@
+import { isBlank } from '@/utils/strings';
 import { getField } from 'vuex-map-fields';
 
 export default {
@@ -11,7 +12,7 @@ export default {
   isLoading({ loading }) {
     return loading > 0;
   },
-  hasError({ api }) {
-    return !!api.error;
+  hasUsername({ username }) {
+    return !isBlank(username);
   },
 };

@@ -19,8 +19,8 @@ export default {
     };
   },
   computed: {
-    ...mapState('store', ['status']),
-    ...mapGetters('store', ['animesFilterByStatus', 'isLoading', 'hasError']),
+    ...mapState('store', ['status', 'api']),
+    ...mapGetters('store', ['animesFilterByStatus', 'isLoading', 'hasUsername']),
   },
   watch: {
     animesFilterByStatus() {
@@ -41,22 +41,26 @@ export default {
         this.animeMounted = 0;
       }
     },
+    resetScroll() {
+      this.$refs.scroll.reset();
+      this.$refs.scroll.resume();
+    },
     animeLoaded() {
       this.animeMounted += 1;
 
       if (this.animeMounted === this.animesFilterByStatus.length) {
         this.loaded();
-        this.$refs.scroll.reset();
-        this.$refs.scroll.resume();
+        this.resetScroll();
       }
     },
     loadMoreAnimes(index, done) {
-      if (!this.isLoading) {
+      const stop = this.api.hasError || !this.hasUsername;
+      if (!stop && !this.isLoading) {
         this.fetchMoreAnimes().then((hasMoreAnimesToLoad) => {
-          done(!hasMoreAnimesToLoad || this.hasError);
+          done(!hasMoreAnimesToLoad);
         });
       } else {
-        done();
+        done(stop);
       }
     },
   },

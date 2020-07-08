@@ -1,8 +1,18 @@
+import { AuthenticationNeededException, notifyError } from '@/utils/errors';
+
 function withLoading(commit, promise) {
   commit('loading');
-  return promise.finally(() => {
-    commit('loaded');
-  });
+  return promise
+    .catch((e) => {
+      if (e instanceof AuthenticationNeededException) {
+        commit('setAuthNeeded', true);
+      } else {
+        notifyError(e);
+      }
+    })
+    .finally(() => {
+      commit('loaded');
+    });
 }
 
 export default {
@@ -10,7 +20,8 @@ export default {
     await state.api.auth(username, password);
   },
   fetchAnimes({ commit, state: { api, username, status } }, next = false) {
-    return withLoading(commit,
+    return withLoading(
+      commit,
       api.getAnimes(username, status, next).then((animes) => {
         commit(next ? 'addAnimes' : 'setAnimes', {
           status,
@@ -33,17 +44,19 @@ export default {
     dispatch('fetchAnimes');
   },
   updatePicture({ commit, state: { api, username } }) {
-    return withLoading(commit,
+    return withLoading(
+      commit,
       api.getUserPicture(username).then((picture) => {
         commit('setPicture', picture || api.image);
       })
     );
   },
   updateEpisode({ commit, state: { api } }, anime) {
-    return withLoading(commit,
+    return withLoading(
+      commit,
       api.updateEpisode(anime).then(() => {
         commit('nextEpisode', anime);
       })
     );
-  }
+  },
 };

@@ -40,19 +40,20 @@
         <li>Cover images and links for the series in which you are interested.</li>
         <li>
           Easy access to your outstanding episodes of MyAnimeList lists Watching, On Hold and Plan to Watch, with
-          several providers of streaming/downloading to choose.
+          several providers for streaming / downloading to choose.
         </li>
         <li>Filter episodes by 'Already aired', 'Not yet aired', TV, Movie, OVA, Special, ONA or Music.</li>
         <!--<li>Some series have title synonyms, choose between original or alternative title.</li>-->
+        <li>Update your watched episodes in your MyAnimeList profile directly within this page.</li>
         <li>
           Your preferences are saved in the browser, so you only need to change them when you need it. User is
           automatically retrieved based on the last user used.
         </li>
-        <!--<li>Update your watched episodes in your MyAnimeList profile directly within this page.</li>-->
       </ul>
       <h2>Supported providers</h2>
       <ul>
         <li><a href="https://myanimelist.net/" target="_blank">MyAnimeList</a></li>
+        <li>🇪🇸 <a href="https://www.crunchyroll.com/" target="_blank">Crunchyroll</a></li>
         <li>🇪🇸🇬🇧 <a href="https://www.google.com/" target="_blank">Google</a></li>
         <li>🇪🇸 Voy a tener suerte</li>
         <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>
@@ -63,17 +64,15 @@
         <li>🇬🇧 I&#39;m Feeling Lucky</li>
         <li>🇬🇧 <a href="https://twist.moe/" target="_blank">Twist</a></li>
         <li>🇬🇧 <a href="https://www2.gogoanime.se/" target="_blank">GogoAnime</a></li>
-        <li><a href="https://www.crunchyroll.com/" target="_blank">Crunchyroll</a></li>
         <li><a href="https://www.netflix.com/" target="_blank">Netflix</a></li>
       </ul>
-      <p>Providers without language indicator are locale based.</p>
       <p>
         Feeling Lucky options are based on search engine (<em
           ><a href="https://duckduckgo.com/" target="_blank">DuckDuckGo</a> I&#39;m Feeling Ducky</em
         >), trying to get a proper streamer, but it doesn&#39;t mean it always work. Sometimes it redirects to a
         non-related page, or it is in another language.
       </p>
-      <p>If selected provider cannot find a episode try to use alternative titles option, or change the provider.</p>
+      <p>If the selected provider cannot find an episode try to use an alternative title or change the provider.</p>
       <h2>Contact</h2>
       <p>
         <em

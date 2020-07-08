@@ -41,16 +41,19 @@ const client = '6114d00ca681b7701d1e15fe11a4987e';
 
 class MyAnimeList extends API {
   constructor() {
-    super(
-      'MyAnimeList',
-      'https://api.myanimelist.net',
-      {
+    super({
+      name: 'MyAnimeList',
+      image: 'statics/mal.png',
+      homeUrl: 'https://myanimelist.net/',
+      registerUrl: 'https://myanimelist.net/',
+      setPasswordUrl: 'https://myanimelist.net/editprofile.php?go=myoptions',
+      baseUrl: 'https://apimyanimelist.net',
+      version: 'v2',
+      headers: {
         'X-MAL-Client-ID': client,
       },
-      true // cors
-    );
-    this.image = 'statics/mal.png';
-    this.version = 'v2';
+      cors: false,
+    });
   }
 
   async auth(username, password) {

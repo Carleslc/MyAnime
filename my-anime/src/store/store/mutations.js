@@ -54,4 +54,7 @@ export default {
       state.loading -= 1;
     }
   },
+  setAuthNeeded(state, needed) {
+    state.authNeeded = needed;
+  },
 };

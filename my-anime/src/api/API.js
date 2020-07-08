@@ -13,8 +13,13 @@ export function encodeParams(params) {
 }
 
 export class API {
-  constructor(name, baseUrl, headers, cors = false) {
+  constructor({ name, image, homeUrl, registerUrl, setPasswordUrl, baseUrl, headers, cors, version }) {
     this.name = name;
+    this.image = image;
+    this.homeUrl = homeUrl;
+    this.registerUrl = registerUrl;
+    this.setPasswordUrl = setPasswordUrl;
+    this.version = version;
 
     if (cors) {
       baseUrl = CORS_PROXY_URL + baseUrl;
@@ -45,6 +50,10 @@ export class API {
       version = this.version;
     }
     return version ? `/${version}${endpoint}` : endpoint;
+  }
+
+  get hasError() {
+    return !!this.error;
   }
 
   get isAuthenticated() {
@@ -94,7 +103,8 @@ export class API {
         // Token expired
         this.refreshAccessToken().then(resolve).catch(reject);
       } else {
-        reject(new AuthenticationNeededException());
+        this.error = new AuthenticationNeededException();
+        reject(this.error);
       }
     });
   }
@@ -107,14 +117,15 @@ export class API {
   }
 
   formEncoded(action, endpoint, data, headers) {
-    return action.call(this.axios, endpoint, encodeParams(data), {
-      ...headers,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    })
-    .catch((e) => {
-      this.error = e;
-      notifyError(e);
-    });
+    return action
+      .call(this.axios, endpoint, encodeParams(data), {
+        ...headers,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
+      .catch((e) => {
+        this.error = e;
+        notifyError(e);
+      });
   }
 
   postFormEncoded(endpoint, data, headers) {
