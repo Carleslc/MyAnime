@@ -47,25 +47,32 @@ class MyAnimeList extends API {
       homeUrl: 'https://myanimelist.net/',
       registerUrl: 'https://myanimelist.net/',
       setPasswordUrl: 'https://myanimelist.net/editprofile.php?go=myoptions',
-      baseUrl: 'https://apimyanimelist.net',
+      baseUrl: 'https://api.myanimelist.net',
       version: 'v2',
       headers: {
         'X-MAL-Client-ID': client,
       },
-      cors: false,
+      cors: true,
     });
   }
 
-  async auth(username, password) {
-    const response = await this.postFormEncoded(this.url('/auth/token'), {
+  auth(username, password) {
+    return this.postFormEncoded(this.url('/auth/token'), {
       client_id: client,
       grant_type: 'password',
       username,
       password,
-    });
-    if (response) {
-      this.updateAuthInfo(response.data);
-    }
+    })
+      .then((response) => {
+        console.log(response);
+        if (response) {
+          this.updateAuthInfo(response.data);
+        }
+      })
+      .catch((e) => {
+        // invalid_grant ?
+        console.log('catch MAL:', e);
+      });
   }
 
   async refreshAccessToken() {

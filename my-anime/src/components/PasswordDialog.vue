@@ -47,8 +47,8 @@
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
-          <q-btn v-close-popup flat color="grey" label="Cancel" />
-          <q-btn flat color="primary" label="Search" type="submit" :disable="!isValid" />
+          <q-btn v-if="!isLoading" v-close-popup flat color="grey" label="Cancel" />
+          <q-btn flat color="primary" label="Search" type="submit" :disable="!isValid" :loading="isLoading" />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -57,7 +57,7 @@
 
 <script>
 import { isBlank, trim } from '@/utils/strings';
-import { mapState, mapActions, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 import { mapFields } from 'vuex-map-fields';
 
 export default {
@@ -69,6 +69,7 @@ export default {
   computed: {
     ...mapState('store', ['api']),
     ...mapFields('store', ['username', 'authNeeded']),
+    ...mapGetters('store', ['isLoading']),
     isValid() {
       return !isBlank(this.password) && !isBlank(this.username);
     },

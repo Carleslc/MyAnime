@@ -4,6 +4,7 @@ function withLoading(commit, promise) {
   commit('loading');
   return promise
     .catch((e) => {
+      console.log('catch actions', e);
       if (e instanceof AuthenticationNeededException) {
         commit('setAuthNeeded', true);
       } else {
@@ -16,8 +17,8 @@ function withLoading(commit, promise) {
 }
 
 export default {
-  async login({ state }, { username, password }) {
-    await state.api.auth(username, password);
+  async login({ commit, state }, { username, password }) {
+    await withLoading(commit, state.api.auth(username, password));
   },
   fetchAnimes({ commit, state: { api, username, status } }, next = false) {
     return withLoading(
