@@ -49,7 +49,7 @@ class MyAnimeList extends API {
       },
       true // cors
     );
-    this.image = 'statics/mal.jpg';
+    this.image = 'statics/mal.png';
     this.version = 'v2';
   }
 
@@ -148,7 +148,7 @@ class MyAnimeList extends API {
   updateEpisode(anime) {
     return this.putFormEncoded(this.url(`/anime/${anime.id}/my_list_status`), {
       num_watched_episodes: anime.nextEpisode,
-      status: anime.isLastEpisode ? 'completed' : 'watching'
+      status: anime.isLastEpisode ? 'completed' : 'watching',
     });
   }
 }

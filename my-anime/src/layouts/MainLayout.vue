@@ -2,7 +2,7 @@
   <q-layout view="hHr lpR fFr">
     <q-header>
       <q-toolbar class="row justify-between items-center q-pa-md no-wrap scroll" color="purple">
-        <div v-if="!settings" class="col-auto row items-center no-wrap">
+        <div class="col-auto row items-center no-wrap" :style="hiddenIfSettings">
           <back class="q-mr-md" />
           <div class="row justify-between items-center no-wrap">
             <avatar icon class="col-shrink q-mr-lg gt-xxs" />
@@ -138,6 +138,9 @@ export default {
   },
   computed: {
     ...mapGetters('store', ['isLoading', 'isFetched']),
+    hiddenIfSettings() {
+      return this.settings ? 'display: none' : undefined;
+    },
   },
   watch: {
     status() {

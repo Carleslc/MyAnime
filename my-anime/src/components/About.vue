@@ -1,7 +1,10 @@
 <template>
   <q-card>
-    <q-card-section class="column items-center">
-      <h1>My Anime</h1>
+    <q-card-section class="row justify-center items-center q-pa-lg">
+      <h1 class="text-center">My Anime</h1>
+      <div class="absolute-right">
+        <q-img v-if="$q.screen.width > 500" src="statics/chibi.png" width="96px" class="q-ma-md" />
+      </div>
     </q-card-section>
     <q-separator />
     <q-card-section>

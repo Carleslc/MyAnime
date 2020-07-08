@@ -3,10 +3,12 @@ import { withSearch } from './FeelingLucky';
 
 class AnimeFLV extends Provider {
   constructor() {
-    super('https://animeflv.net/', 2);
+    super('https://animeflv.net/', 3);
 
     this.search = withSearch((anime, episode) => {
-      return encodeURIComponent(`site:animeflv.net intitle:"${Provider.encode(anime.title)}" inurl:"/ver" inurl:"-${episode}"`);
+      return encodeURIComponent(
+        `site:animeflv.net intitle:"${Provider.encode(anime.title)}" inurl:"/ver" inurl:"-${episode}"`
+      );
     });
   }
 
