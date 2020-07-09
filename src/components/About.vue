@@ -32,11 +32,11 @@
         watched.
       </p>
       <p>
-        Click on &quot;Next&quot; at the top right corner of an episode to mark it as watched in your MyAnimeList
-        profile.
+        Click on &quot;Next episode&quot; at the top right corner of an episode to mark it as watched in your
+        MyAnimeList profile.
       </p>
       <h2>Features</h2>
-      <ul>
+      <ul class="q-gutter-y-sm">
         <li>Cover images and links for the series in which you are interested.</li>
         <li>
           Easy access to your outstanding episodes of MyAnimeList lists Watching, On Hold and Plan to Watch, with

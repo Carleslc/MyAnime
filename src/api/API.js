@@ -13,10 +13,11 @@ export function encodeParams(params) {
 }
 
 export class API {
-  constructor({ name, image, homeUrl, registerUrl, setPasswordUrl, baseUrl, headers, cors, version }) {
+  constructor({ name, image, homeUrl, profileUrl, registerUrl, setPasswordUrl, baseUrl, headers, cors, version }) {
     this.name = name;
     this.image = image;
     this.homeUrl = homeUrl;
+    this.profileUrl = profileUrl;
     this.registerUrl = registerUrl;
     this.setPasswordUrl = setPasswordUrl;
     this.version = version;

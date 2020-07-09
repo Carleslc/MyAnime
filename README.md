@@ -20,7 +20,7 @@ Enter your MyAnimeList username _(https://myanimelist.net/profile/USERNAME)_ and
 
 When updating your watched episodes in MyAnimeList then the next episode will be shown, waiting for you to be watched.
 
-Click on "Next" at the top right corner of an episode to mark it as watched in your MyAnimeList profile.
+Click on "Next episode" at the top right corner of an episode to mark it as watched in your MyAnimeList profile.
 
 ## Features
 

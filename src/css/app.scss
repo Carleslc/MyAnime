@@ -58,7 +58,6 @@ $breakpoint-xxs-max: 349px;
 
 .q-drawer {
   max-width: 100vw;
-  z-index: 10;
 
   .q-item__section {
     margin: 0;
@@ -228,12 +227,17 @@ p {
       z-index: 2;
     }
 
-    .q-image {
+    .q-img {
       image-rendering: optimizespeed;
       image-rendering: -moz-crisp-edges;
       image-rendering: -o-crisp-edges;
       image-rendering: -webkit-optimize-contrast;
       -ms-interpolation-mode: nearest-neighbor;
+      min-height: 200px;
+
+      @media (max-width: $breakpoint-xs-max) {
+        min-height: 300px;
+      }
     }
   }
 }

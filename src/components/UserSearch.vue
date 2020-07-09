@@ -10,7 +10,7 @@
           transition-hide="fade"
           :offset="[0, 0]"
         >
-          https://myanimelist.net/profile/
+          {{ api.profileUrl }}
         </q-tooltip>
       </template>
       <template v-slot:append>
@@ -39,7 +39,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('store', ['username']),
+    ...mapState('store', ['username', 'api']),
     ...mapGetters('store', ['isLoading', 'hasUsername']),
     filled() {
       return !isBlank(this.input);

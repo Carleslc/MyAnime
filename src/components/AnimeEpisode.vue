@@ -156,7 +156,7 @@ export default {
       if (precision === 'day') {
         const weekday = date.weekdayLong;
         const formattedDate = date.toLocaleString(this.isSmallElement ? DateTime.DATE_FULL : DateTime.DATE_MED);
-        return this.isSmallElement ? date : `${weekday} ${formattedDate}`;
+        return this.isSmallElement ? formattedDate : `${weekday} ${formattedDate}`;
       }
       if (precision === 'month') {
         return date.toLocaleString({ month: 'long', year: 'numeric' });
@@ -167,7 +167,7 @@ export default {
       return this.provider.episodeUrl(this.anime, this.anime.nextEpisode);
     },
     isSmallElement() {
-      return this.width < 176;
+      return this.width < 185;
     },
   },
   mounted() {
