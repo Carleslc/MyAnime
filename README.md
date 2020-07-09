@@ -3,6 +3,8 @@ Watch your favourite animes with your usual provider, synchronized with [MyAnime
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/carleslc)
 
+![MyAnime](https://i.imgur.com/4V007dF.png)
+
 ## Why to use?
 This is a shortcut to access your preferred anime series with your preferred providers, all in sync with the selected animes in your MyAnimeList profile.
 
