@@ -145,9 +145,12 @@ export default {
   watch: {
     status() {
       this.updateFetched();
-      if (this.hasUsername && !this.isLoading && !this.isFetched) {
-        this.fetchAnimes();
-      }
+    },
+    isFetched() {
+      this.updateAnimes();
+    },
+    isLoading() {
+      this.updateAnimes();
     },
   },
   created() {
@@ -160,6 +163,11 @@ export default {
     overlappingFooter(offset) {
       const footerHeight = '41px';
       return { minHeight: `calc(100vh - ${offset}px + ${footerHeight})` };
+    },
+    updateAnimes() {
+      if (!this.isFetched && !this.isLoading && this.hasUsername) {
+        this.fetchAnimes();
+      }
     },
   },
 };
