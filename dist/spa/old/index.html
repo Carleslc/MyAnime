@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>My Anime</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="index.css" />
+</head>
+
+<body>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+  <script src="https://use.fontawesome.com/0f16775bdf.js"></script>
+  <script src="https://moment.github.io/luxon/global/luxon.min.js"></script>
+  <script src="http.js"></script>
+  <script src="storage.js"></script>
+  <script src="utils.js"></script>
+
+  <section class="lastcap">
+    <div class="user-header row justify-content-between align-items-center">
+      <div class="col-auto">
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <a href="https://myanimelist.net/" target="_blank" id="profile-link">
+              <img src="mal.jpg" id="profile-icon">
+            </a>
+          </div>
+          <div class="col-auto">
+            <form action="#" class="input-group" id="search-user-form">
+              <div class="input-group-prepend">
+                <span class="input-group-text" data-toggle="tooltip" data-placement="right" title="https://myanimelist.net/profile/" id="user-addon">@</span>
+              </div>
+              <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon3" id="search-user">
+              <div class="input-group-append">
+                <a href="#" id="submitBtn" class="btn btn-success" role="button">Search</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="form-row align-items-center">
+          <div class="col-auto">
+            <label class="mr-sm-2 selector-title" for="provider-selector" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Select which provider must be opened when clicking over an episode, either in Spanish (ES) or English (EN).<br><br>Feeling Lucky options are based on search engine, trying to get a proper streamer, but it doesn't mean it always work.<br><br>If selected provider cannot find an episode try to change the provider.">Provider</label>
+          </div>
+          <div class="col-auto">
+            <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="provider-selector">
+              <option value="myanimelist">MyAnimeList</option>
+              <option value="lucky-es">Voy a tener suerte (ES)</option>
+              <option value="google-es">Google (ES)</option>
+              <option value="animeflv">AnimeFlv (ES)</option>
+              <option value="animeid">AnimeID (ES)</option>
+              <option value="jkanime">jkanime (ES)</option>
+              <option value="monoschinos">MonosChinos (ES)</option>
+              <option value="lucky-en">I'm Feeling Lucky (EN)</option>
+              <option value="google-en">Google (EN)</option>
+              <option value="twist" selected>Twist (EN)</option>
+              <option value="gogoanime">GogoAnime (EN)</option>
+              <option value="crunchyroll">Crunchyroll</option>
+              <option value="netflix">Netflix</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-auto">
+        <a href="#" target="_blank" id="provider-link" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Go to the provider's main page">
+          Go to provider
+        </a>
+      </div>
+      <!--<div class="col-auto">
+        <label class="mr-sm-2 selector-title" for="alternatives" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Sometimes enabling alternative titles the episodes are recognized by providers that identify the required anime by an alternative title.<br><br>Example: 'Mushi-Shi' in AnimeID instead of 'Mushishi', the original title from MyAnimeList.">Alternative Titles</label>
+        <input type="checkbox" value="" id="alternatives">
+      </div>-->
+      <div class="col-auto">
+        <div class="form-row align-items-center">
+          <div class="col-auto">
+            <label class="mr-sm-2 selector-title" for="filter-selector">Filter</label>
+          </div>
+          <div class="col-auto">
+            <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="filter-selector">
+              <option value="-1">All</option>
+              <option value="0" selected>Already aired</option>
+              <option value="7">Not yet aired</option>
+              <option value="1">TV</option>
+              <option value="2">OVA</option>
+              <option value="3">Movie</option>
+              <option value="4">Special</option>
+              <option value="5">ONA</option>
+              <option value="6">Music</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="row align-items-center">
+          <div class="col-6">
+            <a href="https://notify.moe/calendar" target="_blank" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="See here the calendar anime for this week.">
+              <i class="fas fa-calendar"></i>
+            </a>
+          </div>
+          <div class="col-6">
+            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#info" aria-label="Info">
+              <i class="fas fa-info-circle"></i>
+            </a>
+          </div>
+        </div>
+        <div class="modal fade" id="info" tabindex="-1" role="dialog" aria-labelledby="infoTitle" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title" id="infoTitle">MyAnime</h3>
+              </div>
+              <div class="modal-body">
+                <!-- BEGIN INFORMATION -->
+                <p>Watch your favourite animes with your usual provider, synchronized with <a href="https://myanimelist.net/" target="_blank">MyAnimeList</a>.</p>
+                <h4 id="why-to-use-">Why to use?</h4>
+                <p>This is a shortcut to access your preferred anime series with your preferred providers, all in sync with the selected animes in your MyAnimeList profile.</p>
+                <p>Avoid surfing the internet or the providers looking for your episodes, just seat in and enjoy. </p>
+                <p>With this single page you can test several providers and update your MyAnimeList episodes easily. It also skips some advertising from providers&#39; home sites, because you&#39;ll access to the episode page directly.</p>
+                <h4 id="how-to-use">How to use</h4>
+                <p>Enter your MyAnimeList username <em>(https://myanimelist.net/profile/USERNAME)</em> and choose one of your animes to watch, select the provider and enjoy your episode.</p>
+                <p>When updating your watched episodes in MyAnimeList then the next episode will be shown, waiting for you to be watched.</p>
+                <p>Click on &quot;Next&quot; at the top right corner of an episode to mark it as watched in your MyAnimeList profile.</p>
+                <h4 id="features">Features</h4>
+                <ul>
+                  <li>Cover images and links for the series in which you are interested.</li>
+                  <li>Easy access to your outstanding episodes of MyAnimeList lists Watching, On Hold and Plan to Watch, with several providers of streaming/downloading to choose.</li>
+                  <li>Filter episodes by 'Already aired', 'Not yet aired', TV, Movie, OVA, Special, ONA or Music.</li>
+                  <!--<li>Some series have title synonyms, choose between original or alternative title.</li>-->
+                  <li>Your preferences are saved in the browser, so you only need to change them when you need it. User is automatically retrieved based on the last user used.</li>
+                  <!--<li>Update your watched episodes in your MyAnimeList profile directly within this page.</li>-->
+                </ul>
+                <h4 id="supported-providers">Supported providers</h4>
+                <ul>
+                  <li><a href="https://myanimelist.net/" target="_blank">MyAnimeList</a></li>
+                  <li>🇪🇸🇬🇧 <a href="https://www.google.com/" target="_blank">Google</a></li>
+                  <li>🇪🇸 Voy a tener suerte</li>
+                  <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>
+                  <li>🇪🇸 <a href="https://www.animeid.tv/" target="_blank">AnimeID</a></li>
+                  <li>🇪🇸 <a href="http://jkanime.net/" target="_blank">jkanime</a></li>
+                  <li>🇪🇸 <a href="https://monoschinos.com/" target="_blank">MonosChinos</a></li>
+                  <li>🇬🇧 I&#39;m Feeling Lucky</li>
+                  <li>🇬🇧 <a href="https://twist.moe/" target="_blank">Twist</a></li>
+                  <li>🇬🇧 <a href="https://www2.gogoanime.se/" target="_blank">GogoAnime</a></li>
+                  <li><a href="https://www.crunchyroll.com/" target="_blank">Crunchyroll</a></li>
+                  <li><a href="https://www.netflix.com/" target="_blank">Netflix</a></li>
+                </ul>
+                <p>Providers without language indicator are locale based.</p>
+                <p>Feeling Lucky options are based on search engine (<em><a href="https://duckduckgo.com/" target="_blank">DuckDuckGo</a> I&#39;m Feeling Ducky</em>), trying to get a proper streamer, but it doesn&#39;t mean it always work. Sometimes it redirects to a non-related page, or it is in another language.</p>
+                <p>If selected provider cannot find a episode try to use alternative titles option, or change the provider.</p>
+                <h4 id="contact">Contact</h4>
+                <p><em>Your favourite provider isn&#39;t listed here? Please, open an issue <a href="http://github.com/Carleslc/MyAnime/issues" target="_blank">here</a> and we will add it!</em></p>
+                <p>Open an issue too if you have any doubt, advice or you want to report about something broken.</p>
+                <h5 id="disclaimer">Disclaimer</h5>
+                <p>This webpage does not host any video, it is a client-side website, just linking and sharing content from external providers. Official and legal providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.</p>
+                <!-- END INFORMATION -->
+              </div>
+              <div class="modal-footer">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal">Close</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="title">Watching</div>
+    <div class="animes" id="watching"></div>
+    <div class="title">On Hold</div>
+    <div class="animes" id="on-hold"></div>
+    <div class="title">Plan to Watch</div>
+    <div class="animes" id="plan-to-watch"></div>
+
+    <div class="modal fade" id="set-password" tabindex="-1" role="dialog" aria-labelledby="setPasswordTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="setPasswordTitle">Set password</h3>
+          </div>
+          <div class="modal-body">
+            <b>This feature allows you to update your watched episode in your MyAnimeList profile directly within this page.</b>
+            <br><br> For this reason we need your credentials to perform this action. Please, set your password below.
+            <br><br>
+            <i>If your account has no password because it uses social media SNS Connection like Facebook, Twitter or Google go to <a href="https://myanimelist.net/editprofile.php?go=myoptions" target="_blank">Account Settings -> Account</a> and set a password for your MyAnimeList account first.</i>
+            <br><br>
+            <b>Security notice: </b>The password is only stored in your browser storage so you do not have to enter it again on refresh. We do not store it in any server.
+          </div>
+          <form>
+          </form>
+          <div class="form-group">
+            <div class="row align-items-center justify-content-around">
+              <div class="col-11">
+                <form class="input-group">
+                  <label for="password" class="col-form-label"><i class="fas fa-key"></i></label>
+                  <input type="password" class="form-control input-password" id="password"></input>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn btn-secondary" data-dismiss="modal">Close</a>
+            <a href="#" id="update-password-btn" class="btn btn-primary">Update</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src="index.js"></script>
+</body>
+
+</html>
