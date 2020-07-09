@@ -1,13 +1,12 @@
-import MyAnimeList from '@/api/MyAnimeList.js';
+import { MyAnimeList } from '@/api/MyAnimeList';
 import { defaults } from '@/mixins/configuration';
 
-const DEFAULT_API = MyAnimeList;
-
-export default function () {
+export function newState() {
+  const defaultAPI = new MyAnimeList();
   return {
     authNeeded: false,
-    api: DEFAULT_API,
-    picture: DEFAULT_API.image,
+    api: defaultAPI,
+    picture: defaultAPI.image,
     username: defaults.username,
     status: defaults.status,
     provider: defaults.provider,
@@ -21,3 +20,5 @@ export default function () {
     },
   };
 }
+
+export default newState;

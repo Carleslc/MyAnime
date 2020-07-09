@@ -10,7 +10,6 @@ import Twist from '@/model/providers/Twist';
 import Gogoanime from '@/model/providers/Gogoanime';
 import { FeelingDuckyES, FeelingDuckyEN, FeelingLuckyES, FeelingLuckyEN } from '@/model/providers/FeelingLucky';
 
-import { mapMutations } from 'vuex';
 import { mapFields } from 'vuex-map-fields';
 
 export const providers = Object.freeze([
@@ -90,16 +89,6 @@ export default {
     Object.keys(defaults)
       .filter((key) => key !== 'provider') // avoid saving entire object
       .forEach((key) => this.$watch(key, (value) => this.$q.localStorage.set(key, value)));
-  },
-  methods: {
-    ...mapMutations('store', ['set']),
-    // reset configuration
-    reset() {
-      this.$q.localStorage.clear();
-      Object.entries(defaults).forEach(([key, defaultValue]) => {
-        this[key] = defaultValue;
-      });
-    },
   },
   watch: {
     // save provider label only

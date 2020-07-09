@@ -63,16 +63,29 @@ import { mapFields } from 'vuex-map-fields';
 export default {
   data() {
     return {
+      username: '',
       password: '',
     };
   },
   computed: {
+    ...mapState('store', {
+      currentUsername: (state) => state.username,
+    }),
     ...mapState('store', ['api']),
-    ...mapFields('store', ['username', 'authNeeded']),
+    ...mapFields('store', ['authNeeded']),
     ...mapGetters('store', ['isLoading']),
     isValid() {
       return !isBlank(this.password) && !isBlank(this.username);
     },
+  },
+  watch: {
+    currentUsername() {
+      this.username = this.currentUsername;
+      this.password = '';
+    },
+  },
+  created() {
+    this.username = this.currentUsername;
   },
   methods: {
     ...mapActions('store', ['login', 'searchUser']),

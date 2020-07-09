@@ -1,4 +1,5 @@
 import { updateField } from 'vuex-map-fields';
+import { newState } from './state';
 
 function sorted({ status, animes }) {
   if (status === 'plan-to-watch') {
@@ -67,5 +68,8 @@ export default {
   },
   setAuthNeeded(state, needed) {
     state.authNeeded = needed;
+  },
+  clear(state) {
+    Object.assign(state, newState());
   },
 };

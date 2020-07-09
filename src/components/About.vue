@@ -84,8 +84,10 @@
       <h2>Disclaimer</h2>
       <p>
         This webpage does not host any video, it is a client-side website, just linking and sharing content from
-        external providers. Official and legal providers like Crunchyroll or Netflix are recommended. Use other
-        providers at your own risk.
+        external providers.
+      </p>
+      <p>
+        Official and legal providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.
       </p>
     </q-card-section>
     <q-separator />

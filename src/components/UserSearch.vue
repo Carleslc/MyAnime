@@ -45,6 +45,13 @@ export default {
       return !isBlank(this.input);
     },
   },
+  watch: {
+    username() {
+      if (this.username !== this.input) {
+        this.input = this.username;
+      }
+    },
+  },
   created() {
     if (this.hasUsername) {
       this.input = this.username;

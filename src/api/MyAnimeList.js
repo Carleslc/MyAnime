@@ -40,7 +40,7 @@ function parseAnimes(animes) {
 
 const client = '6114d00ca681b7701d1e15fe11a4987e';
 
-class MyAnimeList extends API {
+export class MyAnimeList extends API {
   constructor() {
     super({
       name: 'MyAnimeList',
@@ -167,5 +167,3 @@ class MyAnimeList extends API {
     });
   }
 }
-
-export default new MyAnimeList();

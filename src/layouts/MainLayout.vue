@@ -88,7 +88,7 @@
             </q-item-section>
           </div>
           <div class="col-auto row justify-center q-mt-auto full-width">
-            <reset-button class="col-auto full-width q-pb-sm" @click="reset" />
+            <reset-button class="col-auto full-width q-pb-sm" />
           </div>
         </div>
       </q-list>
@@ -137,14 +137,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('store', ['isLoading', 'isFetched']),
+    ...mapGetters('store', ['isLoading', 'isFetched', 'hasUsername']),
     hiddenIfSettings() {
       return this.settings ? 'display: none' : undefined;
     },
   },
   watch: {
     status() {
-      if (!this.isLoading && !this.isFetched) {
+      if (this.hasUsername && !this.isLoading && !this.isFetched) {
         this.fetchAnimes();
       }
     },
