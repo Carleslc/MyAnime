@@ -9,7 +9,9 @@
 /* eslint func-names: 0 */
 /* eslint global-require: 0 */
 
-module.exports = function (/* ctx */) {
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+module.exports = function (ctx) {
   return {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
@@ -92,6 +94,13 @@ module.exports = function (/* ctx */) {
           ...cfg.resolve.alias,
           '@': require('path').resolve(__dirname, 'src'),
         };
+        if (ctx.prod) {
+          cfg.plugins.push(
+            new CopyWebpackPlugin({
+              patterns: [{ from: 'old', to: 'old' }],
+            })
+          );
+        }
       },
     },
 
