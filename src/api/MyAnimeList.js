@@ -46,7 +46,7 @@ export class MyAnimeList extends API {
       name: 'MyAnimeList',
       image: 'statics/mal.png',
       homeUrl: 'https://myanimelist.net/',
-      registerUrl: 'https://myanimelist.net/',
+      registerUrl: 'https://myanimelist.net/register.php',
       setPasswordUrl: 'https://myanimelist.net/editprofile.php?go=myoptions',
       baseUrl: 'https://api.myanimelist.net',
       version: 'v2',

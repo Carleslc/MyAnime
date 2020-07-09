@@ -14,7 +14,7 @@
         <q-card-section class="q-pt-none">
           <div>
             Please, log in to your {{ api.name }} account to view your anime list and update episodes directly within
-            this page.
+            this app.
           </div>
         </q-card-section>
 
