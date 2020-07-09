@@ -61,6 +61,7 @@
         <li>🇪🇸 <a href="https://animefenix.com/" target="_blank">AnimeFenix</a></li>
         <li>🇪🇸 <a href="http://jkanime.net/" target="_blank">jkanime</a></li>
         <li>🇪🇸 <a href="https://monoschinos.com/" target="_blank">MonosChinos</a></li>
+        <li>🇪🇸 <a href="https://animemovil2.com/" target="_blank">AnimeMovil</a></li>
         <li>🇬🇧 I&#39;m Feeling Lucky</li>
         <li>🇬🇧 <a href="https://twist.moe/" target="_blank">Twist</a></li>
         <li>🇬🇧 <a href="https://www2.gogoanime.se/" target="_blank">GogoAnime</a></li>

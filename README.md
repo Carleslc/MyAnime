@@ -41,6 +41,7 @@ Click on "Next" at the top right corner of an episode to mark it as watched in y
 - 🇪🇸 [AnimeFenix](https://animefenix.com/)
 - 🇪🇸 [jkanime](http://jkanime.net/)
 - 🇪🇸 [MonosChinos](https://monoschinos.com/)
+- 🇪🇸 [AnimeMovil2](https://animemovil2.com/)
 - 🇬🇧 I'm Feeling Lucky
 - 🇬🇧 [Twist](https://twist.moe/)
 - 🇬🇧 [GogoAnime](https://www2.gogoanime.se/)
