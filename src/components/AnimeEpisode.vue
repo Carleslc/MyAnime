@@ -203,7 +203,7 @@ export default {
         }
         if (status !== 'watching') {
           this.$q.notify({
-            message: `${this.anime.title} status changed to <strong>Watching</strong>'`,
+            message: `${this.anime.title} status changed to <strong>Watching</strong>`,
             type: 'info',
             html: true,
           });
