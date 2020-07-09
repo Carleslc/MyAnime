@@ -144,6 +144,7 @@ export default {
   },
   watch: {
     status() {
+      this.updateFetched();
       if (this.hasUsername && !this.isLoading && !this.isFetched) {
         this.fetchAnimes();
       }
@@ -154,7 +155,7 @@ export default {
     this.loading(); // loaded after initial user search
   },
   methods: {
-    ...mapMutations('store', ['loading']),
+    ...mapMutations('store', ['loading', 'updateFetched']),
     ...mapActions('store', ['fetchAnimes']),
     overlappingFooter(offset) {
       const footerHeight = '41px';

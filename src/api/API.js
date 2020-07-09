@@ -77,6 +77,10 @@ export class API {
     if (accessToken) {
       this.axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
     }
+
+    if (this.error instanceof AuthenticationNeededException) {
+      this.error = null;
+    }
   }
 
   saveAuthInfo() {

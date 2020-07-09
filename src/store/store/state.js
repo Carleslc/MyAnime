@@ -18,6 +18,7 @@ export function newState() {
       'on-hold': [],
       'plan-to-watch': [],
     },
+    fetched: false,
   };
 }
 

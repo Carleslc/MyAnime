@@ -27,6 +27,7 @@ export default {
           status,
           animes,
         });
+        commit('updateFetched');
         return animes;
       })
     );

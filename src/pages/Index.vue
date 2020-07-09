@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     ...mapState('store', ['status', 'api']),
-    ...mapGetters('store', ['animesFilterByStatus', 'isLoading', 'hasUsername']),
+    ...mapGetters('store', ['animesFilterByStatus', 'isLoading', 'isFetched', 'hasUsername']),
   },
   watch: {
     animesFilterByStatus() {
@@ -30,6 +30,13 @@ export default {
     },
     status() {
       this.animeMounted = 0;
+      this.$refs.scroll.reset();
+    },
+    isFetched() {
+      // Wait until first fetch (fetchAnimes) to load more
+      if (this.isFetched) {
+        this.$refs.scroll.reset();
+      }
     },
   },
   methods: {
@@ -41,24 +48,25 @@ export default {
         this.animeMounted = 0;
       }
     },
-    resetScroll() {
-      this.$refs.scroll.reset();
-      this.$refs.scroll.resume();
-    },
     animeLoaded() {
       this.animeMounted += 1;
 
       if (this.animeMounted === this.animesFilterByStatus.length) {
         this.loaded();
-        this.resetScroll();
+        this.$refs.scroll.resume();
       }
     },
     loadMoreAnimes(index, done) {
-      const stop = this.api.hasError || !this.hasUsername;
+      const stop = this.api.hasError || !this.hasUsername || !this.isFetched;
       if (!stop && !this.isLoading) {
-        this.fetchMoreAnimes().then((hasMoreAnimesToLoad) => {
-          done(!hasMoreAnimesToLoad);
-        });
+        if (index === 1) {
+          // first fetch, already have animes
+          done();
+        } else {
+          this.fetchMoreAnimes().then((hasMoreAnimesToLoad) => {
+            done(!hasMoreAnimesToLoad);
+          });
+        }
       } else {
         done(stop);
       }

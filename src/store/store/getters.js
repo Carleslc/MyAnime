@@ -6,8 +6,8 @@ export default {
   animesFilterByStatus({ animes, status }) {
     return animes[status];
   },
-  isFetched({ api, username, status }) {
-    return api.isFetched(username, status);
+  isFetched({ fetched }) {
+    return fetched;
   },
   isLoading({ loading }) {
     return loading > 0;

@@ -29,11 +29,15 @@ export default {
   },
   resetAnimes(state) {
     state.api.resetOffsets();
+    state.fetched = false;
     state.animes = {
       watching: [],
       'on-hold': [],
       'plan-to-watch': [],
     };
+  },
+  updateFetched(state) {
+    state.fetched = state.api.isFetched(state.username, state.status);
   },
   setAPI(state, api) {
     state.api = api;
