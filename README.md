@@ -63,6 +63,7 @@ This webpage does not host any video, it is a client-side website, just linking 
 Official and legal providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.
 
 <p align="center">
+  <br>
   <img src="src/statics/chibi.png">
 </p>
 
