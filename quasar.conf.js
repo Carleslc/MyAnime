@@ -66,6 +66,7 @@ module.exports = function (/* ctx */) {
     build: {
       modern: true,
       vueRouterMode: 'history', // available values: 'hash', 'history'
+      publicPath: 'MyAnime',
 
       // rtl: false, // https://quasar.dev/options/rtl-support
       // preloadChunks: true,
