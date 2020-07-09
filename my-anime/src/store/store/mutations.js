@@ -46,6 +46,17 @@ export default {
   nextEpisode(_state, anime) {
     anime.lastWatchedEpisode = anime.nextEpisode;
   },
+  setAnimeWatching(state, anime) {
+    if (anime.status !== 'watching') {
+      // Remove from old list
+      const animeList = state.animes[anime.status];
+      animeList.splice(animeList.indexOf(anime), 1);
+      // Add to watching list
+      state.animes.watching.unshift(anime);
+      // Update status
+      anime.status = 'watching';
+    }
+  },
   loading(state) {
     state.loading += 1;
   },

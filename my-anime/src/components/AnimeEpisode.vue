@@ -92,8 +92,8 @@ export default {
     ...mapState('store', {
       provider: (state) => state.provider.value,
       typeFilter: (state) => state.typeFilter.map((filterType) => filterType.toLowerCase()),
-      airingStatusFilter: 'airingStatusFilter',
     }),
+    ...mapState('store', ['airingStatusFilter', 'status']),
     ...mapGetters('store', ['isLoading']),
     display() {
       return (
@@ -187,18 +187,27 @@ export default {
     },
     nextEpisode() {
       const completed = this.anime.isLastEpisode;
-      const episode = this.anime.nextEpisode;
+      const status = this.anime.status;
 
       this.updateEpisode(this.anime).then(() => {
-        const notification = {};
         if (completed) {
-          notification.message = `Hooray! You've completed ${this.anime.title}!`;
-          notification.type = 'positive';
+          this.$q.notify({
+            message: `Hooray! You've completed ${this.anime.title}!`,
+            color: 'positive',
+          });
         } else {
-          notification.message = `Updated ${this.anime.title} to episode ${episode}.`;
-          notification.color = 'primary';
+          this.$q.notify({
+            message: `Updated ${this.anime.title} to episode ${this.anime.lastWatchedEpisode}.`,
+            color: 'primary',
+          });
         }
-        this.$q.notify(notification);
+        if (status !== 'watching') {
+          this.$q.notify({
+            message: `${this.anime.title} status changed to <strong>Watching</strong>'`,
+            type: 'info',
+            html: true,
+          });
+        }
       });
 
       // prevent focus state

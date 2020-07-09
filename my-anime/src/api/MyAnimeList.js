@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import { Anime } from '@/model/Anime';
+import { notifyError } from '@/utils/errors';
 import { API, encodeParams } from './API';
 
 function parseAnimes(animes) {
@@ -56,23 +57,27 @@ class MyAnimeList extends API {
     });
   }
 
-  auth(username, password) {
-    return this.postFormEncoded(this.url('/auth/token'), {
+  async auth(username, password) {
+    const response = await this.postFormEncoded(this.url('/auth/token'), {
       client_id: client,
       grant_type: 'password',
       username,
       password,
-    })
-      .then((response) => {
-        console.log(response);
-        if (response) {
-          this.updateAuthInfo(response.data);
-        }
-      })
-      .catch((e) => {
-        // invalid_grant ?
-        console.log('catch MAL:', e);
-      });
+    });
+    if (response) {
+      this.updateAuthInfo(response.data);
+    }
+  }
+
+  onError(e) {
+    if (e.response && e.response.data && e.response.data.error) {
+      // e.response.status e.response.data.error (e.response.data.message)
+      // 400 invalid_grant (Incorrect username or password.)
+      // 403 too_many_failed_login_attempts (Too many failed login attempts. Please try to login again after several hours.)
+      notifyError(e.response.data.message);
+    } else {
+      super.onError(e);
+    }
   }
 
   async refreshAccessToken() {

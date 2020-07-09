@@ -4,7 +4,6 @@ function withLoading(commit, promise) {
   commit('loading');
   return promise
     .catch((e) => {
-      console.log('catch actions', e);
       if (e instanceof AuthenticationNeededException) {
         commit('setAuthNeeded', true);
       } else {
@@ -57,6 +56,7 @@ export default {
       commit,
       api.updateEpisode(anime).then(() => {
         commit('nextEpisode', anime);
+        commit('setAnimeWatching', anime);
       })
     );
   },

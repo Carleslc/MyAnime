@@ -57,7 +57,7 @@ export class API {
   }
 
   get isAuthenticated() {
-    if (!this.expiration) {
+    if (!this.accessToken || !this.expiration) {
       return false;
     }
     const now = DateTime.utc();
@@ -112,7 +112,7 @@ export class API {
   get(endpoint, headers) {
     return this.axios.get(endpoint, headers).catch((e) => {
       this.error = e;
-      notifyError(e);
+      this.onError(e);
     });
   }
 
@@ -124,7 +124,7 @@ export class API {
       })
       .catch((e) => {
         this.error = e;
-        notifyError(e);
+        this.onError(e);
       });
   }
 
@@ -134,6 +134,17 @@ export class API {
 
   putFormEncoded(endpoint, data, headers) {
     return this.formEncoded(this.axios.put, endpoint, data, headers);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  onError(e) {
+    if (e.response) {
+      console.error(`${e.response.status} ${e.response.statusText}`);
+      if (e.response.data) {
+        console.error(e.response.data);
+      }
+    }
+    notifyError(e);
   }
 
   resetOffsets() {
