@@ -6,6 +6,7 @@ import AnimeFLV from '@/model/providers/AnimeFLV';
 import jkAnime from '@/model/providers/jkAnime';
 import MonosChinos from '@/model/providers/MonosChinos';
 import AnimeFenix from '@/model/providers/AnimeFenix';
+import AnimeMovil2 from '@/model/providers/AnimeMovil2';
 import Twist from '@/model/providers/Twist';
 import Gogoanime from '@/model/providers/Gogoanime';
 import { FeelingDuckyES, FeelingDuckyEN, FeelingLuckyES, FeelingLuckyEN } from '@/model/providers/FeelingLucky';
@@ -23,6 +24,7 @@ export const providers = Object.freeze([
   { label: 'AnimeID', value: AnimeID },
   { label: 'jkanime', value: jkAnime },
   { label: 'MonosChinos', value: MonosChinos },
+  { label: 'AnimeMovil', value: AnimeMovil2 },
   { label: "I'm feeling ducky", value: FeelingDuckyEN },
   { label: 'Google (EN)', value: FeelingLuckyEN },
   { label: 'Gogoanime', value: Gogoanime },
