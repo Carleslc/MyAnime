@@ -127,7 +127,7 @@ module.exports = function (ctx) {
       manifest: {
         name: 'My Anime',
         short_name: 'MyAnime',
-        description: 'Watch your favourite animes synchronized with your usual provider.',
+        description: 'Watch your favourite animes with your usual provider, synchronized with MyAnimeList.',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

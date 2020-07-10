@@ -1,7 +1,7 @@
 {
   "name": "my-anime",
-  "version": "0.0.1",
-  "description": "Watch your favourite animes synchronized with your usual provider.",
+  "version": "1.0",
+  "description": "Watch your favourite animes with your usual provider, synchronized with MyAnimeList.",
   "productName": "MyAnime",
   "cordovaId": "me.carleslc.my-anime",
   "capacitorId": "",
