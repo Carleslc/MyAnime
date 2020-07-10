@@ -129,6 +129,11 @@ import config from '@/mixins/configuration';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
+  meta: {
+    meta: {
+      'og:image': { property: 'og:image', content: `${window.location.origin}/statics/chibi.png` },
+    },
+  },
   mixins: [config],
   data() {
     return {
