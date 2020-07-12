@@ -10,9 +10,9 @@ export class Anime {
    * @param {String} anime.status - watching, on-hold, plan-to-watch
    * @param {String} anime.type - tv, ova, movie, special, ona, music
    * @param {Number?} anime.totalEpisodes - anime total episodes
-   * @param {String?} anime.startDate - anime start date (yyyy-MM-dd)
+   * @param {String?} anime.startDate - anime start date (yyyy-MM-dd) (JST)
    * @param {Object?} anime.broadcast - anime episodes broadcasting
-   * @param {String} anime.broadcast.weekday - monday to sunday
+   * @param {String} anime.broadcast.weekday - monday to sunday (JST)
    * @param {String?} anime.broadcast.time - HH:mm (JST)
    * @param {String?} anime.airingStatus - not yet aired, currently airing, finished airing
    * @param {String?} anime.updatedAt - last time this anime was updated in user's list
@@ -70,21 +70,22 @@ export class Anime {
   }
 
   setAiringDate(startDate) {
+    function fromFormat(format) {
+      return DateTime.fromFormat(startDate, format, { zone: 'Asia/Tokyo' });
+    }
+
     if (startDate) {
       const parts = startDate.split('-').length;
+
       if (parts === 3) {
         this.airingDatePrecision = 'day';
-        this.airingDate = DateTime.fromFormat(startDate, 'yyyy-MM-dd');
+        this.airingDate = fromFormat('yyyy-MM-dd').toLocal();
       } else if (parts === 2) {
         this.airingDatePrecision = 'month';
-        this.airingDate = DateTime.fromFormat(startDate, 'yyyy-MM');
+        this.airingDate = fromFormat('yyyy-MM').endOf('month').toLocal();
       } else if (parts === 1) {
         this.airingDatePrecision = 'year';
-        this.airingDate = DateTime.fromFormat(startDate, 'yyyy');
-      }
-
-      if (this.airingDate && this.airingDatePrecision && this.airingDatePrecision !== 'day') {
-        this.airingDate = this.airingDate.endOf(this.airingDatePrecision);
+        this.airingDate = fromFormat('yyyy').endOf('year').toLocal();
       }
     }
   }

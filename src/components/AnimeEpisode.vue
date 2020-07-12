@@ -105,39 +105,48 @@ export default {
     },
     broadcast() {
       if (this.anime.broadcast && this.anime.broadcast.weekday) {
-        let estimation = DateTime.fromFormat(
+        const broadcast = DateTime.fromFormat(
           `${this.anime.broadcast.weekday} ${this.anime.broadcast.time || '23:59'}`,
           'EEEE HH:mm',
           { zone: 'Asia/Tokyo' }
         ).toLocal();
         if (this.anime.airingDate) {
-          estimation = this.anime.airingDate.plus({
+          const estimation = this.anime.airingDate.startOf('day').plus({
             weeks: this.anime.nextEpisode - 1,
-            hours: estimation.hour + this.provider.offset,
-            minutes: estimation.minute,
+            hours: broadcast.hour + this.provider.offset,
+            minutes: broadcast.minute,
           });
+          return {
+            date: estimation,
+            precision: this.anime.airingDatePrecision,
+          };
         }
-        return estimation;
+        return {
+          date: broadcast,
+          precision: 'day',
+        };
       }
       return null;
     },
     nextEpisodeAiringDate() {
-      if (this.anime.airingStatus === 'currently airing' && this.broadcast) {
-        return {
-          date: this.broadcast,
-          precision: 'day',
-        };
-      }
-      if (this.anime.airingDate) {
-        return {
-          date: this.anime.airingDate.plus(0), // make a copy to avoid mutations outside vuex
-          precision: this.anime.airingDatePrecision,
-        };
+      if (this.anime.airingStatus !== 'finished airing') {
+        if (this.broadcast) {
+          return this.broadcast;
+        }
+        if (this.anime.airingStatus === 'not yet aired' && this.anime.airingDate && this.anime.nextEpisode === 1) {
+          return {
+            date: this.anime.airingDate.plus(0), // make a copy to avoid mutations outside vuex (https://github.com/moment/luxon/issues/323)
+            precision: this.anime.airingDatePrecision,
+          };
+        }
       }
       return null;
     },
     nextEpisodeIsAired() {
-      return this.anime.isAired && this.nextEpisodeAiringDate && this.nextEpisodeAiringDate.date <= DateTime.local();
+      return (
+        this.anime.airingStatus === 'finished airing' ||
+        (this.anime.isAired && this.nextEpisodeAiringDate && this.nextEpisodeAiringDate.date <= DateTime.local())
+      );
     },
     formattedAiringDate() {
       if (this.nextEpisodeIsAired) {
