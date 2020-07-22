@@ -22,6 +22,7 @@
           :fab-mini="isSmallElement"
           :text-color="anime.isLastEpisode ? 'positive' : 'accent'"
           :icon="anime.isLastEpisode ? 'library_add_check' : 'queue_play_next'"
+          :loading="updating"
           color="white"
           class="absolute-top-right q-ma-sm"
           tabindex="0"
@@ -84,6 +85,7 @@ export default {
   data() {
     return {
       width: 0,
+      updating: false,
     };
   },
   computed: {
@@ -192,29 +194,35 @@ export default {
       }
     },
     nextEpisode() {
+      this.updating = true;
+
       const completed = this.anime.isLastEpisode;
       const status = this.anime.status;
 
-      this.updateEpisode(this.anime).then(() => {
-        if (completed) {
-          this.$q.notify({
-            message: `Hooray! You've completed ${this.anime.title}!`,
-            color: 'positive',
-          });
-        } else {
-          this.$q.notify({
-            message: `Updated ${this.anime.title} to episode ${this.anime.lastWatchedEpisode}.`,
-            color: 'primary',
-          });
-        }
-        if (status !== 'watching') {
-          this.$q.notify({
-            message: `${this.anime.title} status changed to <strong>Watching</strong>`,
-            type: 'info',
-            html: true,
-          });
-        }
-      });
+      this.updateEpisode(this.anime)
+        .then(() => {
+          if (completed) {
+            this.$q.notify({
+              message: `Hooray! You've completed ${this.anime.title}!`,
+              color: 'positive',
+            });
+          } else {
+            this.$q.notify({
+              message: `Updated ${this.anime.title} to episode ${this.anime.lastWatchedEpisode}.`,
+              color: 'primary',
+            });
+          }
+          if (status !== 'watching') {
+            this.$q.notify({
+              message: `${this.anime.title} status changed to <strong>Watching</strong>`,
+              type: 'info',
+              html: true,
+            });
+          }
+        })
+        .finally(() => {
+          this.updating = false;
+        });
 
       // prevent focus state
       this.$refs.fabNext.$el.focus();
