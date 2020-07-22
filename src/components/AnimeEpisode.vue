@@ -22,7 +22,6 @@
           :fab-mini="isSmallElement"
           :text-color="anime.isLastEpisode ? 'positive' : 'accent'"
           :icon="anime.isLastEpisode ? 'library_add_check' : 'queue_play_next'"
-          :loading="isLoading"
           color="white"
           class="absolute-top-right q-ma-sm"
           tabindex="0"
@@ -73,7 +72,7 @@
 
 <script>
 import { DateTime } from 'luxon';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   props: {
@@ -85,7 +84,6 @@ export default {
   data() {
     return {
       width: 0,
-      loading: true,
     };
   },
   computed: {
@@ -94,7 +92,6 @@ export default {
       typeFilter: (state) => state.typeFilter.map((filterType) => filterType.toLowerCase()),
     }),
     ...mapState('store', ['airingStatusFilter', 'status']),
-    ...mapGetters('store', ['isLoading']),
     display() {
       return (
         !this.anime.isCompleted &&
