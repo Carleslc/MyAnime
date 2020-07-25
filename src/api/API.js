@@ -114,23 +114,32 @@ export class API {
     });
   }
 
-  get(endpoint, headers) {
-    return this.axios.get(endpoint, headers).catch((e) => {
-      this.error = e;
-      this.onError(e);
-    });
-  }
-
-  formEncoded(action, endpoint, data, headers) {
-    return action
-      .call(this.axios, endpoint, encodeParams(data), {
-        ...headers,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      })
+  wrapResponse(promise) {
+    this.error = null;
+    return promise
       .catch((e) => {
         this.error = e;
         this.onError(e);
+      })
+      .then((response) => {
+        return {
+          ...response,
+          ok: !this.error,
+        };
       });
+  }
+
+  get(endpoint, headers) {
+    return this.wrapResponse(this.axios.get(endpoint, headers));
+  }
+
+  formEncoded(action, endpoint, data, headers) {
+    return this.wrapResponse(
+      action.call(this.axios, endpoint, encodeParams(data), {
+        ...headers,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
+    );
   }
 
   postFormEncoded(endpoint, data, headers) {

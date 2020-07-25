@@ -65,7 +65,7 @@ export class MyAnimeList extends API {
       username,
       password,
     });
-    if (response) {
+    if (response.ok && response.data) {
       this.updateAuthInfo(response.data);
     }
   }
@@ -87,7 +87,7 @@ export class MyAnimeList extends API {
       grant_type: 'refresh_token',
       refresh_token: this.refreshToken,
     });
-    if (response) {
+    if (response.ok && response.data) {
       this.updateAuthInfo(response.data);
     }
   }
@@ -102,7 +102,7 @@ export class MyAnimeList extends API {
 
     const response = await this.get(this.url('/users/@me'));
 
-    if (response) {
+    if (response.ok && response.data) {
       return response.data.picture;
     }
     return null;
@@ -148,7 +148,7 @@ export class MyAnimeList extends API {
 
     const response = await this.get(this.url(`/users/${username}/animelist?${encodeParams(filters)}`));
 
-    if (!response) {
+    if (!response.ok) {
       return [];
     }
 

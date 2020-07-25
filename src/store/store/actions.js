@@ -55,9 +55,12 @@ export default {
   updateEpisode({ commit, state: { api } }, anime) {
     return withLoading(
       commit,
-      api.updateEpisode(anime).then(() => {
-        commit('nextEpisode', anime);
-        commit('setAnimeWatching', anime);
+      api.updateEpisode(anime).then((response) => {
+        if (response.ok) {
+          commit('nextEpisode', anime);
+          commit('setAnimeWatching', anime);
+        }
+        return response;
       })
     );
   },

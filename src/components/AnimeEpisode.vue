@@ -110,8 +110,9 @@ export default {
           { zone: 'Asia/Tokyo' }
         ).toLocal();
         if (this.anime.airingDate) {
-          const estimation = this.anime.airingDate.startOf('day').plus({
+          const estimation = this.anime.airingDate.startOf('week').plus({
             weeks: this.anime.nextEpisode - 1,
+            days: broadcast.weekday - 1,
             hours: broadcast.hour + this.provider.offset,
             minutes: broadcast.minute,
           });
@@ -200,24 +201,26 @@ export default {
       const status = this.anime.status;
 
       this.updateEpisode(this.anime)
-        .then(() => {
-          if (completed) {
-            this.$q.notify({
-              message: `Hooray! You've completed ${this.anime.title}!`,
-              color: 'positive',
-            });
-          } else {
-            this.$q.notify({
-              message: `Updated ${this.anime.title} to episode ${this.anime.lastWatchedEpisode}.`,
-              color: 'primary',
-            });
-          }
-          if (status !== 'watching') {
-            this.$q.notify({
-              message: `${this.anime.title} status changed to <strong>Watching</strong>`,
-              type: 'info',
-              html: true,
-            });
+        .then(({ ok }) => {
+          if (ok) {
+            if (completed) {
+              this.$q.notify({
+                message: `Hooray! You've completed ${this.anime.title}!`,
+                color: 'positive',
+              });
+            } else {
+              this.$q.notify({
+                message: `Updated ${this.anime.title} to episode ${this.anime.lastWatchedEpisode}.`,
+                color: 'primary',
+              });
+            }
+            if (status !== 'watching') {
+              this.$q.notify({
+                message: `${this.anime.title} status changed to <strong>Watching</strong>`,
+                type: 'info',
+                html: true,
+              });
+            }
           }
         })
         .finally(() => {
