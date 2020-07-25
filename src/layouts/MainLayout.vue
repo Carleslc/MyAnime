@@ -126,7 +126,7 @@
 
 <script>
 import config from '@/mixins/configuration';
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   meta: {
@@ -142,6 +142,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('store', ['api']),
     ...mapGetters('store', ['isLoading', 'isFetched', 'hasUsername']),
     hiddenIfSettings() {
       return this.settings ? 'display: none' : undefined;
@@ -170,7 +171,7 @@ export default {
       return { minHeight: `calc(100vh - ${offset}px + ${footerHeight})` };
     },
     updateAnimes() {
-      if (!this.isFetched && !this.isLoading && this.hasUsername) {
+      if (!this.isFetched && !this.isLoading && this.hasUsername && !this.api.hasError) {
         this.fetchAnimes();
       }
     },
