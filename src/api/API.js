@@ -4,7 +4,7 @@ import { LocalStorage } from 'quasar';
 import { DateTime } from 'luxon';
 import { AuthenticationNeededException, notifyError } from '@/utils/errors';
 
-const CORS_PROXY_URL = 'https://cors-api-proxy.herokuapp.com/';
+const CORS_PROXY_URL = 'https://cors.carleslc.me/';
 
 const AUTH_KEY = 'auth';
 
