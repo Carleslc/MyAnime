@@ -11,6 +11,7 @@ import Twist from '@/model/providers/Twist';
 import Gogoanime from '@/model/providers/Gogoanime';
 import { FeelingDuckyES, FeelingDuckyEN, FeelingLuckyES, FeelingLuckyEN } from '@/model/providers/FeelingLucky';
 
+import { i18n } from '@/boot/i18n';
 import { mapFields } from 'vuex-map-fields';
 
 export const providers = Object.freeze([
@@ -32,19 +33,29 @@ export const providers = Object.freeze([
 ]);
 
 export const config = Object.freeze({
-  airingStatuses: ['Already aired', 'Not yet aired'],
-  animeTypes: ['TV', 'OVA', 'Movie', 'Special', 'ONA', 'Music'],
+  airingStatuses: [
+    { label: i18n.t('alreadyAired'), value: 'already-aired' },
+    { label: i18n.t('notYetAired'), value: 'not-yet-aired' },
+  ],
+  animeTypes: [
+    { label: 'TV', value: 'tv' },
+    { label: 'OVA', value: 'ova' },
+    { label: i18n.t('movie'), value: 'movie' },
+    { label: i18n.t('special'), value: 'special' },
+    { label: 'ONA', value: 'ona' },
+    { label: i18n.t('music'), value: 'music' },
+  ],
   statuses: {
     watching: {
-      label: 'Watching',
+      label: i18n.t('status.watching'),
       icon: 'visibility',
     },
     'on-hold': {
-      label: 'On Hold',
+      label: i18n.t('status.onHold'),
       icon: 'pause',
     },
     'plan-to-watch': {
-      label: 'Plan to Watch',
+      label: i18n.t('status.planToWatch'),
       icon: 'watch_later',
     },
   },
@@ -54,8 +65,9 @@ export const defaults = {
   username: '',
   status: 'watching',
   provider: providers[0],
-  airingStatusFilter: config.airingStatuses.slice(),
-  typeFilter: config.animeTypes.slice(),
+  providersByAnimeTitle: {},
+  airingStatusFilter: config.airingStatuses.map((status) => status.value),
+  typeFilter: config.animeTypes.map((type) => type.value),
 };
 
 export default {
@@ -75,9 +87,17 @@ export default {
         if (this.$q.localStorage.has(key)) {
           let value = this.$q.localStorage.getItem(key);
 
+          const getProvider = (label) => providers.find((provider) => provider.label === label);
+
+          // convert provider labels to provider objects
           if (key === 'provider') {
-            // retrieve provider object from the saved label
-            value = providers.find((provider) => provider.label === value);
+            value = getProvider(value);
+          } else if (key === 'providersByAnimeTitle') {
+            const providersByAnimeTitle = {};
+            Object.entries(value).forEach(([title, providerLabel]) => {
+              providersByAnimeTitle[title] = getProvider(providerLabel);
+            });
+            value = providersByAnimeTitle;
           }
 
           if (value !== undefined && value !== null) {
@@ -89,13 +109,23 @@ export default {
 
     // add watchers to save configuration
     Object.keys(defaults)
-      .filter((key) => key !== 'provider') // avoid saving entire object
+      .filter((key) => key !== 'provider' && key !== 'providersByAnimeTitle') // avoid saving entire objects
       .forEach((key) => this.$watch(key, (value) => this.$q.localStorage.set(key, value)));
   },
   watch: {
     // save provider label only
     provider(provider) {
       this.$q.localStorage.set('provider', provider.label);
+    },
+    providersByAnimeTitle: {
+      handler(providersByAnimeTitle) {
+        const saveProviders = {};
+        Object.entries(providersByAnimeTitle).forEach(([title, provider]) => {
+          saveProviders[title] = provider.label;
+        });
+        this.$q.localStorage.set('providersByAnimeTitle', saveProviders);
+      },
+      deep: true,
     },
   },
 };

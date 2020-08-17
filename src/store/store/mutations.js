@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { updateField } from 'vuex-map-fields';
 import { newState } from './state';
 
@@ -60,6 +61,13 @@ export default {
       state.animes.watching.unshift(anime);
       // Update status
       anime.status = 'watching';
+    }
+  },
+  setProvider(state, { title, provider }) {
+    if (provider === state.provider) {
+      Vue.delete(state.providersByAnimeTitle, title);
+    } else {
+      Vue.set(state.providersByAnimeTitle, title, provider);
     }
   },
   loading(state) {

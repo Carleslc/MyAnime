@@ -15,4 +15,7 @@ export default {
   hasUsername({ username }) {
     return !isBlank(username);
   },
+  providerByAnimeTitle({ provider, providersByAnimeTitle }) {
+    return (title) => providersByAnimeTitle[title] || provider;
+  },
 };

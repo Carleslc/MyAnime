@@ -13,19 +13,19 @@
           <div class="col-auto text-h4">My Anime</div>
         </div>
         <div v-else class="col row justify-end items-center no-wrap" @mousedown.prevent>
-          <provider-select v-model="provider" class="col-auto q-mx-auto gt-xsm" />
+          <provider-select ref="providerSelect" v-model="provider" dark icon class="col-auto q-mx-auto gt-xsm" />
           <div class="col-auto q-gutter-x-lg q-mr-auto row justify-between gt-md">
             <status-select
               v-model="airingStatusFilter"
               icon="movie_filter"
-              caption="Filter anime status"
+              :caption="$t('animeStatusFilter')"
               :options="config.airingStatuses"
               class="col-auto gt-md"
             />
             <status-select
               v-model="typeFilter"
               icon="tv"
-              caption="Filter anime type"
+              :caption="$t('animeTypeFilter')"
               :options="config.animeTypes"
               class="col-auto gt-md"
             />
@@ -41,11 +41,7 @@
           class="col-shrink q-ml-md q-py-xs"
           @click="settings = !settings"
           @keydown.esc="settings = false"
-        >
-          <q-tooltip transition-show="fade" transition-hide="fade">
-            {{ settings ? 'Close' : 'Open' }} Settings
-          </q-tooltip>
-        </q-btn>
+        />
       </q-toolbar>
       <q-tabs
         v-model="status"
@@ -75,15 +71,15 @@
         <div class="col row q-pt-lg">
           <div class="col-auto full-width q-px-sm">
             <q-item-section>
-              <q-item-label header>Select provider</q-item-label>
-              <provider-select v-model="provider" />
+              <q-item-label v-t="'selectProvider'" header />
+              <provider-select v-model="provider" dark icon />
             </q-item-section>
             <q-item-section class="q-pt-lg">
-              <q-item-label header>Anime status</q-item-label>
+              <q-item-label v-t="'animeStatus'" header />
               <status-select v-model="airingStatusFilter" icon="movie_filter" :options="config.airingStatuses" />
             </q-item-section>
             <q-item-section class="q-pt-sm">
-              <q-item-label header>Anime type</q-item-label>
+              <q-item-label v-t="'animeType'" header />
               <status-select v-model="typeFilter" icon="tv" :options="config.animeTypes" />
             </q-item-section>
           </div>
@@ -103,7 +99,7 @@
     <q-footer class="row justify-end fixed-bottom-right" @mousedown.prevent>
       <q-btn unelevated color="accent" icon="description" class="square" @click="info = true">
         <q-tooltip transition-show="fade" transition-hide="fade" content-class="bg-primary">
-          About this app
+          {{ $t('aboutApp') }}
         </q-tooltip>
       </q-btn>
       <q-dialog v-model="info" transition-show="jump-up" transition-hide="jump-down">
@@ -126,6 +122,7 @@
 
 <script>
 import config from '@/mixins/configuration';
+import { registerKeyListeners } from '@/mixins/keyboard';
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
@@ -134,7 +131,12 @@ export default {
       'og:image': { property: 'og:image', content: `${window.location.href}statics/chibi.png` },
     },
   },
-  mixins: [config],
+  mixins: [
+    config,
+    registerKeyListeners({
+      down: 'showProviderPopup',
+    }),
+  ],
   data() {
     return {
       settings: false,
@@ -174,6 +176,9 @@ export default {
       if (!this.isFetched && !this.isLoading && this.hasUsername && !this.api.hasError) {
         this.fetchAnimes();
       }
+    },
+    showProviderPopup() {
+      this.$refs.providerSelect.showPopup();
     },
   },
 };

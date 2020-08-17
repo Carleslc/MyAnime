@@ -5,8 +5,9 @@
     dense
     standout
     dark
+    emit-value
     :options-dark="false"
-    :options="Object.freeze(options)"
+    :options="options"
     popup-content-class="filter-options"
   >
     <template v-slot:prepend>
@@ -16,10 +17,10 @@
       </q-tooltip>
     </template>
     <template v-if="selected.length === options.length" v-slot:selected>
-      All
+      {{ $t('all') }}
     </template>
     <template v-else v-slot:selected>
-      {{ options.filter(isSelected).join(', ') }}
+      {{ options.filter(isSelected).map(label).join(', ') }}
     </template>
   </q-select>
 </template>
@@ -44,8 +45,20 @@ export default {
     },
   },
   methods: {
-    isSelected(selected) {
-      return this.selected.includes(selected);
+    isSelected(option) {
+      return this.selected.includes(this.optValue(option));
+    },
+    optValue(option) {
+      if (option instanceof Object) {
+        return option.value;
+      }
+      return option;
+    },
+    label(option) {
+      if (option instanceof Object) {
+        return option.label;
+      }
+      return option;
     },
   },
 };

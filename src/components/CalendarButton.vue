@@ -3,7 +3,7 @@
     icon="date_range"
     href="https://notify.moe/calendar"
     target="_blank"
-    :label="icon ? '' : 'Anime Calendar'"
+    :label="icon ? '' : $t('animeCalendar')"
     :caption="caption"
   />
 </template>
@@ -18,7 +18,7 @@ export default {
   },
   data() {
     return {
-      caption: 'Calendar anime for this week',
+      caption: this.$t('animeCalendarDescription'),
     };
   },
 };

@@ -48,6 +48,7 @@ module.exports = {
     'prefer-destructuring': 'off', // 'error', { object: true, array: false }
 
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+    'vue/no-v-html': 'off', // Beware of XSS!
     'no-param-reassign': 'off',
     'global-require': 'off',
     'no-unused-vars': 'warn',

@@ -4,27 +4,26 @@
     v-model="provider"
     dense
     standout
-    dark
+    :dark="dark"
     options-selected-class="filter-options"
     :options-dark="false"
     :options="providers"
+    :options-dense="optionsDense"
   >
     <template v-slot:prepend>
-      <q-icon name="cast" />
-      <q-tooltip transition-show="fade" transition-hide="fade">
-        Select which provider must be opened when clicking over an episode, either in Spanish (ES) or English (EN).
-        <br /><br />
-        Feeling Lucky options are based on search engine, trying to get a proper streamer, but it doesn't mean it always
-        work.
-        <br /><br />
-        If selected provider cannot find an episode try to change the provider.
+      <q-icon v-if="icon" name="cast" />
+      <q-avatar v-else square size="sm">
+        <img :src="provider.value.icon" />
+      </q-avatar>
+      <q-tooltip v-if="tooltip" transition-show="fade" transition-hide="fade">
+        <div v-html="help" />
       </q-tooltip>
     </template>
     <template v-slot:option="scope">
       <q-item v-ripple v-bind="scope.itemProps" v-on="scope.itemEvents">
         <q-item-section avatar>
           <q-avatar square size="sm">
-            <img :src="scope.opt.value.icon">
+            <img :src="scope.opt.value.icon" />
           </q-avatar>
         </q-item-section>
         <q-item-section>
@@ -32,11 +31,11 @@
         </q-item-section>
       </q-item>
     </template>
-    <template v-if="provider" v-slot:after>
+    <template v-if="provider && icon" v-slot:after>
       <q-btn flat dense type="a" :href="providerUrl" target="_blank" @click="openProvider">
         <!-- <q-icon name="screen_share" /> -->
         <q-avatar square size="sm">
-          <img :src="provider.value.icon">
+          <img :src="provider.value.icon" />
         </q-avatar>
         <q-tooltip transition-show="fade" transition-hide="fade">
           {{ provider.label }}
@@ -48,21 +47,28 @@
 
 <script>
 import { openURL } from 'quasar';
-import { registerKeyListeners } from '@/mixins/keyboard';
 import { providers } from '@/mixins/configuration';
+import { nl2br } from '@/utils/strings';
 import bind from '@/mixins/bind';
 
 export default {
-  mixins: [
-    bind('provider', Object),
-    registerKeyListeners({
-      down: 'showProviderPopup',
-    }),
-  ],
+  mixins: [bind('provider', Object)],
   props: {
-    value: {
-      type: Object,
-      required: true,
+    icon: {
+      type: Boolean,
+      default: false,
+    },
+    optionsDense: {
+      type: Boolean,
+      default: false,
+    },
+    dark: {
+      type: Boolean,
+      default: false,
+    },
+    tooltip: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -74,6 +80,9 @@ export default {
     providerUrl() {
       return this.provider.value.url;
     },
+    help() {
+      return nl2br(this.$t('providerSelect'));
+    },
   },
   methods: {
     openProvider() {
@@ -81,10 +90,10 @@ export default {
       if (url) {
         openURL(url);
       } else {
-        this.showProviderPopup();
+        this.showPopup();
       }
     },
-    showProviderPopup() {
+    showPopup() {
       this.$refs.providerSelect.showPopup();
     },
   },

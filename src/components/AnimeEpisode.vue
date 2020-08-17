@@ -6,7 +6,13 @@
     :class="{ small: isSmallElement, 'on-hover': $q.platform.is.desktop }"
   >
     <q-resize-observer debounce="200" @resize="handleResize" />
-    <a :href="episodeUrl" target="_blank" class="column justify-between full-height" @mousedown.prevent>
+    <a
+      :href="episodeUrl"
+      target="_blank"
+      class="column justify-between full-height"
+      :aria-label="aria"
+      @mousedown.prevent
+    >
       <q-img
         :src="anime.cover"
         basic
@@ -17,6 +23,31 @@
       />
       <div class="absolute-full hoverable overlay column justify-center">
         <q-btn
+          ref="fabSettings"
+          fab-mini
+          icon="settings"
+          color="white"
+          text-color="primary"
+          class="absolute-top-left q-ma-sm"
+          tabindex="0"
+          :aria-label="$t('settings')"
+          @click.prevent="preventFocus('fabSettings')"
+        >
+          <q-tooltip
+            transition-show="jump-right"
+            transition-hide="jump-left"
+            anchor="center right"
+            self="center left"
+            :offset="[10, 10]"
+            :content-class="['text-primary', 'bg-white']"
+          >
+            {{ $t('settings') }}
+          </q-tooltip>
+          <q-menu class="z-max">
+            <anime-settings :anime="anime" />
+          </q-menu>
+        </q-btn>
+        <q-btn
           ref="fabNext"
           :fab="!isSmallElement"
           :fab-mini="isSmallElement"
@@ -26,17 +57,18 @@
           color="white"
           class="absolute-top-right q-ma-sm"
           tabindex="0"
+          :aria-label="nextLabel"
           @click.prevent="nextEpisode"
         >
           <q-badge v-if="!anime.isLastEpisode" color="secondary" floating>{{ anime.nextEpisode }}</q-badge>
           <q-tooltip
-            transition-show="jump-left"
-            transition-hide="jump-right"
-            anchor="center left"
-            self="center right"
-            :offset="[10, 10]"
+            transition-show="jump-down"
+            transition-hide="jump-up"
+            anchor="bottom left"
+            self="top middle"
+            :offset="[10, 8]"
             :content-class="[anime.isLastEpisode ? 'text-positive' : 'text-secondary', 'bg-white']"
-            >{{ anime.isLastEpisode ? 'Complete' : 'Next episode' }}
+            >{{ nextLabel }}
           </q-tooltip>
         </q-btn>
         <h1 class="col-auto full-width q-px-xs q-mt-auto q-pt-xl">{{ anime.title }}</h1>
@@ -55,7 +87,7 @@
             :class="{ 'q-pb-xs': anime.totalEpisodes, 'q-pa-none': isSmallElement, 'q-pa-xs': !isSmallElement }"
           >
             <div class="row justify-center full-width">
-              Episode {{ anime.nextEpisode }}
+              {{ $t('episode') }} {{ anime.nextEpisode }}
               <span v-if="anime.totalEpisodes && !isSmallElement" class="q-pl-xs">/ {{ anime.totalEpisodes }}</span>
             </div>
             <q-linear-progress
@@ -73,7 +105,7 @@
 
 <script>
 import { DateTime } from 'luxon';
-import { mapState, mapActions } from 'vuex';
+import { mapGetters, mapState, mapActions } from 'vuex';
 
 export default {
   props: {
@@ -89,16 +121,22 @@ export default {
     };
   },
   computed: {
-    ...mapState('store', {
-      provider: (state) => state.provider.value,
-      typeFilter: (state) => state.typeFilter.map((filterType) => filterType.toLowerCase()),
-    }),
-    ...mapState('store', ['airingStatusFilter', 'status']),
+    ...mapGetters('store', ['providerByAnimeTitle']),
+    ...mapState('store', ['typeFilter', 'airingStatusFilter']),
+    provider() {
+      return this.providerByAnimeTitle(this.anime.title);
+    },
+    nextLabel() {
+      return this.$t(this.anime.isLastEpisode ? 'complete' : 'nextEpisode');
+    },
+    aria() {
+      return `${this.anime.title} ${this.$t('episode')} ${this.anime.nextEpisode}`;
+    },
     display() {
       return (
         !this.anime.isCompleted &&
-        ((this.nextEpisodeIsAired && this.airingStatusFilter.includes('Already aired')) ||
-          (!this.nextEpisodeIsAired && this.airingStatusFilter.includes('Not yet aired'))) &&
+        ((this.nextEpisodeIsAired && this.airingStatusFilter.includes('already-aired')) ||
+          (!this.nextEpisodeIsAired && this.airingStatusFilter.includes('not-yet-aired'))) &&
         this.typeFilter.includes(this.anime.type)
       );
     },
@@ -113,7 +151,7 @@ export default {
           const estimation = this.anime.airingDate.startOf('week').plus({
             weeks: this.anime.nextEpisode - 1,
             days: broadcast.weekday - 1,
-            hours: broadcast.hour + this.provider.offset,
+            hours: broadcast.hour + this.provider.value.offset,
             minutes: broadcast.minute,
           });
           return {
@@ -173,7 +211,7 @@ export default {
       return date.toLocaleString({ year: 'numeric' });
     },
     episodeUrl() {
-      return this.provider.episodeUrl(this.anime, this.anime.nextEpisode);
+      return this.provider.value.episodeUrl(this.anime, this.anime.nextEpisode);
     },
     isSmallElement() {
       return this.width < 185;
@@ -227,9 +265,12 @@ export default {
           this.updating = false;
         });
 
+      this.preventFocus('fabNext');
+    },
+    preventFocus(ref) {
       // prevent focus state
-      this.$refs.fabNext.$el.focus();
-      this.$refs.fabNext.$el.blur();
+      this.$refs[ref].$el.focus();
+      this.$refs[ref].$el.blur();
     },
   },
 };

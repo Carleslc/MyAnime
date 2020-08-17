@@ -58,6 +58,7 @@ $breakpoint-xxs-max: 349px;
 
 .q-drawer {
   max-width: 100vw;
+  z-index: 10;
 
   .q-item__section {
     margin: 0;
@@ -68,8 +69,13 @@ $breakpoint-xxs-max: 349px;
   max-width: 256px;
   text-align: center;
   font-size: 1em;
-  z-index: 20;
   background-color: $dark;
+  z-index: 100;
+
+  > div,
+  > p {
+    font-size: 1.05em;
+  }
 }
 
 .prefix {
