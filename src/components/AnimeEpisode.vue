@@ -123,6 +123,11 @@ export default {
   computed: {
     ...mapGetters('store', ['providerByAnimeTitle']),
     ...mapState('store', ['typeFilter', 'airingStatusFilter']),
+    ...mapState('store', {
+      calendarEntry(state) {
+        return state.calendar[this.anime.title];
+      },
+    }),
     provider() {
       return this.providerByAnimeTitle(this.anime.title);
     },
@@ -166,8 +171,33 @@ export default {
       }
       return null;
     },
+    nextCalendarAiringEpisode() {
+      if (this.calendarEntry) {
+        const nextAiringEpisode = Math.min(...Object.keys(this.calendarEntry).map((episode) => parseInt(episode, 10)));
+        if (!this.anime.totalEpisodes || nextAiringEpisode <= this.anime.totalEpisodes) {
+          return nextAiringEpisode;
+        }
+        // nextAiringEpisode > totalEpisodes means that calendar episode is not relative (probably this anime is a sequel)
+      }
+      return null;
+    },
+    nextEpisodeCalendarAiringDate() {
+      if (this.calendarEntry) {
+        const calendarDate = this.calendarEntry[this.anime.nextEpisode];
+        if (calendarDate) {
+          return {
+            date: DateTime.fromISO(calendarDate).toLocal().plus({ hours: this.provider.value.offset }),
+            precision: 'day',
+          };
+        }
+      }
+      return null;
+    },
     nextEpisodeAiringDate() {
       if (this.anime.airingStatus !== 'finished airing') {
+        if (this.nextEpisodeCalendarAiringDate) {
+          return this.nextEpisodeCalendarAiringDate;
+        }
         if (this.broadcast) {
           return this.broadcast;
         }
@@ -183,6 +213,7 @@ export default {
     nextEpisodeIsAired() {
       return (
         this.anime.airingStatus === 'finished airing' ||
+        (this.nextCalendarAiringEpisode && this.anime.nextEpisode < this.nextCalendarAiringEpisode) ||
         (this.anime.isAired && this.nextEpisodeAiringDate && this.nextEpisodeAiringDate.date <= DateTime.local())
       );
     },

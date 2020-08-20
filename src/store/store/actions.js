@@ -38,11 +38,21 @@ export default {
     }
     return api.hasNext(username, status);
   },
+  fetchCalendar({ commit, state: { backend } }) {
+    return withLoading(
+      commit,
+      backend.getCalendar().then((calendar) => {
+        commit('setCalendar', calendar);
+        return calendar;
+      })
+    );
+  },
   searchUser({ commit, dispatch }, username) {
     commit('setUsername', username);
     commit('resetAnimes');
     dispatch('updatePicture');
     dispatch('fetchAnimes');
+    dispatch('fetchCalendar');
   },
   updatePicture({ commit, state: { api, username } }) {
     return withLoading(

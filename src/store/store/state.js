@@ -1,9 +1,12 @@
+import Backend from '@/api/Backend';
 import { MyAnimeList } from '@/api/MyAnimeList';
 import { defaults } from '@/mixins/configuration';
 
 export function newState() {
+  const backend = new Backend();
   const defaultAPI = new MyAnimeList();
   return {
+    backend,
     authNeeded: false,
     api: defaultAPI,
     picture: defaultAPI.image,
@@ -14,12 +17,13 @@ export function newState() {
     airingStatusFilter: defaults.airingStatusFilter,
     typeFilter: defaults.typeFilter,
     loading: 0,
+    fetched: false,
     animes: {
       watching: [],
       'on-hold': [],
       'plan-to-watch': [],
     },
-    fetched: false,
+    calendar: {},
   };
 }
 

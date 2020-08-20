@@ -70,6 +70,9 @@ export default {
       Vue.set(state.providersByAnimeTitle, title, provider);
     }
   },
+  setCalendar(state, calendar) {
+    state.calendar = calendar;
+  },
   loading(state) {
     state.loading += 1;
   },
