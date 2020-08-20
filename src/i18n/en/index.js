@@ -35,10 +35,20 @@ export default {
     If selected provider cannot find an episode try to change the provider.
     You can override the default provider in the settings of each anime.
   `,
+  login: 'Log In',
+  loginDescription: 'Please, log in to your {api} account to view your anime list and update episodes directly within this app.',
+  notRegisteredYet: 'Not registered yet?',
+  registerHere: 'Register here',
+  noPassword: 'If your account has no password because it uses social media login like Facebook, Twitter or Google go to your {0} and set a password for your account first.',
+  accountSettings: 'Account Settings',
   updated: 'Updated {title} to episode {episode}',
   completed: "Hooray! You've completed {title}!",
   statusChanged: '{title} status changed to <strong>{status}</strong>',
   invalidGrant: 'Incorrect username or password',
   tooManyFailedLoginAttempts: 'Too many failed login attempts. Please try to login again after several hours.',
+  required: '{field} is required',
+  username: 'Username',
+  password: 'Password',
+  cancel: 'Cancel',
   error: 'Oops... an unexpected error has occurred 😣',
 };

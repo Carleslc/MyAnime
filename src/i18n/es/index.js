@@ -35,10 +35,20 @@ export default {
     Si el proveedor seleccionado no puede encontrar un episodio prueba seleccionando otro proveedor.
     Puedes sobreescribir el proveedor por defecto en los ajustes de cada anime.
   `,
+  login: 'Iniciar sesión',
+  loginDescription: 'Por favor, inicia sesión en tu cuenta de {api} para ver tu lista de animes y actualizar los episodios directamente desde esta app.',
+  notRegisteredYet: '¿Todavía no estás registrado?',
+  registerHere: 'Regístrate aquí',
+  noPassword: 'Si tu cuenta no tiene contraseña porque utilizas una red social como Facebook, Twitter o Google para iniciar sesión ve a tus {0} y establece una contraseña primero.',
+  accountSettings: 'ajustes de cuenta',
   updated: '{title} actualizado al episodio {episode}',
   completed: "¡Genial! ¡Has completado {title}!",
   statusChanged: 'El estado de {title} se ha cambiado a <strong>{status}</strong>',
   invalidGrant: 'Nombre de usuario o contraseña incorrectos',
   tooManyFailedLoginAttempts: 'Demasiados intentos fallidos. Prueba a iniciar sesión de nuevo en unas horas.',
+  required: 'Introduce tu {field}',
+  username: 'Nombre de usuario',
+  password: 'Contraseña',
+  cancel: 'Cancelar',
   error: 'Vaya... ha ocurrido un error inesperado 😣',
 };

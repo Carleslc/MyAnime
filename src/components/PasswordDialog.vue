@@ -3,7 +3,7 @@
     <q-card style="min-width: 300px;">
       <q-form @submit="setPassword">
         <q-card-section class="row justify-between items-center">
-          <div class="text-h5 text-bold">Log In</div>
+          <div v-t="'login'" class="text-h5 text-bold" />
           <a :href="api.homeUrl" target="_blank">
             <q-avatar rounded size="lg">
               <img :src="api.image" />
@@ -13,8 +13,7 @@
 
         <q-card-section class="q-pt-none">
           <div>
-            Please, log in to your {{ api.name }} account to view your anime list and update episodes directly within
-            this app.
+            {{ $t('loginDescription', { api: api.name }) }}
           </div>
         </q-card-section>
 
@@ -22,33 +21,33 @@
           <q-input
             v-model="username"
             dense
-            placeholder="Username"
-            :rules="[(val) => !isBlank(val) || 'Username is required']"
+            :placeholder="$t('username')"
+            :rules="[(val) => !isBlank(val) || $t('required', { field: $t('username').toLowerCase() })]"
           />
           <q-input
             v-model="password"
             dense
             autofocus
-            placeholder="Password"
             type="password"
-            :rules="[(val) => !isBlank(val) || 'Password is required']"
+            :placeholder="$t('password')"
+            :rules="[(val) => !isBlank(val) || $t('required', { field: $t('password').toLowerCase() })]"
           />
         </q-card-section>
 
         <q-card-section class="q-py-none text-grey-6">
-          <span class="q-mr-sm">Not registered yet?</span>
-          <a :href="api.registerUrl" target="_blank">Register here</a>
+          <span v-t="'notRegisteredYet'" class="q-mr-sm"></span>
+          <a :href="api.registerUrl" target="_blank">{{ $t('registerHere') }}</a>
         </q-card-section>
 
         <q-card-section v-if="api.setPasswordUrl" class="q-pb-none text-italic text-grey-6">
-          If your account has no password because it uses social media login like Facebook, Twitter or Google go to your
-          <a :href="api.setPasswordUrl" target="_blank">Account Settings</a>
-          and set a password for your account first.
+          <i18n path="noPassword" :tag="false">
+            <a :href="api.setPasswordUrl" target="_blank">{{ $t('accountSettings') }}</a>
+          </i18n>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
-          <q-btn v-if="!isLoading" v-close-popup flat color="grey" label="Cancel" />
-          <q-btn flat color="primary" label="Search" type="submit" :disable="!isValid" :loading="isLoading" />
+          <q-btn v-if="!isLoading" v-close-popup flat color="grey" :label="$t('cancel')" />
+          <q-btn flat color="primary" type="submit" :label="$t('login')" :disable="!isValid" :loading="isLoading" />
         </q-card-actions>
       </q-form>
     </q-card>
