@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { i18n } from '@/boot/i18n';
 import { Anime } from '@/model/Anime';
 import { notifyError } from '@/utils/errors';
 import { API, encodeParams } from './API';
@@ -75,7 +76,19 @@ export class MyAnimeList extends API {
       // e.response.status e.response.data.error (e.response.data.message)
       // 400 invalid_grant (Incorrect username or password.)
       // 403 too_many_failed_login_attempts (Too many failed login attempts. Please try to login again after several hours.)
-      notifyError(e.response.data.message);
+      let message;
+      switch (e.response.data.error) {
+        case 'invalid_grant':
+          message = i18n.t('invalidGrant');
+          break;
+        case 'too_many_failed_login_attempts':
+          message = i18n.t('tooManyFailedLoginAttempts');
+          break;
+        default:
+          message = e.response.data.message;
+          break;
+      }
+      notifyError(message);
     } else {
       super.onError(e);
     }

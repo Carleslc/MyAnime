@@ -35,5 +35,10 @@ export default {
     Si el proveedor seleccionado no puede encontrar un episodio prueba seleccionando otro proveedor.
     Puedes sobreescribir el proveedor por defecto en los ajustes de cada anime.
   `,
+  updated: '{title} actualizado al episodio {episode}',
+  completed: "¡Genial! ¡Has completado {title}!",
+  statusChanged: 'El estado de {title} se ha cambiado a <strong>{status}</strong>',
+  invalidGrant: 'Nombre de usuario o contraseña incorrectos',
+  tooManyFailedLoginAttempts: 'Demasiados intentos fallidos. Prueba a iniciar sesión de nuevo en unas horas.',
   error: 'Vaya... ha ocurrido un error inesperado 😣',
 };

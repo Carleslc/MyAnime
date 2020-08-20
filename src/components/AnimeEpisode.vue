@@ -243,18 +243,18 @@ export default {
           if (ok) {
             if (completed) {
               this.$q.notify({
-                message: `Hooray! You've completed ${this.anime.title}!`,
+                message: this.$t('completed', { title: this.anime.title }),
                 color: 'positive',
               });
             } else {
               this.$q.notify({
-                message: `Updated ${this.anime.title} to episode ${this.anime.lastWatchedEpisode}.`,
+                message: this.$t('updated', { title: this.anime.title, episode: this.anime.lastWatchedEpisode }),
                 color: 'primary',
               });
             }
             if (status !== 'watching') {
               this.$q.notify({
-                message: `${this.anime.title} status changed to <strong>Watching</strong>`,
+                message: this.$t('statusChanged', { title: this.anime.title, status: this.$t('status.watching') }),
                 type: 'info',
                 html: true,
               });
