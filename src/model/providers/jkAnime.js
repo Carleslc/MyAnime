@@ -2,7 +2,7 @@ import Provider from './Provider.js';
 
 class jkAnime extends Provider {
   constructor() {
-    super('https://jkanime.net/', 5);
+    super('https://jkanime.net/', 5, ['es']);
   }
 
   // eslint-disable-next-line class-methods-use-this

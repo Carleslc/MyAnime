@@ -9,6 +9,8 @@
     :options-dark="false"
     :options="providers"
     :options-dense="optionsDense"
+    @popup-show="focus()"
+    @popup-hide="focus(false)"
   >
     <template v-slot:prepend>
       <q-icon v-if="icon" name="cast" />
@@ -47,7 +49,7 @@
 
 <script>
 import { openURL } from 'quasar';
-import { providers } from '@/mixins/configuration';
+import { mapGetters } from 'vuex';
 import { nl2br } from '@/utils/strings';
 import bind from '@/mixins/bind';
 
@@ -75,12 +77,8 @@ export default {
       default: undefined,
     },
   },
-  data() {
-    return {
-      providers,
-    };
-  },
   computed: {
+    ...mapGetters('store', ['providers']),
     providerUrl() {
       return this.provider.value.url;
     },
@@ -99,6 +97,13 @@ export default {
     },
     showPopup() {
       this.$refs.providerSelect.showPopup();
+    },
+    focus(focus = true) {
+      if (focus) {
+        this.$refs.providerSelect.$el.classList.add('q-field--focused');
+      } else {
+        this.$refs.providerSelect.$el.classList.remove('q-field--focused');
+      }
     },
   },
 };

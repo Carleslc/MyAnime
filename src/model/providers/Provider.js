@@ -1,7 +1,8 @@
 export default class Provider {
-  constructor(url, offset = 0) {
+  constructor(url, offset = 0, languages) {
     this.url = url;
     this.offset = offset;
+    this.languages = languages;
   }
 
   get icon() {

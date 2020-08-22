@@ -1,12 +1,25 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import messages from 'src/i18n';
-import { Quasar } from 'quasar';
+import { LocalStorage, Quasar } from 'quasar';
+
+const languages = {
+  en: '🇬🇧',
+  es: '🇪🇸',
+};
 
 Vue.use(VueI18n);
 
+function getLocale() {
+  const language = LocalStorage.getItem('language');
+  if (language && Object.keys(languages).includes(language)) {
+    return language;
+  }
+  return Quasar.lang.getLocale().split('-')[0];
+}
+
 const i18n = new VueI18n({
-  locale: Quasar.lang.getLocale().split('-')[0],
+  locale: getLocale(),
   fallbackLocale: 'en',
   messages,
 });
@@ -16,3 +29,7 @@ export default ({ app }) => {
 };
 
 export { i18n };
+
+export function getLanguageIcon(language) {
+  return languages[language];
+}

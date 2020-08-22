@@ -3,7 +3,7 @@ import { withSearch } from './FeelingLucky';
 
 class AnimeFLV extends Provider {
   constructor() {
-    super('https://animeflv.net/', 3);
+    super('https://animeflv.net/', 3, ['es']);
 
     this.search = withSearch((anime, episode) => {
       return encodeURIComponent(

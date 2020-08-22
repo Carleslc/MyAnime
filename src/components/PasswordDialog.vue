@@ -22,7 +22,7 @@
             v-model="username"
             dense
             :placeholder="$t('username')"
-            :rules="[(val) => !isBlank(val) || $t('required', { field: $t('username').toLowerCase() })]"
+            :rules="[(val) => !isBlank(val) || $t('required.username')]"
           />
           <q-input
             v-model="password"
@@ -30,7 +30,7 @@
             autofocus
             type="password"
             :placeholder="$t('password')"
-            :rules="[(val) => !isBlank(val) || $t('required', { field: $t('password').toLowerCase() })]"
+            :rules="[(val) => !isBlank(val) || $t('required.password')]"
           />
         </q-card-section>
 
@@ -39,11 +39,14 @@
           <a :href="api.registerUrl" target="_blank" class="link link-underline">{{ $t('registerHere') }}</a>
         </q-card-section>
 
-        <q-card-section v-if="api.setPasswordUrl" class="q-pb-none text-italic text-grey-6">
-          <i18n path="noPassword" :tag="false">
-            <a :href="api.setPasswordUrl" target="_blank" class="link link-underline">{{ $t('accountSettings') }}</a>
-          </i18n>
-        </q-card-section>
+        <i18n
+          v-if="api.setPasswordUrl"
+          path="noPassword"
+          tag="q-card-section"
+          class="q-pb-none text-italic text-grey-6"
+        >
+          <a :href="api.setPasswordUrl" target="_blank" class="link link-underline">{{ $t('accountSettings') }}</a>
+        </i18n>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn v-if="!isLoading" v-close-popup flat color="grey" :label="$t('cancel')" />

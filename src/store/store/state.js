@@ -10,6 +10,7 @@ export function newState() {
     authNeeded: false,
     api: defaultAPI,
     picture: defaultAPI.image,
+    language: defaults.language,
     username: defaults.username,
     status: defaults.status,
     provider: defaults.provider,

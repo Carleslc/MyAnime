@@ -1,5 +1,6 @@
 <template>
   <q-select
+    ref="statusSelect"
     v-model="selected"
     multiple
     dense
@@ -9,6 +10,8 @@
     :options-dark="false"
     :options="options"
     popup-content-class="filter-options"
+    @popup-show="focus()"
+    @popup-hide="focus(false)"
   >
     <template v-slot:prepend>
       <q-icon v-if="icon" :name="icon" />
@@ -59,6 +62,13 @@ export default {
         return option.label;
       }
       return option;
+    },
+    focus(focus = true) {
+      if (focus) {
+        this.$refs.statusSelect.$el.classList.add('q-field--focused');
+      } else {
+        this.$refs.statusSelect.$el.classList.remove('q-field--focused');
+      }
     },
   },
 };

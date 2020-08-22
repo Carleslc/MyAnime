@@ -70,7 +70,11 @@
         </q-item-section>
         <div class="col row q-pt-lg">
           <div class="col-auto full-width q-pl-md q-pr-sm">
-            <q-item-section>
+            <q-item-section class="q-pt-sm">
+              <q-item-label v-t="'selectLanguage'" header class="q-px-sm" />
+              <language-select v-model="language" class="q-pr-xs" />
+            </q-item-section>
+            <q-item-section class="q-pt-sm">
               <q-item-label v-t="'selectProvider'" header class="q-px-sm" />
               <provider-select v-model="provider" dark icon class="q-pr-xs" />
             </q-item-section>

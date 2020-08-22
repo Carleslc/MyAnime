@@ -1,5 +1,6 @@
-import { isBlank } from '@/utils/strings';
 import { getField } from 'vuex-map-fields';
+import { isBlank } from '@/utils/strings';
+import { providers } from '@/mixins/configuration';
 
 export default {
   getField,
@@ -17,5 +18,10 @@ export default {
   },
   providerByAnimeTitle({ provider, providersByAnimeTitle }) {
     return (title) => providersByAnimeTitle[title] || provider;
+  },
+  providers({ language }) {
+    return Object.freeze(
+      providers.filter((provider) => !provider.value.languages || provider.value.languages.includes(language))
+    );
   },
 };

@@ -19,7 +19,7 @@ export const providers = Object.freeze([
   { label: 'Crunchyroll', value: Crunchyroll },
   { label: 'Netflix', value: Netflix },
   { label: 'Voy a tener suerte', value: FeelingDuckyES },
-  { label: 'Google (ES)', value: FeelingLuckyES },
+  { label: 'Google', value: FeelingLuckyES },
   { label: 'AnimeFLV', value: AnimeFLV },
   { label: 'AnimeFenix', value: AnimeFenix },
   { label: 'AnimeID', value: AnimeID },
@@ -27,53 +27,58 @@ export const providers = Object.freeze([
   { label: 'MonosChinos', value: MonosChinos },
   { label: 'AnimeMovil', value: AnimeMovil2 },
   { label: "I'm feeling ducky", value: FeelingDuckyEN },
-  { label: 'Google (EN)', value: FeelingLuckyEN },
+  { label: 'Google', value: FeelingLuckyEN },
   { label: 'Gogoanime', value: Gogoanime },
   { label: 'Twist', value: Twist },
 ]);
 
-export const config = Object.freeze({
-  airingStatuses: [
-    { label: i18n.t('alreadyAired'), value: 'already-aired' },
-    { label: i18n.t('notYetAired'), value: 'not-yet-aired' },
-  ],
-  animeTypes: [
-    { label: 'TV', value: 'tv' },
-    { label: 'OVA', value: 'ova' },
-    { label: i18n.t('movie'), value: 'movie' },
-    { label: i18n.t('special'), value: 'special' },
-    { label: 'ONA', value: 'ona' },
-    { label: i18n.t('music'), value: 'music' },
-  ],
-  statuses: {
-    watching: {
-      label: i18n.t('status.watching'),
-      icon: 'visibility',
+function newConfig() {
+  return Object.freeze({
+    airingStatuses: [
+      { label: i18n.t('alreadyAired'), value: 'already-aired' },
+      { label: i18n.t('notYetAired'), value: 'not-yet-aired' },
+    ],
+    animeTypes: [
+      { label: 'TV', value: 'tv' },
+      { label: 'OVA', value: 'ova' },
+      { label: i18n.t('movie'), value: 'movie' },
+      { label: i18n.t('special'), value: 'special' },
+      { label: 'ONA', value: 'ona' },
+      { label: i18n.t('music'), value: 'music' },
+    ],
+    statuses: {
+      watching: {
+        label: i18n.t('status.watching'),
+        icon: 'visibility',
+      },
+      'on-hold': {
+        label: i18n.t('status.onHold'),
+        icon: 'pause',
+      },
+      'plan-to-watch': {
+        label: i18n.t('status.planToWatch'),
+        icon: 'watch_later',
+      },
     },
-    'on-hold': {
-      label: i18n.t('status.onHold'),
-      icon: 'pause',
-    },
-    'plan-to-watch': {
-      label: i18n.t('status.planToWatch'),
-      icon: 'watch_later',
-    },
-  },
-});
+  });
+}
+
+const defaultConfig = newConfig();
 
 export const defaults = {
+  language: i18n.locale,
   username: '',
   status: 'watching',
   provider: providers[0],
   providersByAnimeTitle: {},
-  airingStatusFilter: config.airingStatuses.map((status) => status.value),
-  typeFilter: config.animeTypes.map((type) => type.value),
+  airingStatusFilter: defaultConfig.airingStatuses.map((status) => status.value),
+  typeFilter: defaultConfig.animeTypes.map((type) => type.value),
 };
 
 export default {
   data() {
     return {
-      config,
+      config: defaultConfig,
       isRecurringUser: !this.$q.localStorage.isEmpty(),
     };
   },
@@ -126,6 +131,13 @@ export default {
         this.$q.localStorage.set('providersByAnimeTitle', saveProviders);
       },
       deep: true,
+    },
+    language(locale) {
+      if (i18n.locale !== locale) {
+        i18n.locale = locale;
+        this.$q.lang.set(locale);
+        this.config = newConfig();
+      }
     },
   },
 };

@@ -173,6 +173,7 @@ a.link {
   color: $dark;
   text-decoration: none;
   &-underline {
+    color: $primary;
     text-decoration: underline;
   }
   &:hover,
