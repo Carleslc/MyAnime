@@ -8,19 +8,26 @@ const tag = 'calendar';
 const refreshSeconds = 60 * 60 * 24;
 const backupTTL = refreshSeconds * 2;
 
+function formatDateTime(dateTime) {
+  // https://moment.github.io/luxon/docs/manual/formatting.html#table-of-tokens
+  return dateTime.toLocaleString('EEE dd/MM/yyyy, HH:mm ZZZZ');
+}
+
 function parse(html) {
   const _ = cheerio.load(html);
   jsonframe(_);
 
   const frame = {
     airingAnimes: {
-      _s: ".calendar-entry",
-      _d: [{
-        title: ".calendar-entry-title",
-        episode: ".calendar-entry-episode | number",
-        date: ".calendar-entry-time @ data-date"
-      }]
-    }
+      _s: '.calendar-entry',
+      _d: [
+        {
+          title: '.calendar-entry-title',
+          episode: '.calendar-entry-episode | number',
+          date: '.calendar-entry-time @ data-date',
+        },
+      ],
+    },
   };
 
   /*
@@ -38,79 +45,81 @@ function parse(html) {
 }
 
 function set(cache, calendar) {
-  cache.add(tag, calendar,
-    { expire: backupTTL, type: 'json' },
-    (error, added) => {
-      if (error) {
-        console.error(`Calendar set cache error: ${error.message}`)
-      } else {
-        console.log('Calendar refreshed successfully')
-      }
-    })
+  cache.add(tag, calendar, { expire: backupTTL, type: 'json' }, (error, added) => {
+    if (error) {
+      console.error(`Calendar set cache error: ${error.message}`);
+    } else {
+      console.log('Calendar refreshed successfully');
+    }
+  });
 }
 
 function fetch(cache) {
   return new Promise((resolve, reject) => {
     function retrieve() {
-      get('https://notify.moe/calendar').then(html => {
-        const calendar = parse(html);
-        console.log('Calendar retrieved')
-        const calendarData = JSON.stringify(calendar);
-        if (cache) {
-          set(cache, calendarData)
-        }
-        resolve(calendarData)
-      }).catch(reject)
+      get('https://notify.moe/calendar')
+        .then((html) => {
+          const calendar = parse(html);
+          console.log('Calendar retrieved');
+          const calendarData = JSON.stringify(calendar);
+          if (cache) {
+            set(cache, calendarData);
+          }
+          resolve(calendarData);
+        })
+        .catch(reject);
     }
     if (cache) {
       cache.get(tag, (error, entries) => {
         if (error) {
-          console.error(`Calendar get cache error: ${error.message}`)
-          reject(error)
+          console.error(`Calendar get cache error: ${error.message}`);
+          reject(error);
         } else if (entries.length > 0) {
           resolve(entries[0].body);
         } else {
-          console.warn('Calendar not cached! Retrieving calendar...')
-          retrieve()
+          console.warn('Calendar not cached! Retrieving calendar...');
+          retrieve();
         }
-      })
-    } else retrieve()
-  })
+      });
+    } else retrieve();
+  });
 }
 
 function expire(cache) {
   cache.del(tag, (error, n) => {
     if (error) {
-      console.error(`Calendar del cache error: ${error.message}`)
+      console.error(`Calendar del cache error: ${error.message}`);
     } else {
-      console.log(`Expired ${n} calendar entries`)
+      console.log(`Expired ${n} calendar entries`);
     }
-  })
+  });
 }
 
 function refreshTask(cache) {
   function refresh() {
-    console.log('Refreshing calendar...')
+    console.log(`[${formatDateTime(DateTime.utc())}] Refreshing calendar...`);
+    expire(cache);
     fetch()
-      .then(calendar => set(cache, calendar))
-      .catch(handler.httpConsole())
+      .then((calendar) => set(cache, calendar))
+      .catch(handler.httpConsole());
   }
-  setImmediate(function refreshNow() {
-    expire(cache)
-    refresh()
-  })
-  const now = DateTime.local()
-  const scheduleLoop = now.startOf('day').plus({ days: 1 })
-  const scheduleLoopMillis = scheduleLoop.diff(now).toObject().milliseconds
-  console.log(`Refresh loop will start in ${(scheduleLoopMillis/1000/3600).toFixed(2)} hours at ${scheduleLoop.toLocaleString(DateTime.DATETIME_FULL)}`)
+  setImmediate(refresh);
+  const now = DateTime.utc();
+  const scheduleLoop = now.startOf('day').plus({ days: 1 });
+  const scheduleLoopMillis = scheduleLoop.diff(now).toObject().milliseconds;
+  console.log(
+    `Refresh loop will start in ${(scheduleLoopMillis / 1000 / 3600).toFixed(2)} hours at ${formatDateTime(
+      scheduleLoop
+    )}`
+  );
   setTimeout(function scheduleRefresh() {
-    refresh()
-    setInterval(refresh, refreshSeconds * 1000)
-  }, scheduleLoopMillis)
+    refresh();
+    setInterval(refresh, refreshSeconds * 1000);
+  }, scheduleLoopMillis);
 }
 
 module.exports = {
   fetch,
   expire,
-  refreshTask
-}
+  refreshTask,
+};

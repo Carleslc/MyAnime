@@ -1,20 +1,20 @@
-const fetch = require('request')
+const fetch = require('request');
 
 module.exports = function get(url, username, password) {
   return new Promise((resolve, reject) => {
-    const options = { url }
+    const options = { url };
     if (username && password) {
       options.auth = {
         user: username,
-        password
-      }
+        password,
+      };
     }
     fetch(options, (error, res, body) => {
       if (!error && res.statusCode === 200) {
-        resolve(body)
+        resolve(body);
       } else {
-        reject(body || error, (res && res.statusCode) || 500)
+        reject(body || error, (res && res.statusCode) || 500);
       }
-    })
-  })
-}
+    });
+  });
+};
