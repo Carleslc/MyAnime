@@ -6,7 +6,7 @@ const handler = require('./error-handler');
 
 const tag = 'calendar';
 const refreshSeconds = 60 * 60 * 24;
-const backupTTL = refreshSeconds * 2;
+const backupTTL = refreshSeconds;
 
 function formatDateTime(dateTime) {
   // https://moment.github.io/luxon/docs/manual/formatting.html#table-of-tokens
@@ -89,22 +89,22 @@ function expire(cache) {
   cache.del(tag, (error, n) => {
     if (error) {
       console.error(`Calendar del cache error: ${error.message}`);
-    } else {
-      console.log(`Expired ${n} calendar entries`);
+    } else if (n > 0) {
+      console.log(`Expired calendar entries`);
     }
   });
 }
 
 function refreshTask(cache) {
   function refresh() {
-    console.log(`[${formatDateTime(DateTime.utc())}] Refreshing calendar...`);
+    console.log(`[${formatDateTime(DateTime.local())}] Refreshing calendar...`);
     expire(cache);
     fetch()
       .then((calendar) => set(cache, calendar))
       .catch(handler.httpConsole());
   }
   setImmediate(refresh);
-  const now = DateTime.utc();
+  const now = DateTime.local();
   const scheduleLoop = now.startOf('day').plus({ days: 1 });
   const scheduleLoopMillis = scheduleLoop.diff(now).toObject().milliseconds;
   console.log(
