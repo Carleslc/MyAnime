@@ -9,11 +9,16 @@ export default class Provider {
   }
 
   // eslint-disable-next-line no-unused-vars
-  episodeUrl(title, episode) {
+  episodeUrl(anime, episode) {
     return this.url;
   }
 
   static encode(s) {
-    return encodeURIComponent(s.toLowerCase().replace(/[^-a-z0-9]+/g, '-').replace(/-{2,}/, '-'));
+    return encodeURIComponent(
+      s
+        .toLowerCase()
+        .replace(/[^-a-z0-9]+/g, '-')
+        .replace(/-{2,}/, '-')
+    );
   }
 }

@@ -3,7 +3,7 @@
     ref="providerSelect"
     v-model="provider"
     dense
-    standout
+    :standout="standout ? standout : true"
     :dark="dark"
     options-selected-class="filter-options"
     :options-dark="false"
@@ -69,6 +69,10 @@ export default {
     tooltip: {
       type: Boolean,
       default: true,
+    },
+    standout: {
+      type: String,
+      default: undefined,
     },
   },
   data() {

@@ -98,7 +98,7 @@
 
     <q-footer class="row justify-end fixed-bottom-right" @mousedown.prevent>
       <q-btn unelevated color="accent" icon="description" class="square" @click="info = true">
-        <q-tooltip transition-show="fade" transition-hide="fade" content-class="bg-primary">
+        <q-tooltip transition-show="fade" transition-hide="fade" content-class="bg-primary shadow-2">
           {{ $t('aboutApp') }}
         </q-tooltip>
       </q-btn>

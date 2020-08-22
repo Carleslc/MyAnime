@@ -22,7 +22,7 @@ export default {
   special: 'Especial',
   music: 'Música',
   resetSettings: 'Restablecer ajustes',
-  resetSettingsDescription: 'Borra datos de usuario y filtros',
+  resetSettingsDescription: 'Borrar datos de usuario y filtros',
   aboutApp: 'Sobre esta aplicación',
   donate: `
   Esta aplicación es completamente gratuita.

@@ -59,6 +59,10 @@ export class MyAnimeList extends API {
     });
   }
 
+  animeUrl(anime) {
+    return `${this.homeUrl}anime/${anime.id}/`;
+  }
+
   async auth(username, password) {
     const response = await this.postFormEncoded(this.url('/auth/token'), {
       client_id: client,

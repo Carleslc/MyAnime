@@ -199,6 +199,10 @@ export class API {
   /* eslint-disable no-unused-vars */
   /* eslint-disable class-methods-use-this */
 
+  animeUrl(anime) {
+    return this.homeUrl;
+  }
+
   async auth(username, password) {}
 
   async getUserPicture(username) {

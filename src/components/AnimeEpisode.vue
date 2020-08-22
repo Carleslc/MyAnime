@@ -43,7 +43,7 @@
           >
             {{ $t('settings') }}
           </q-tooltip>
-          <q-menu class="z-max">
+          <q-menu :offset="[0, 5]" class="z-max">
             <anime-settings :anime="anime" />
           </q-menu>
         </q-btn>

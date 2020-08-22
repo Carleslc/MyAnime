@@ -36,12 +36,12 @@
 
         <q-card-section class="q-py-none text-grey-6">
           <span v-t="'notRegisteredYet'" class="q-mr-sm"></span>
-          <a :href="api.registerUrl" target="_blank">{{ $t('registerHere') }}</a>
+          <a :href="api.registerUrl" target="_blank" class="link link-underline">{{ $t('registerHere') }}</a>
         </q-card-section>
 
         <q-card-section v-if="api.setPasswordUrl" class="q-pb-none text-italic text-grey-6">
           <i18n path="noPassword" :tag="false">
-            <a :href="api.setPasswordUrl" target="_blank">{{ $t('accountSettings') }}</a>
+            <a :href="api.setPasswordUrl" target="_blank" class="link link-underline">{{ $t('accountSettings') }}</a>
           </i18n>
         </q-card-section>
 
