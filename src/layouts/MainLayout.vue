@@ -69,18 +69,23 @@
           <calendar-button />
         </q-item-section>
         <div class="col row q-pt-lg">
-          <div class="col-auto full-width q-px-sm">
+          <div class="col-auto full-width q-pl-md q-pr-sm">
             <q-item-section>
-              <q-item-label v-t="'selectProvider'" header />
-              <provider-select v-model="provider" dark icon />
+              <q-item-label v-t="'selectProvider'" header class="q-px-sm" />
+              <provider-select v-model="provider" dark icon class="q-pr-xs" />
             </q-item-section>
             <q-item-section class="q-pt-lg">
-              <q-item-label v-t="'animeStatus'" header />
-              <status-select v-model="airingStatusFilter" icon="movie_filter" :options="config.airingStatuses" />
+              <q-item-label v-t="'animeStatus'" header class="q-px-sm" />
+              <status-select
+                v-model="airingStatusFilter"
+                icon="movie_filter"
+                :options="config.airingStatuses"
+                class="q-pr-xs"
+              />
             </q-item-section>
             <q-item-section class="q-pt-sm">
-              <q-item-label v-t="'animeType'" header />
-              <status-select v-model="typeFilter" icon="tv" :options="config.animeTypes" />
+              <q-item-label v-t="'animeType'" header class="q-px-sm" />
+              <status-select v-model="typeFilter" icon="tv" :options="config.animeTypes" class="q-pr-xs" />
             </q-item-section>
           </div>
           <div class="col-auto row justify-center q-mt-auto full-width">

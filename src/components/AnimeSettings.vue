@@ -10,7 +10,7 @@
       <q-list class="column">
         <div class="row">
           <q-item-section>
-            <q-item-label v-t="'selectProvider'" header class="q-pt-none" />
+            <q-item-label v-t="'selectProvider'" header class="q-pt-none q-px-sm" />
             <provider-select
               :value="provider"
               options-dense
