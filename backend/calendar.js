@@ -10,7 +10,7 @@ const backupTTL = refreshSeconds;
 
 function formatDateTime(dateTime) {
   // https://moment.github.io/luxon/docs/manual/formatting.html#table-of-tokens
-  return dateTime.toLocaleString('EEE dd/MM/yyyy, HH:mm ZZZZ');
+  return dateTime.toFormat('EEE dd/MM/yyyy, HH:mm ZZZZ');
 }
 
 function parse(html) {
@@ -97,14 +97,14 @@ function expire(cache) {
 
 function refreshTask(cache) {
   function refresh() {
-    console.log(`[${formatDateTime(DateTime.local())}] Refreshing calendar...`);
+    console.log(`[${formatDateTime(DateTime.utc())}] Refreshing calendar...`);
     expire(cache);
     fetch()
       .then((calendar) => set(cache, calendar))
       .catch(handler.httpConsole());
   }
   setImmediate(refresh);
-  const now = DateTime.local();
+  const now = DateTime.utc();
   const scheduleLoop = now.startOf('day').plus({ days: 1 });
   const scheduleLoopMillis = scheduleLoop.diff(now).toObject().milliseconds;
   console.log(
