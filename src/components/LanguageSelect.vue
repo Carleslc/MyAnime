@@ -49,6 +49,7 @@ export default {
   },
   created() {
     this.language = this.languages.find((language) => language.value === this.value) || this.languages[0];
+    this.sortLanguageOptions();
   },
   methods: {
     sortLanguageOptions() {
