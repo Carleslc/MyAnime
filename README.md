@@ -45,7 +45,7 @@ Click on "Next episode" at the top right corner of an episode to mark it as watc
 - 🇪🇸 [AnimeMovil2](https://animemovil2.com/)
 - 🇬🇧 I'm Feeling Lucky
 - 🇬🇧 [Twist](https://twist.moe/)
-- 🇬🇧 [GogoAnime](https://www2.gogoanime.se/)
+- 🇬🇧 [GogoAnime](https://gogoanime.life/)
 
 Feeling Lucky options are based on search engine (_[DuckDuckGo](https://duckduckgo.com/) I'm Feeling Ducky_), trying to get a proper streamer, but it doesn't mean it always work. Sometimes it redirects to a non-related page, or it is in another language.
 

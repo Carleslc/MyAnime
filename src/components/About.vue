@@ -53,7 +53,8 @@
       <h2>Supported providers</h2>
       <ul>
         <li><a href="https://myanimelist.net/" target="_blank">MyAnimeList</a></li>
-        <li>🇪🇸 <a href="https://www.crunchyroll.com/" target="_blank">Crunchyroll</a></li>
+        <li><a href="https://www.crunchyroll.com/" target="_blank">Crunchyroll</a></li>
+        <li><a href="https://www.netflix.com/" target="_blank">Netflix</a></li>
         <li>🇪🇸🇬🇧 <a href="https://www.google.com/" target="_blank">Google</a></li>
         <li>🇪🇸 Voy a tener suerte</li>
         <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>
@@ -64,8 +65,7 @@
         <li>🇪🇸 <a href="https://animemovil2.com/" target="_blank">AnimeMovil</a></li>
         <li>🇬🇧 I&#39;m Feeling Lucky</li>
         <li>🇬🇧 <a href="https://twist.moe/" target="_blank">Twist</a></li>
-        <li>🇬🇧 <a href="https://www2.gogoanime.se/" target="_blank">GogoAnime</a></li>
-        <li><a href="https://www.netflix.com/" target="_blank">Netflix</a></li>
+        <li>🇬🇧 <a href="https://gogoanime.life/" target="_blank">GogoAnime</a></li>
       </ul>
       <p>
         Feeling Lucky options are based on search engine (<em

@@ -3,7 +3,7 @@ import Provider from './Provider.js';
 
 class Gogoanime extends Provider {
   constructor() {
-    super('https://www.gogoanime.pro/', 2, ['en']);
+    super('https://gogoanime.life/', 2, ['en']);
 
     /* TODO: On click, fetch first url from the following search and append ep-episode or ep-full (movie)
     this.search = withSearch((anime, episode) => {
