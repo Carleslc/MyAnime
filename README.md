@@ -33,7 +33,7 @@ Click on "Next episode" at the top right corner of an episode to mark it as watc
 ## Supported providers
 
 - [MyAnimeList](https://myanimelist.net/)
-- 🇪🇸 [Crunchyroll](https://www.crunchyroll.com/)
+- [Crunchyroll](https://www.crunchyroll.com/)
 - 🇪🇸🇬🇧 [Google](https://www.google.com/)
 - 🇪🇸 Voy a tener suerte
 - 🇪🇸 [AnimeFlv](https://www.animeflv.net)
