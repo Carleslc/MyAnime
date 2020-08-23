@@ -70,6 +70,13 @@ export default {
       Vue.set(state.providersByAnimeTitle, title, provider);
     }
   },
+  setAlternativeTitle(state, { anime, title }) {
+    if (title === anime.title) {
+      Vue.delete(state.titlesByAnimeId[state.api.name], anime.id);
+    } else {
+      Vue.set(state.titlesByAnimeId[state.api.name], anime.id, title);
+    }
+  },
   setCalendar(state, calendar) {
     state.calendar = calendar;
   },

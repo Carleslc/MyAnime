@@ -8,10 +8,16 @@ function parseAnimes(animes) {
   return animes.map((data) => {
     const anime = data.node;
 
+    const synonyms = anime.alternative_titles.synonyms;
+
+    if (anime.alternative_titles.en && anime.alternative_titles.en !== anime.title) {
+      synonyms.unshift(anime.alternative_titles.en);
+    }
+
     const fields = {
       id: anime.id,
       title: anime.title,
-      synonyms: anime.alternative_titles.synonyms,
+      synonyms,
       cover: anime.main_picture.medium,
       status: anime.my_list_status.status.replace(/_/g, '-'),
       type: anime.media_type.toLowerCase(),

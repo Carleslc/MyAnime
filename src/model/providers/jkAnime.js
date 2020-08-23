@@ -10,8 +10,8 @@ class jkAnime extends Provider {
     return 'https://cdn.jkanime.net/assets/images/favicon.ico';
   }
 
-  episodeUrl(anime, episode) {
-    return `${this.url}${Provider.encode(anime.title)}/${episode}/`;
+  episodeUrl({ title, episode }) {
+    return `${this.url}${Provider.encode(title)}/${episode}/`;
   }
 }
 

@@ -7,19 +7,19 @@ export default class FeelingLucky extends Provider {
     this.search = search;
   }
 
-  episodeUrl(anime, episode) {
-    return this.url + this.prefix + this.search(anime, episode);
+  episodeUrl(args) {
+    return this.url + this.prefix + this.search(args);
   }
 }
 
-function luckySpanish(anime, episode) {
+function luckySpanish({ anime, title, episode }) {
   const suffix = 'online español -english';
-  return encodeURIComponent(`${anime.title}${anime.type !== 'movie' ? ` inurl:${episode}` : ''} ${suffix}`);
+  return encodeURIComponent(`${title}${anime.type !== 'movie' ? ` inurl:${episode}` : ''} ${suffix}`);
 }
 
-function luckyEnglish(anime, episode) {
+function luckyEnglish({ anime, title, episode }) {
   const suffix = 'online english anime -español';
-  return encodeURIComponent(`${anime.title}${anime.type !== 'movie' ? ` episode inurl:${episode}` : ''} ${suffix}`);
+  return encodeURIComponent(`${title}${anime.type !== 'movie' ? ` episode inurl:${episode}` : ''} ${suffix}`);
 }
 
 export function withSearch(search, languages) {

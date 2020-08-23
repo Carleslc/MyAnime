@@ -73,6 +73,9 @@ export const defaults = {
   providersByAnimeTitle: {},
   airingStatusFilter: defaultConfig.airingStatuses.map((status) => status.value),
   typeFilter: defaultConfig.animeTypes.map((type) => type.value),
+  titlesByAnimeId: {
+    MyAnimeList: {},
+  },
 };
 
 export default {
@@ -115,7 +118,7 @@ export default {
     // add watchers to save configuration
     Object.keys(defaults)
       .filter((key) => key !== 'provider' && key !== 'providersByAnimeTitle') // avoid saving entire objects
-      .forEach((key) => this.$watch(key, (value) => this.$q.localStorage.set(key, value)));
+      .forEach((key) => this.$watch(key, (value) => this.$q.localStorage.set(key, value), { deep: true }));
   },
   watch: {
     // save provider label only

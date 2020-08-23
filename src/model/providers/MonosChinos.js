@@ -9,8 +9,8 @@ class MonosChinos extends Provider {
     return `${this.url}assets/img/favicon.ico`;
   }
 
-  episodeUrl(anime, episode) {
-    return `${this.url}ver/${Provider.encode(anime.title)}-${episode}`;
+  episodeUrl({ title, episode }) {
+    return `${this.url}ver/${Provider.encode(title)}-${episode}`;
   }
 }
 

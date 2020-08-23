@@ -5,8 +5,8 @@ class Twist extends Provider {
     super('https://twist.moe/', 3, ['en']);
   }
 
-  episodeUrl(anime, episode) {
-    return `${this.url}a/${Provider.encode(anime.title)}/${episode}`;
+  episodeUrl({ title, episode }) {
+    return `${this.url}a/${Provider.encode(title)}/${episode}`;
   }
 }
 

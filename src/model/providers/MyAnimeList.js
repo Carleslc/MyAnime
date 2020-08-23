@@ -5,8 +5,8 @@ class MyAnimeList extends Provider {
     super('https://myanimelist.net/');
   }
 
-  episodeUrl(anime, episode) {
-    return `${this.url}anime/${anime.id}/-/episode/${episode}`;
+  episodeUrl({ anime: { id }, episode }) {
+    return `${this.url}anime/${id}/-/episode/${episode}`;
   }
 }
 

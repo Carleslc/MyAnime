@@ -14,6 +14,7 @@ export function newState() {
     username: defaults.username,
     status: defaults.status,
     provider: defaults.provider,
+    titlesByAnimeId: defaults.titlesByAnimeId,
     providersByAnimeTitle: defaults.providersByAnimeTitle,
     airingStatusFilter: defaults.airingStatusFilter,
     typeFilter: defaults.typeFilter,

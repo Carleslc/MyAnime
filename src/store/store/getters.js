@@ -24,4 +24,7 @@ export default {
       providers.filter((provider) => !provider.value.languages || provider.value.languages.includes(language))
     );
   },
+  titleByAnimeId({ api, titlesByAnimeId }) {
+    return (id) => titlesByAnimeId[api.name][id];
+  },
 };

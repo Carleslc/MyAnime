@@ -5,8 +5,8 @@ class Netflix extends Provider {
     super('https://www.netflix.com/');
   }
 
-  episodeUrl(anime) {
-    return `${this.url}search?q=${encodeURI(anime.title)}`;
+  episodeUrl({ title }) {
+    return `${this.url}search?q=${encodeURI(title)}`;
   }
 }
 

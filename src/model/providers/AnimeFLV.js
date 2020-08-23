@@ -5,9 +5,9 @@ class AnimeFLV extends Provider {
   constructor() {
     super('https://animeflv.net/', 3, ['es']);
 
-    this.search = withSearch((anime, episode) => {
+    this.search = withSearch(({ title, episode }) => {
       return encodeURIComponent(
-        `site:animeflv.net intitle:"${Provider.encode(anime.title)}" inurl:"/ver" inurl:"-${episode}"`
+        `site:animeflv.net intitle:"${Provider.encode(title)}" inurl:"/ver" inurl:"-${episode}"`
       );
     });
   }
@@ -17,8 +17,8 @@ class AnimeFLV extends Provider {
     return 'statics/icons/animeflv.ico';
   }
 
-  episodeUrl(anime, episode) {
-    return this.search.episodeUrl(anime, episode);
+  episodeUrl(args) {
+    return this.search.episodeUrl(args);
   }
 }
 

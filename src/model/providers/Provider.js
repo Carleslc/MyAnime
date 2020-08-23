@@ -10,7 +10,7 @@ export default class Provider {
   }
 
   // eslint-disable-next-line no-unused-vars
-  episodeUrl(anime, episode) {
+  episodeUrl({ anime, title, episode }) {
     return this.url;
   }
 

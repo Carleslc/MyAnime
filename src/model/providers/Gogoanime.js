@@ -18,8 +18,8 @@ class Gogoanime extends Provider {
 
   // https://gogoanime.pro/anime/one-piece-ov8/ep-931
   // https://gogoanime.pro/anime/one-piece-film-gold-71vy/ep-full
-  episodeUrl(anime, episode) {
-    return `${this.url}search?keyword=${encodeURIComponent(anime.title)} ${episode}`;
+  episodeUrl({ title, episode }) {
+    return `${this.url}search?keyword=${encodeURIComponent(title)} ${episode}`;
     // return this.search.episodeUrl(anime, episode);
   }
 }

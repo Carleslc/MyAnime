@@ -1,7 +1,7 @@
 <template>
   <q-card>
     <q-card-section class="row items-center no-wrap q-py-sm">
-      <a :href="animeUrl" target="_blank" class="link text-center text-h6">{{ anime.title }}</a>
+      <a :href="animeUrl" target="_blank" class="link text-center text-h6">{{ title }}</a>
       <q-space />
       <q-btn v-close-popup icon="close" flat round dense color="grey" class="q-ml-md" />
     </q-card-section>
@@ -18,6 +18,12 @@
               :tooltip="false"
               @input="updateProvider"
             />
+          </q-item-section>
+        </div>
+        <div v-if="anime.synonyms.length > 0" class="row">
+          <q-item-section>
+            <q-item-label v-t="'selectTitle'" header class="q-px-sm" />
+            <title-select :value="title" :titles="anime.titles" @input="updateTitle" />
           </q-item-section>
         </div>
       </q-list>
@@ -42,17 +48,26 @@ export default {
         return api.animeUrl(this.anime);
       },
     }),
-    ...mapGetters('store', ['providerByAnimeTitle']),
+    ...mapGetters('store', ['providerByAnimeTitle', 'titleByAnimeId']),
     provider() {
-      return this.providerByAnimeTitle(this.anime.title);
+      return this.providerByAnimeTitle(this.title);
+    },
+    title() {
+      return this.titleByAnimeId(this.anime.id) || this.anime.title;
     },
   },
   methods: {
-    ...mapMutations('store', ['setProvider']),
+    ...mapMutations('store', ['setProvider', 'setAlternativeTitle']),
     updateProvider(provider) {
       this.setProvider({
-        title: this.anime.title,
+        title: this.title,
         provider,
+      });
+    },
+    updateTitle(title) {
+      this.setAlternativeTitle({
+        anime: this.anime,
+        title,
       });
     },
   },

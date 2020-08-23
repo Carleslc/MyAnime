@@ -8,6 +8,7 @@ export default {
   animeCalendarDescription: 'Calendar anime for this week',
   selectLanguage: 'Select language',
   selectProvider: 'Select provider',
+  selectTitle: 'Select alternative title',
   animeStatus: 'Anime status',
   animeStatusFilter: 'Filter anime status',
   alreadyAired: 'Already aired',

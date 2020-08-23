@@ -5,8 +5,8 @@ class AnimeID extends Provider {
     super('https://www.animeid.tv/', 3, ['es']);
   }
 
-  episodeUrl(anime, episode) {
-    return `${this.url}v/${Provider.encode(anime.title)}-${episode}`;
+  episodeUrl({ title, episode }) {
+    return `${this.url}v/${Provider.encode(title)}-${episode}`;
   }
 }
 

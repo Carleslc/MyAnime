@@ -46,6 +46,10 @@ export class Anime {
     this.setAiringDate(startDate);
   }
 
+  get titles() {
+    return [this.title, ...this.synonyms];
+  }
+
   get nextEpisode() {
     return this.lastWatchedEpisode + 1;
   }

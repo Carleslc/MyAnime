@@ -18,8 +18,8 @@
         basic
         spinner-color="primary"
         class="full-height"
-        @load="$emit('loaded', anime.title)"
-        @error="$emit('loaded', anime.title)"
+        @load="$emit('loaded', anime.id)"
+        @error="$emit('loaded', anime.id)"
       />
       <div class="absolute-full hoverable overlay column justify-center">
         <q-btn
@@ -71,7 +71,7 @@
             >{{ nextLabel }}
           </q-tooltip>
         </q-btn>
-        <h1 class="col-auto full-width q-px-xs q-mt-auto q-pt-xl">{{ anime.title }}</h1>
+        <h1 class="col-auto full-width q-px-xs q-mt-auto q-pt-xl">{{ title }}</h1>
         <div :class="`column full-width q-pa-${isSmallElement ? 'xs' : 'sm'} q-mt-auto`">
           <div
             v-if="formattedAiringDate"
@@ -121,7 +121,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('store', ['providerByAnimeTitle']),
+    ...mapGetters('store', ['providerByAnimeTitle', 'titleByAnimeId']),
     ...mapState('store', ['typeFilter', 'airingStatusFilter']),
     ...mapState('store', {
       calendarEntry(state) {
@@ -129,13 +129,16 @@ export default {
       },
     }),
     provider() {
-      return this.providerByAnimeTitle(this.anime.title);
+      return this.providerByAnimeTitle(this.title);
+    },
+    title() {
+      return this.titleByAnimeId(this.anime.id) || this.anime.title;
     },
     nextLabel() {
       return this.$t(this.anime.isLastEpisode ? 'complete' : 'nextEpisode');
     },
     aria() {
-      return `${this.anime.title} ${this.$t('episode')} ${this.anime.nextEpisode}`;
+      return `${this.title} ${this.$t('episode')} ${this.anime.nextEpisode}`;
     },
     display() {
       return (
@@ -242,7 +245,11 @@ export default {
       return date.toLocaleString({ year: 'numeric' });
     },
     episodeUrl() {
-      return this.provider.value.episodeUrl(this.anime, this.anime.nextEpisode);
+      return this.provider.value.episodeUrl({
+        anime: this.anime,
+        title: this.title,
+        episode: this.anime.nextEpisode
+      });
     },
     isSmallElement() {
       return this.width < 185;
@@ -252,7 +259,7 @@ export default {
     this.width = this.$el.offsetWidth;
 
     if (!this.display) {
-      this.$emit('loaded', this.anime.title);
+      this.$emit('loaded', this.anime.id);
     }
   },
   methods: {
@@ -274,18 +281,18 @@ export default {
           if (ok) {
             if (completed) {
               this.$q.notify({
-                message: this.$t('completed', { title: this.anime.title }),
+                message: this.$t('completed', { title: this.title }),
                 color: 'positive',
               });
             } else {
               this.$q.notify({
-                message: this.$t('updated', { title: this.anime.title, episode: this.anime.lastWatchedEpisode }),
+                message: this.$t('updated', { title: this.title, episode: this.anime.lastWatchedEpisode }),
                 color: 'primary',
               });
             }
             if (status !== 'watching') {
               this.$q.notify({
-                message: this.$t('statusChanged', { title: this.anime.title, status: this.$t('status.watching') }),
+                message: this.$t('statusChanged', { title: this.title, status: this.$t('status.watching') }),
                 type: 'info',
                 html: true,
               });

@@ -10,8 +10,8 @@ class AnimeMovil2 extends Provider {
     return `${this.url}assets/webApp/ico.png`;
   }
 
-  episodeUrl(anime, episode) {
-    return `${this.url}ver/${Provider.encode(anime.title)}-${episode}`;
+  episodeUrl({ title, episode }) {
+    return `${this.url}ver/${Provider.encode(title)}-${episode}`;
   }
 }
 

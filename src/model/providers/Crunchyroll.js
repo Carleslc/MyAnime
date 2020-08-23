@@ -14,8 +14,8 @@ class Crunchyroll extends Provider {
     return `${this.url}favicons/favicon-32x32.png`;
   }
 
-  episodeUrl(anime, episode) {
-    return `${this.url}search?q=${encodeURI(`${anime.title} ${episode}`)}&o=m&r=f`;
+  episodeUrl({ title, episode }) {
+    return `${this.url}search?q=${encodeURI(`${title} ${episode}`)}&o=m&r=f`;
     // return this.search.episodeUrl(anime, episode);
   }
 }
