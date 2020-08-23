@@ -19,7 +19,7 @@ export const providers = Object.freeze([
   { label: 'Crunchyroll', value: Crunchyroll },
   { label: 'Netflix', value: Netflix },
   { label: 'Voy a tener suerte', value: FeelingDuckyES },
-  { label: 'Google', value: FeelingLuckyES },
+  { label: 'Google (ES)', value: FeelingLuckyES },
   { label: 'AnimeFLV', value: AnimeFLV },
   { label: 'AnimeFenix', value: AnimeFenix },
   { label: 'AnimeID', value: AnimeID },
@@ -27,7 +27,7 @@ export const providers = Object.freeze([
   { label: 'MonosChinos', value: MonosChinos },
   { label: 'AnimeMovil', value: AnimeMovil2 },
   { label: "I'm feeling ducky", value: FeelingDuckyEN },
-  { label: 'Google', value: FeelingLuckyEN },
+  { label: 'Google (EN)', value: FeelingLuckyEN },
   { label: 'Gogoanime', value: Gogoanime },
   { label: 'Twist', value: Twist },
 ]);
