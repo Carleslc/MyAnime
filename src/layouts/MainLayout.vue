@@ -17,7 +17,7 @@
           <div class="col-auto q-gutter-x-lg q-mr-auto row justify-between gt-md">
             <status-select
               v-model="airingStatusFilter"
-              icon="movie_filter"
+              icon="ondemand_video"
               :caption="$t('animeStatusFilter')"
               :options="config.airingStatuses"
               class="col-auto gt-md"
@@ -82,7 +82,7 @@
               <q-item-label v-t="'animeStatus'" header class="q-px-sm" />
               <status-select
                 v-model="airingStatusFilter"
-                icon="movie_filter"
+                icon="ondemand_video"
                 :options="config.airingStatuses"
                 class="q-pr-xs"
               />
@@ -90,6 +90,17 @@
             <q-item-section class="q-pt-sm">
               <q-item-label v-t="'animeType'" header class="q-px-sm" />
               <status-select v-model="typeFilter" icon="tv" :options="config.animeTypes" class="q-pr-xs" />
+            </q-item-section>
+            <q-item-section class="q-pt-sm">
+              <q-item-label v-t="'genre'" header class="q-px-sm" />
+              <status-select
+                v-model="genreFilter"
+                icon="movie_filter"
+                options-dense
+                and
+                :options="config.genres"
+                class="q-pr-xs"
+              />
             </q-item-section>
           </div>
           <div class="col-auto row justify-center q-mt-auto full-width">

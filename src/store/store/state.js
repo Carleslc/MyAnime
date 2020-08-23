@@ -18,6 +18,7 @@ export function newState() {
     providersByAnimeTitle: defaults.providersByAnimeTitle,
     airingStatusFilter: defaults.airingStatusFilter,
     typeFilter: defaults.typeFilter,
+    genreFilter: defaults.genreFilter,
     loading: 0,
     fetched: false,
     animes: {

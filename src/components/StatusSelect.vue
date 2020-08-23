@@ -7,6 +7,7 @@
     standout
     dark
     emit-value
+    :options-dense="optionsDense"
     :options-dark="false"
     :options="options"
     popup-content-class="filter-options"
@@ -19,8 +20,8 @@
         {{ caption }}
       </q-tooltip>
     </template>
-    <template v-if="selected.length === options.length" v-slot:selected>
-      {{ $t('all') }}
+    <template v-if="selected.length === allSelected" v-slot:selected>
+      {{ $t(allTag) }}
     </template>
     <template v-else v-slot:selected>
       {{ options.filter(isSelected).map(label).join(', ') }}
@@ -38,6 +39,10 @@ export default {
       type: Array,
       required: true,
     },
+    optionsDense: {
+      type: Boolean,
+      default: false,
+    },
     icon: {
       type: String,
       default: '',
@@ -45,6 +50,18 @@ export default {
     caption: {
       type: String,
       default: '',
+    },
+    and: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    allSelected() {
+      return this.and ? 0 : this.options.length;
+    },
+    allTag() {
+      return this.and ? 'any' : 'all';
     },
   },
   methods: {

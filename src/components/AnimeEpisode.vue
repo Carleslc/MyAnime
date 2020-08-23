@@ -122,7 +122,7 @@ export default {
   },
   computed: {
     ...mapGetters('store', ['providerByAnimeTitle', 'titleByAnimeId']),
-    ...mapState('store', ['typeFilter', 'airingStatusFilter']),
+    ...mapState('store', ['typeFilter', 'airingStatusFilter', 'genreFilter']),
     ...mapState('store', {
       calendarEntry(state) {
         return state.calendar[this.anime.title];
@@ -143,9 +143,10 @@ export default {
     display() {
       return (
         !this.anime.isCompleted &&
+        this.typeFilter.includes(this.anime.type) &&
         ((this.nextEpisodeIsAired && this.airingStatusFilter.includes('already-aired')) ||
           (!this.nextEpisodeIsAired && this.airingStatusFilter.includes('not-yet-aired'))) &&
-        this.typeFilter.includes(this.anime.type)
+        (this.genreFilter.length === 0 || this.genreFilter.every((genre) => this.anime.genres.includes(genre)))
       );
     },
     broadcast() {
@@ -248,7 +249,7 @@ export default {
       return this.provider.value.episodeUrl({
         anime: this.anime,
         title: this.title,
-        episode: this.anime.nextEpisode
+        episode: this.anime.nextEpisode,
       });
     },
     isSmallElement() {

@@ -53,7 +53,15 @@ export default {
   },
   methods: {
     sortLanguageOptions() {
-      this.languages.sort((a, b) => (a === this.language ? -1 : a.label < b.label));
+      this.languages.sort((a, b) => {
+        if (a === this.language) {
+          return -1;
+        }
+        if (b === this.language) {
+          return 1;
+        }
+        return a.label.localeCompare(b.label);
+      });
     },
     selectLanguage(language) {
       this.language = language;
