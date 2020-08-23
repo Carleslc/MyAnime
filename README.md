@@ -34,6 +34,7 @@ Click on "Next episode" at the top right corner of an episode to mark it as watc
 
 - [MyAnimeList](https://myanimelist.net/)
 - [Crunchyroll](https://www.crunchyroll.com/)
+- [Netflix](https://www.netflix.com/)
 - 🇪🇸🇬🇧 [Google](https://www.google.com/)
 - 🇪🇸 Voy a tener suerte
 - 🇪🇸 [AnimeFlv](https://www.animeflv.net)
@@ -45,7 +46,6 @@ Click on "Next episode" at the top right corner of an episode to mark it as watc
 - 🇬🇧 I'm Feeling Lucky
 - 🇬🇧 [Twist](https://twist.moe/)
 - 🇬🇧 [GogoAnime](https://www2.gogoanime.se/)
-- [Netflix](https://www.netflix.com/)
 
 Feeling Lucky options are based on search engine (_[DuckDuckGo](https://duckduckgo.com/) I'm Feeling Ducky_), trying to get a proper streamer, but it doesn't mean it always work. Sometimes it redirects to a non-related page, or it is in another language.
 
