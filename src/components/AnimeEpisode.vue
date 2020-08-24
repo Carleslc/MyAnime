@@ -143,7 +143,7 @@ export default {
     display() {
       return (
         !this.anime.isCompleted &&
-        this.typeFilter.includes(this.anime.type) &&
+        (this.typeFilter.includes(this.anime.type) || this.anime.type === 'unknown') &&
         ((this.nextEpisodeIsAired && this.airingStatusFilter.includes('already-aired')) ||
           (!this.nextEpisodeIsAired && this.airingStatusFilter.includes('not-yet-aired'))) &&
         (this.genreFilter.length === 0 || this.genreFilter.every((genre) => this.anime.genres.includes(genre)))

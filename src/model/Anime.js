@@ -8,7 +8,7 @@ export class Anime {
    * @param {Array} anime.synonyms - alternative titles
    * @param {String} anime.cover - image url
    * @param {String} anime.status - watching, on-hold, plan-to-watch
-   * @param {String} anime.type - tv, ova, movie, special, ona, music
+   * @param {String} anime.type - tv, ova, movie, special, ona, music, unknown
    * @param {Array} anime.genres - action, adventure, cars, comedy, dementia, demons, drama, ecchi, fantasy, game, harem, hentai, historical, horror, josei, kids, magic, martial arts, mecha, military, music, mystery, parody, police, psychological, romance, samurai, school, sci-fi, seinen, shoujo, shoujo ai, shounen, shounen ai, slice of life, space, sports, super power, supernatural, thriller, vampire, yaoi, yuri
    * @param {Number?} anime.totalEpisodes - anime total episodes
    * @param {String?} anime.startDate - anime start date (yyyy-MM-dd) (JST)
