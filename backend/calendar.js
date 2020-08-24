@@ -105,7 +105,7 @@ function refreshTask(cache) {
   }
   setImmediate(refresh);
   const now = DateTime.utc();
-  const scheduleLoop = now.startOf('day').plus({ days: 1 });
+  const scheduleLoop = now.startOf('day').plus({ days: 1, minutes: 1 });
   const scheduleLoopMillis = scheduleLoop.diff(now).toObject().milliseconds;
   console.log(
     `Refresh loop will start in ${(scheduleLoopMillis / 1000 / 3600).toFixed(2)} hours at ${formatDateTime(
