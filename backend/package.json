@@ -25,6 +25,7 @@
     "express-redis-cache": "^1.1.1",
     "full-icu": "^1.2.1",
     "jsonframe-cheerio": "^3.0.1",
+    "lodash.isequal": "^4.5.0",
     "luxon": "^1.2.1",
     "nconf": "^0.10.0",
     "popura": "^1.2.5",
