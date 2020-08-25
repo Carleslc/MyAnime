@@ -101,12 +101,16 @@ function fetch(cache) {
 }
 
 function expire(cache) {
-  cache.del(tag, (error, n) => {
-    if (error) {
-      console.error(`Calendar del cache error: ${error.message}`);
-    } else if (n > 0) {
-      console.log('Expired calendar entries');
-    }
+  return new Promise((resolve, reject) => {
+    cache.del(tag, (error, n) => {
+      if (error) {
+        console.error(`Calendar del cache error: ${error.message}`);
+        reject(error);
+      } else if (n > 0) {
+        console.log('Expired calendar entries');
+        resolve();
+      }
+    });
   });
 }
 
@@ -117,9 +121,10 @@ function refreshTask(cache) {
       .then((newCalendar) => {
         getCurrentCalendar(cache).then((oldCalendar) => {
           if (oldCalendar === null || !isEqual(oldCalendar, newCalendar)) {
-            expire(cache);
-            set(cache, newCalendar);
-            console.log('Calendar updated');
+            expire(cache).then(() => {
+              set(cache, newCalendar);
+              console.log('Calendar updated');
+            });
           } else {
             console.log('Calendar is already up to date');
           }
