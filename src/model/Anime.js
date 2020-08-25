@@ -5,7 +5,9 @@ export class Anime {
    * @param {Object} anime - anime object
    * @param {String} anime.id - provider's anime id
    * @param {String} anime.title - main title
-   * @param {Array} anime.synonyms - alternative titles
+   * @param {Object} anime.alternativeTitles - alternative titles
+   * @param {String?} anime.alternativeTitles.en - english title
+   * @param {Array} anime.alternativeTitles.synonyms - alternative titles
    * @param {String} anime.cover - image url
    * @param {String} anime.status - watching, on-hold, plan-to-watch
    * @param {String} anime.type - tv, ova, movie, special, ona, music, unknown
@@ -22,7 +24,7 @@ export class Anime {
   constructor({
     id,
     title,
-    synonyms,
+    alternativeTitles,
     cover,
     status,
     type,
@@ -36,7 +38,7 @@ export class Anime {
   }) {
     this.id = id;
     this.title = title;
-    this.synonyms = synonyms;
+    this.alternativeTitles = alternativeTitles;
     this.cover = cover;
     this.status = status;
     this.type = type;
@@ -46,11 +48,22 @@ export class Anime {
     this.airingStatus = airingStatus;
     this.updatedAt = DateTime.fromISO(updatedAt);
     this.lastWatchedEpisode = lastWatchedEpisode;
+
+    const titleWithoutDashes = this.title.replace('-', '');
+    if (titleWithoutDashes !== title && !this.alternativeTitles.synonyms.includes(titleWithoutDashes)) {
+      this.alternativeTitles.synonyms.push(titleWithoutDashes);
+    }
+
     this.setAiringDate(startDate);
   }
 
   get titles() {
-    return [this.title, ...this.synonyms];
+    const titles = [this.title];
+    if (this.alternativeTitles.en && this.alternativeTitles.en !== this.title) {
+      titles.push(this.alternativeTitles.en);
+    }
+    titles.push(...this.alternativeTitles.synonyms);
+    return titles;
   }
 
   get nextEpisode() {

@@ -45,9 +45,17 @@ Click on "Next episode" at the top right corner of an episode to mark it as watc
 - 🇪🇸 [AnimeMovil2](https://animemovil2.com/)
 - 🇬🇧 I'm Feeling Lucky
 - 🇬🇧 [Twist](https://twist.moe/)
-- 🇬🇧 [GogoAnime](https://gogoanime.life/)
+- 🇬🇧 [4Anime](https://4anime.to/)
+- 🇬🇧 [9Anime](https://9anime.ru/)
+- 🇬🇧 [GogoAnime.movie](https://gogoanime.movie/)
+- 🇬🇧 [GogoAnime.life](https://gogoanime.life/)
+- 🇬🇧 [Aniwatch](https://aniwatch.me/)
+- 🇬🇧 [AnimeUltima](https://animeultima.to/)
+- 🇬🇧 [AnimeHeaven](https://animeheaven.ru/)
+- 🇬🇧 [MasterAnime](https://masteranime.es/)
+- 🇬🇧 [MyAnimeCo](https://myanime.co/)
 
-Feeling Lucky options are based on search engine (_[DuckDuckGo](https://duckduckgo.com/) I'm Feeling Ducky_), trying to get a proper streamer, but it doesn't mean it always work. Sometimes it redirects to a non-related page, or it is in another language.
+Some options are based on search engine (_[DuckDuckGo](https://duckduckgo.com/) I'm Feeling Ducky_), trying to get a proper streamer, but it doesn't mean it always work. Sometimes it redirects to another anime, a non-related page, or it is in another language.
 
 If the selected provider cannot find an episode try to use an alternative title or change the provider.
 
@@ -59,9 +67,9 @@ Open an issue too if you have any doubt, advice or you want to report about some
 
 ### Disclaimer
 
-This webpage does not host any video, it is a client-side website, just linking and sharing content from external providers.
+This website does not host any video, it is a client-side website, just linking and sharing content from non-affiliated external providers.
 
-Official and legal providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.
+Official providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.
 
 <p align="center">
   <br>

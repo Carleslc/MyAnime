@@ -20,7 +20,7 @@
             />
           </q-item-section>
         </div>
-        <div v-if="anime.synonyms.length > 0" class="row">
+        <div v-if="anime.titles.length > 1" class="row">
           <q-item-section>
             <q-item-label v-t="'selectTitle'" header class="q-px-sm" />
             <title-select :value="title" :titles="anime.titles" @input="updateTitle" />

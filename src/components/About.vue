@@ -68,10 +68,10 @@
         <li>🇬🇧 <a href="https://gogoanime.life/" target="_blank">GogoAnime</a></li>
       </ul>
       <p>
-        Feeling Lucky options are based on search engine (<em
+        Some options are based on search engine (<em
           ><a href="https://duckduckgo.com/" target="_blank">DuckDuckGo</a> I&#39;m Feeling Ducky</em
-        >), trying to get a proper streamer, but it doesn&#39;t mean it always work. Sometimes it redirects to a
-        non-related page, or it is in another language.
+        >), trying to get a proper streamer, but it doesn&#39;t mean it always work. Sometimes it redirects to another
+        anime, a non-related page, or it is in another language.
       </p>
       <p>If the selected provider cannot find an episode try to use an alternative title or change the provider.</p>
       <h2>Contact</h2>
@@ -84,11 +84,11 @@
       <p>Open an issue too if you have any doubt, advice or you want to report about something broken.</p>
       <h2>Disclaimer</h2>
       <p>
-        This webpage does not host any video, it is a client-side website, just linking and sharing content from
-        external providers.
+        This website does not host any video, it is a client-side website, just linking and sharing content from
+        non-affiliated external providers.
       </p>
       <p>
-        Official and legal providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.
+        Official providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.
       </p>
     </q-card-section>
     <q-separator />

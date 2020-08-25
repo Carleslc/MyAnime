@@ -7,8 +7,15 @@ import jkAnime from '@/model/providers/jkAnime';
 import MonosChinos from '@/model/providers/MonosChinos';
 import AnimeFenix from '@/model/providers/AnimeFenix';
 import AnimeMovil2 from '@/model/providers/AnimeMovil2';
+import AnimeHeaven from '@/model/providers/AnimeHeaven';
+import AnimeUltima from '@/model/providers/AnimeUltima';
+import Aniwatch from '@/model/providers/Aniwatch';
 import Twist from '@/model/providers/Twist';
-import Gogoanime from '@/model/providers/Gogoanime';
+import FourAnime from '@/model/providers/FourAnime';
+import MasterAnime from '@/model/providers/MasterAnime';
+import MyAnimeCo from '@/model/providers/MyAnimeCo';
+import { NineAnimeLucky, NineAnimeSearch } from '@/model/providers/NineAnime';
+import { GogoanimeLife, GogoanimeMovie } from '@/model/providers/Gogoanime';
 import { FeelingDuckyES, FeelingDuckyEN, FeelingLuckyES, FeelingLuckyEN } from '@/model/providers/FeelingLucky';
 
 import { i18n } from '@/boot/i18n';
@@ -28,8 +35,17 @@ export const providers = Object.freeze([
   { label: 'AnimeMovil', value: AnimeMovil2 },
   { label: "I'm feeling ducky", value: FeelingDuckyEN },
   { label: 'Google (EN)', value: FeelingLuckyEN },
-  { label: 'Gogoanime', value: Gogoanime },
   { label: 'Twist', value: Twist },
+  { label: '4Anime', value: FourAnime },
+  { label: '9Anime (Lucky)', value: NineAnimeLucky },
+  { label: '9Anime (Search)', value: NineAnimeSearch },
+  { label: 'Gogoanime.movie', value: GogoanimeMovie },
+  { label: 'Gogoanime.life', value: GogoanimeLife },
+  { label: 'Aniwatch', value: Aniwatch },
+  { label: 'AnimeUltima', value: AnimeUltima },
+  { label: 'AnimeHeaven', value: AnimeHeaven },
+  { label: 'MasterAnime', value: MasterAnime },
+  { label: 'MyAnimeCo', value: MyAnimeCo },
 ]);
 
 function newConfig() {
@@ -143,7 +159,7 @@ export default {
         if (this.$q.localStorage.has(key)) {
           let value = this.$q.localStorage.getItem(key);
 
-          const getProvider = (label) => providers.find((provider) => provider.label === label);
+          const getProvider = (label) => providers.find((provider) => provider.label === label) || providers[0];
 
           // convert provider labels to provider objects
           if (key === 'provider') {

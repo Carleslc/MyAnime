@@ -1,15 +1,8 @@
 import Provider from './Provider.js';
-import { withSearch } from './FeelingLucky';
 
 class AnimeFLV extends Provider {
   constructor() {
     super('https://animeflv.net/', 3, ['es']);
-
-    this.search = withSearch(({ title, episode }) => {
-      return encodeURIComponent(
-        `site:animeflv.net intitle:"${Provider.encode(title)}" inurl:"/ver" inurl:"-${episode}"`
-      );
-    });
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -17,9 +10,15 @@ class AnimeFLV extends Provider {
     return 'statics/icons/animeflv.ico';
   }
 
-  episodeUrl(args) {
-    return this.search.episodeUrl(args);
+  episodeUrl({ title, episode }) {
+    return `${this.url}ver/${Provider.encode(title)}-${episode}`;
   }
 }
+
+/*
+withSearch(({ title, episode }) => {
+  return encodeURIComponent(`site:${this.url} inurl:"/ver" intitle:"${title}" intitle:"Episodio ${episode}");
+});
+*/
 
 export default new AnimeFLV();
