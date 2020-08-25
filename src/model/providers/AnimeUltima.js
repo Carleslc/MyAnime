@@ -7,7 +7,7 @@ class AnimeUltima extends Provider {
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return `${this.url}images/icons/favicon-32x32.png`;
+    return 'statics/icons/animeultima.png';
   }
 
   episodeUrl({ title, episode }) {
