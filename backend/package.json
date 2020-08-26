@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Carleslc/MyAnime#readme",
   "dependencies": {
+    "axios": "^0.20.0",
     "basic-auth": "^2.0.0",
     "body-parser": "^1.18.2",
     "cheerio": "^1.0.0-rc.2",

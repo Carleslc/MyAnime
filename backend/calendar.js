@@ -108,8 +108,8 @@ function expire(cache) {
         reject(error);
       } else if (n > 0) {
         console.log('Expired calendar entries');
-        resolve();
       }
+      resolve();
     });
   });
 }
@@ -123,7 +123,6 @@ function refreshTask(cache) {
           if (oldCalendar === null || !isEqual(oldCalendar, newCalendar)) {
             expire(cache).then(() => {
               set(cache, newCalendar);
-              console.log('Calendar updated');
             });
           } else {
             console.log('Calendar is already up to date');
