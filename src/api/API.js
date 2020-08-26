@@ -2,19 +2,29 @@ import axios from 'axios';
 import qs from 'qs';
 import { LocalStorage } from 'quasar';
 import { DateTime } from 'luxon';
+import { SubscriptionQueue } from '@/utils/subscription';
 import { AuthenticationNeededException, notifyError } from '@/utils/errors';
 
 const CORS_PROXY_URL = 'https://cors.carleslc.me/';
-
-const AUTH_KEY = 'auth';
 
 export function encodeParams(params) {
   return qs.stringify(params);
 }
 
+function wrapCORS(baseUrl, cors) {
+  return cors ? CORS_PROXY_URL + baseUrl : baseUrl;
+}
+
+function wrapOptsCORS(opts, cors) {
+  if (opts && opts.baseURL) {
+    opts.baseURL = wrapCORS(opts.baseURL, cors);
+  }
+  return opts;
+}
+
 export function newAxios({ baseUrl, headers, cors = false, ...opts }) {
   const config = {
-    baseURL: cors ? CORS_PROXY_URL + baseUrl : baseUrl,
+    baseURL: wrapCORS(baseUrl, cors),
     headers: {
       common: {
         Accept: 'application/json',
@@ -35,17 +45,31 @@ export function newAxios({ baseUrl, headers, cors = false, ...opts }) {
 }
 
 export class API {
-  constructor({ name, image, homeUrl, profileUrl, registerUrl, setPasswordUrl, baseUrl, headers, cors, version }) {
+  constructor({
+    name,
+    image,
+    homeUrl,
+    profileUrl,
+    registerUrl,
+    setPasswordUrl,
+    baseUrl,
+    headers,
+    cors,
+    version,
+    tokenLifespanDays = 31,
+  }) {
     this.name = name;
     this.image = image;
     this.homeUrl = homeUrl;
     this.profileUrl = profileUrl;
     this.registerUrl = registerUrl;
     this.setPasswordUrl = setPasswordUrl;
+    this.tokenLifespanDays = tokenLifespanDays;
     this.version = version;
 
     this.resetOffsets();
 
+    this.cors = cors;
     this.axios = newAxios({
       baseUrl,
       headers,
@@ -55,23 +79,12 @@ export class API {
     this.loadAuthInfo();
   }
 
-  url(endpoint, version) {
-    if (version === undefined) {
-      version = this.version;
-    }
-    return version ? `/${version}${endpoint}` : endpoint;
+  get authKey() {
+    return `auth.${this.name}`;
   }
 
   get hasError() {
     return !!this.error;
-  }
-
-  get isAuthenticated() {
-    if (!this.accessToken || !this.expiration) {
-      return false;
-    }
-    const now = DateTime.utc();
-    return this.expiration > now;
   }
 
   /**
@@ -79,22 +92,24 @@ export class API {
    * @param {String} refreshToken
    * @param {DateTime} expiration
    */
-  setAuthInfo(accessToken, refreshToken, expiration) {
+  setAuthInfo({ accessToken, refreshToken, expiration }) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.expiration = expiration;
+    this.updateAuthorization();
+  }
 
-    if (accessToken) {
-      this.axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+  updateAuthorization() {
+    if (this.accessToken) {
+      this.axios.defaults.headers.common.Authorization = `Bearer ${this.accessToken}`;
     }
-
     if (this.error instanceof AuthenticationNeededException) {
       this.error = null;
     }
   }
 
   saveAuthInfo() {
-    LocalStorage.set(AUTH_KEY, {
+    LocalStorage.set(this.authKey, {
       accessToken: this.accessToken,
       refreshToken: this.refreshToken,
       expiration: this.expiration.toISO(),
@@ -102,23 +117,52 @@ export class API {
   }
 
   loadAuthInfo() {
-    const authInfo = LocalStorage.getItem(AUTH_KEY);
+    const authInfo = LocalStorage.getItem(this.authKey);
 
     if (authInfo) {
-      this.setAuthInfo(authInfo.accessToken, authInfo.refreshToken, DateTime.fromISO(authInfo.expiration));
+      this.setAuthInfo({
+        accessToken: authInfo.accessToken,
+        refreshToken: authInfo.refreshToken,
+        expiration: DateTime.fromISO(authInfo.expiration),
+      });
     }
+  }
+
+  needsAuth(message) {
+    this.error = new AuthenticationNeededException(message);
+    return this.error;
+  }
+
+  onRefreshToken(callback) {
+    if (!this.refreshing) {
+      this.refreshing = new SubscriptionQueue();
+      this.refreshAccessToken()
+        .then(() => this.refreshing.consume())
+        .catch((error) => this.refreshing.consume(error))
+        .finally(() => {
+          delete this.refreshing;
+        });
+    }
+    this.refreshing.subscribe(callback); // avoid concurrent duplicated refresh requests
   }
 
   authenticated() {
     return new Promise((resolve, reject) => {
-      if (this.isAuthenticated) {
-        resolve();
-      } else if (this.expiration && this.refreshToken && this.refreshAccessToken) {
-        // Token expired
-        this.refreshAccessToken().then(resolve).catch(reject);
+      if (!this.accessToken || !this.expiration) {
+        reject(this.needsAuth());
       } else {
-        this.error = new AuthenticationNeededException();
-        reject(this.error);
+        const now = DateTime.utc();
+        const expiresIn = this.expiration.diff(now, 'days').toObject().days;
+        if (expiresIn <= 0) {
+          delete this.axios.defaults.headers.common.Authorization;
+          LocalStorage.remove(this.authKey);
+          reject(this.needsAuth('Session expired'));
+        } else if (this.refreshToken && this.refreshAccessToken && expiresIn < this.tokenLifespanDays - 7) {
+          // Refresh weekly
+          this.onRefreshToken((error) => (error ? reject(error) : resolve()));
+        } else {
+          resolve();
+        }
       }
     });
   }
@@ -138,25 +182,29 @@ export class API {
       });
   }
 
-  get(endpoint, headers) {
-    return this.wrapResponse(this.axios.get(endpoint, headers));
+  url(endpoint, opts) {
+    if (opts && opts.baseURL) {
+      return endpoint;
+    }
+    return this.version ? `/${this.version}${endpoint}` : endpoint;
   }
 
-  formEncoded(action, endpoint, data, headers) {
-    return this.wrapResponse(
-      action.call(this.axios, endpoint, encodeParams(data), {
-        ...headers,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      })
-    );
+  get(endpoint, opts) {
+    opts = wrapOptsCORS(opts, this.cors);
+    return this.wrapResponse(this.axios.get(this.url(endpoint, opts), opts));
   }
 
-  postFormEncoded(endpoint, data, headers) {
-    return this.formEncoded(this.axios.post, endpoint, data, headers);
+  formEncoded(action, endpoint, data, opts) {
+    opts = wrapOptsCORS(opts, this.cors);
+    return this.wrapResponse(action.call(this.axios, this.url(endpoint, opts), encodeParams(data), opts));
   }
 
-  putFormEncoded(endpoint, data, headers) {
-    return this.formEncoded(this.axios.put, endpoint, data, headers);
+  postFormEncoded(endpoint, data, opts) {
+    return this.formEncoded(this.axios.post, endpoint, data, opts);
+  }
+
+  putFormEncoded(endpoint, data, opts) {
+    return this.formEncoded(this.axios.put, endpoint, data, opts);
   }
 
   // eslint-disable-next-line class-methods-use-this

@@ -49,6 +49,9 @@ export default {
   setPicture(state, picture) {
     state.picture = picture;
   },
+  setUserFetched(state, userFetched) {
+    state.userFetched = userFetched;
+  },
   nextEpisode(_state, anime) {
     anime.lastWatchedEpisode = anime.nextEpisode;
   },
@@ -93,5 +96,13 @@ export default {
   },
   clear(state) {
     Object.assign(state, newState());
+  },
+  setAuthInfo({ api }, { accessToken, refreshToken, expiration }) {
+    // avoids mutation outside vuex store for token refresh
+    api.accessToken = accessToken;
+    api.refreshToken = refreshToken;
+    api.expiration = expiration;
+    api.updateAuthorization();
+    api.saveAuthInfo();
   },
 };

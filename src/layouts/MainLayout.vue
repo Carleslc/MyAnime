@@ -164,7 +164,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('store', ['api']),
+    ...mapState('store', ['api', 'userFetched']),
     ...mapGetters('store', ['isLoading', 'isFetched', 'hasUsername']),
     hiddenIfSettings() {
       return this.settings ? 'display: none' : undefined;
@@ -183,7 +183,6 @@ export default {
   },
   created() {
     this.info = !this.isRecurringUser;
-    this.loading(); // loaded after initial user search
   },
   methods: {
     ...mapMutations('store', ['loading', 'updateFetched']),
@@ -193,7 +192,7 @@ export default {
       return { minHeight: `calc(100vh - ${offset}px + ${footerHeight})` };
     },
     updateAnimes() {
-      if (!this.isFetched && !this.isLoading && this.hasUsername && !this.api.hasError) {
+      if (this.userFetched && !this.isFetched && !this.isLoading && this.hasUsername && !this.api.hasError) {
         this.fetchAnimes();
       }
     },

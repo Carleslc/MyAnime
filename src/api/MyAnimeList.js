@@ -65,7 +65,7 @@ export class MyAnimeList extends API {
   }
 
   async auth(username, password) {
-    const response = await this.postFormEncoded(this.url('/auth/token'), {
+    const response = await this.postFormEncoded('/auth/token', {
       client_id: client,
       grant_type: 'password',
       username,
@@ -81,17 +81,12 @@ export class MyAnimeList extends API {
       // e.response.status e.response.data.error (e.response.data.message)
       // 400 invalid_grant (Incorrect username or password.)
       // 403 too_many_failed_login_attempts (Too many failed login attempts. Please try to login again after several hours.)
-      let message;
-      switch (e.response.data.error) {
-        case 'invalid_grant':
-          message = i18n.t('invalidGrant');
-          break;
-        case 'too_many_failed_login_attempts':
-          message = i18n.t('tooManyFailedLoginAttempts');
-          break;
-        default:
-          message = e.response.data.message;
-          break;
+      const errorCode = e.response.data.error;
+      let message = e.response.data.message;
+      if (errorCode === 'invalid_grant') {
+        message = i18n.t('invalidGrant');
+      } else if (errorCode === 'too_many_failed_login_attempts') {
+        message = i18n.t('tooManyFailedLoginAttempts');
       }
       notifyError(message);
     } else {
@@ -100,25 +95,39 @@ export class MyAnimeList extends API {
   }
 
   async refreshAccessToken() {
-    const response = await this.postFormEncoded(this.url('/oauth2/token', 'v1'), {
-      client_id: client,
-      grant_type: 'refresh_token',
-      refresh_token: this.refreshToken,
-    });
+    if (!this.refreshToken) {
+      throw this.needsAuth('Missing refresh token');
+    }
+    const response = await this.postFormEncoded(
+      '/oauth2/token',
+      {
+        client_id: client,
+        grant_type: 'refresh_token',
+        refresh_token: this.refreshToken,
+      },
+      {
+        baseURL: 'https://myanimelist.net/v1',
+      }
+    );
     if (response.ok && response.data) {
       this.updateAuthInfo(response.data);
+    } else {
+      throw this.needsAuth(this.error);
     }
   }
 
   updateAuthInfo(data) {
-    this.setAuthInfo(data.access_token, data.refresh_token, DateTime.utc().plus({ seconds: data.expires_in }));
-    this.saveAuthInfo();
+    this.commit('setAuthInfo', {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      expiration: DateTime.utc().plus({ seconds: data.expires_in }),
+    });
   }
 
   async getUserPicture() {
     await this.authenticated();
 
-    const response = await this.get(this.url('/users/@me'));
+    const response = await this.get('/users/@me');
 
     if (response.ok && response.data) {
       return response.data.picture;
@@ -165,7 +174,7 @@ export class MyAnimeList extends API {
       filters.status = status.replace(/-/g, '_');
     }
 
-    const response = await this.get(this.url(`/users/${username}/animelist?${encodeParams(filters)}`));
+    const response = await this.get(`/users/${username}/animelist?${encodeParams(filters)}`);
 
     if (!response.ok) {
       return [];

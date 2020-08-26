@@ -21,6 +21,7 @@ export function newState() {
     genreFilter: defaults.genreFilter,
     loading: 0,
     fetched: false,
+    userFetched: false,
     animes: {
       watching: [],
       'on-hold': [],

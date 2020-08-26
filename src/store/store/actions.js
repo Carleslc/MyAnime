@@ -47,12 +47,24 @@ export default {
       })
     );
   },
-  searchUser({ commit, dispatch }, username) {
-    commit('setUsername', username);
-    commit('resetAnimes');
-    dispatch('updatePicture');
-    dispatch('fetchAnimes');
-    dispatch('fetchCalendar');
+  searchUser({ commit, dispatch, state: { api } }, username) {
+    api.commit = commit;
+    return withLoading(
+      commit,
+      new Promise((resolve) => {
+        commit('setUserFetched', false);
+        commit('setUsername', username);
+        commit('resetAnimes');
+        dispatch('updatePicture');
+        dispatch('fetchAnimes').finally(() => {
+          if (!api.hasError) {
+            commit('setUserFetched', true);
+          }
+          resolve();
+        });
+        dispatch('fetchCalendar');
+      })
+    );
   },
   updatePicture({ commit, state: { api, username } }) {
     return withLoading(

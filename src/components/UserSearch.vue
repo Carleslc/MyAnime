@@ -57,7 +57,6 @@ export default {
       this.input = this.username;
       this.searchUserInput();
     }
-    this.loaded();
   },
   methods: {
     ...mapMutations('store', ['loaded']),
