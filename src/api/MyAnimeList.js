@@ -190,7 +190,7 @@ export class MyAnimeList extends API {
   }
 
   updateEpisode(anime) {
-    return this.putFormEncoded(this.url(`/anime/${anime.id}/my_list_status`), {
+    return this.putFormEncoded(`/anime/${anime.id}/my_list_status`, {
       num_watched_episodes: anime.nextEpisode,
       status: anime.isLastEpisode ? 'completed' : 'watching',
     });
