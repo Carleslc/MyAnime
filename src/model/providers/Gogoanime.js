@@ -1,5 +1,4 @@
 import Provider from './Provider.js';
-// import { withSearch } from './FeelingLucky';
 
 class Gogoanime extends Provider {
   constructor(url, search) {
@@ -17,7 +16,6 @@ class Gogoanime extends Provider {
 
 export const GogoanimeLife = new Gogoanime('https://gogoanime.life/', {
   episodeUrl({ title }) {
-    // TODO: On click, fetch url from the following search and append ep-${episode} or ep-full (movie)
     // https://gogoanime.life/anime/one-piece-ov8/ep-931
     // https://gogoanime.life/anime/one-piece-film-gold-71vy/ep-full
     return `${this.url}search?keyword=${encodeURIComponent(title)}`;

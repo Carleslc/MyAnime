@@ -11,7 +11,6 @@ class Aniwatch extends Provider {
   }
 
   episodeUrl({ title }) {
-    // TODO: On click, fetch url from the following search and append the episode
     // https://aniwatch.me/anime/30/931
     return `${this.url}search?q=${encodeURIComponent(title)}`;
   }

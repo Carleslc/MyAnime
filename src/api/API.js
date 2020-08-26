@@ -12,7 +12,7 @@ export function encodeParams(params) {
   return qs.stringify(params);
 }
 
-export function newAxios({ baseUrl, headers, cors = false, debug = false, ...opts }) {
+export function newAxios({ baseUrl, headers, cors = false, ...opts }) {
   const config = {
     baseURL: cors ? CORS_PROXY_URL + baseUrl : baseUrl,
     headers: {

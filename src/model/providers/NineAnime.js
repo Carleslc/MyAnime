@@ -28,7 +28,6 @@ export const NineAnimeLucky = new NineAnime(
 
 export const NineAnimeSearch = new NineAnime({
   episodeUrl({ anime, title }) {
-    // TODO: On click, fetch url from the following search, then scrape episode urls from the selected url to provide a direct link
     return `${this.url}search?keyword=${encodeURIComponent(anime.alternativeTitles.en || title)}`;
   },
 });
