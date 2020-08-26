@@ -27,6 +27,7 @@ class Aniwatch {
   }
 
   async search(title) {
+    console.log('Aniwatch search', title);
     const xsrf = generateToken();
     const response = await this.api.post(
       {

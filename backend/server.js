@@ -56,7 +56,7 @@ if (whitelistEnv) {
 app.get('/provider/:name', (req, res) => {
   const origin = req.headers.origin || req.headers.host;
   if (whitelist.length > 0 && !whitelist.includes(origin)) {
-    res.status(403).send(`Forbidden (whitelist): ${JSON.stringify(whitelist)} for origin ${origin}`);
+    res.status(403).send(`Forbidden (whitelist). Origin ${origin} not allowed.`);
     return;
   }
 
