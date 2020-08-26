@@ -21,20 +21,20 @@ export default class Provider {
     }
   */
 
+  static trimSpecials(s) {
+    return s.replace(/[^ -a-zA-Z0-9]+$/, '');
+  }
+
   static encode(s, sep = '-') {
     let encoded = encodeURIComponent(
-      s
+      Provider.trimSpecials(s)
         .toLowerCase()
-        .replace(/[^-a-z0-9]+/g, sep)
+        .replace(/\s+/g, sep)
         .replace(new RegExp(`(${sep}){2,}`), sep)
     );
     if (encoded[encoded.length - 1] === sep) {
       encoded = encoded.substring(0, encoded.length - 1);
     }
     return encoded;
-  }
-
-  static trimSpecials(s) {
-    return s.replace(/[^-a-zA-Z0-9]+$/, '');
   }
 }
