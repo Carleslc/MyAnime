@@ -1,7 +1,7 @@
 module.exports = {
   http(res) {
     return (err, status) => {
-      console.error(err.response || err);
+      console.error((err.response && err.response.data) || err);
       res.status(status || 500).send(err.message || '');
     };
   },

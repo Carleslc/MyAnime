@@ -29,30 +29,24 @@ class Aniwatch {
   async search(title) {
     console.log('Aniwatch search', title);
     const xsrf = generateToken();
-    const response = await this.api
-      .post(
-        {
-          controller: 'Search',
-          action: 'search',
-          rOrder: false,
-          order: 'title',
-          typed: title,
+    const response = await this.api.post(
+      {
+        controller: 'Search',
+        action: 'search',
+        rOrder: false,
+        order: 'title',
+        typed: title,
+      },
+      {
+        withCredentials: true,
+        headers: {
+          'x-path': '/search',
+          'x-xsrf-token': xsrf,
+          referer: this.url,
+          Cookie: `XSRF-TOKEN=${xsrf};`,
         },
-        {
-          withCredentials: true,
-          headers: {
-            'x-path': '/search',
-            'x-xsrf-token': xsrf,
-            referer: this.url,
-            Cookie: `XSRF-TOKEN=${xsrf};`,
-          },
-        }
-      )
-      .catch((err) => {
-        console.error('Aniwatch search error', err.response);
-        throw err;
-      });
-
+      }
+    );
     let id = null;
     if (response.data.length > 0) {
       id = response.data[0].detail_id || null;
