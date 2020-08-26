@@ -12,6 +12,28 @@ export function encodeParams(params) {
   return qs.stringify(params);
 }
 
+export function newAxios({ baseUrl, headers, cors = false, debug = false, ...opts }) {
+  const config = {
+    baseURL: cors ? CORS_PROXY_URL + baseUrl : baseUrl,
+    headers: {
+      common: {
+        Accept: 'application/json',
+      },
+      ...headers,
+    },
+    ...opts,
+  };
+
+  const client = axios.create(config);
+
+  /* client.interceptors.request.use((request) => {
+    console.log(request);
+    return request;
+  }); */
+
+  return client;
+}
+
 export class API {
   constructor({ name, image, homeUrl, profileUrl, registerUrl, setPasswordUrl, baseUrl, headers, cors, version }) {
     this.name = name;
@@ -22,26 +44,13 @@ export class API {
     this.setPasswordUrl = setPasswordUrl;
     this.version = version;
 
-    if (cors) {
-      baseUrl = CORS_PROXY_URL + baseUrl;
-    }
-
     this.resetOffsets();
 
-    this.axios = axios.create({
-      baseURL: baseUrl,
-      headers: {
-        common: {
-          Accept: 'application/json',
-        },
-        ...headers,
-      },
+    this.axios = newAxios({
+      baseUrl,
+      headers,
+      cors,
     });
-
-    /* this.axios.interceptors.request.use((request) => {
-      console.log(request);
-      return request;
-    }); */
 
     this.loadAuthInfo();
   }

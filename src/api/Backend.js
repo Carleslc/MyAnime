@@ -1,22 +1,12 @@
-import axios from 'axios';
+import { newAxios } from './API';
 
 const API_URL = 'https://anime.carleslc.me';
 
 export default class Backend {
   constructor() {
-    this.axios = axios.create({
-      baseURL: API_URL,
-      headers: {
-        common: {
-          Accept: 'application/json',
-        },
-      },
+    this.axios = newAxios({
+      baseUrl: API_URL,
     });
-
-    /* this.axios.interceptors.request.use((request) => {
-      console.log(request);
-      return request;
-    }); */
   }
 
   get(endpoint, headers) {

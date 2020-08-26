@@ -9,10 +9,17 @@ export default class Provider {
     return `${this.url}favicon.ico`;
   }
 
-  // eslint-disable-next-line no-unused-vars
+  /* eslint-disable no-unused-vars */
+
   episodeUrl({ anime, title, episode }) {
     return this.url;
   }
+
+  /*
+    open({ anime, title, episode }) {
+      // Optional. If defined, this will override episodeUrl
+    }
+  */
 
   static encode(s, sep = '-') {
     let encoded = encodeURIComponent(

@@ -6,13 +6,7 @@
     :class="{ small: isSmallElement, 'on-hover': $q.platform.is.desktop }"
   >
     <q-resize-observer debounce="200" @resize="handleResize" />
-    <a
-      :href="episodeUrl"
-      target="_blank"
-      class="column justify-between full-height"
-      :aria-label="aria"
-      @mousedown.prevent
-    >
+    <dynamic-button :href="episodeUrl" :open="open" :aria-label="aria" class="column justify-between full-height">
       <q-img
         :src="anime.cover"
         basic
@@ -31,7 +25,7 @@
           class="absolute-top-left q-ma-sm"
           tabindex="0"
           :aria-label="$t('settings')"
-          @click.prevent="preventFocus('fabSettings')"
+          @click.prevent.stop="preventFocus('fabSettings')"
         >
           <q-tooltip
             transition-show="jump-right"
@@ -58,7 +52,7 @@
           class="absolute-top-right q-ma-sm"
           tabindex="0"
           :aria-label="nextLabel"
-          @click.prevent="nextEpisode"
+          @click.prevent.stop="nextEpisode"
         >
           <q-badge v-if="!anime.isLastEpisode" color="secondary" floating>{{ anime.nextEpisode }}</q-badge>
           <q-tooltip
@@ -99,7 +93,7 @@
           </q-chip>
         </div>
       </div>
-    </a>
+    </dynamic-button>
   </q-card>
 </template>
 
@@ -129,7 +123,7 @@ export default {
       },
     }),
     provider() {
-      return this.providerByAnimeTitle(this.title);
+      return this.providerByAnimeTitle(this.title).value;
     },
     title() {
       return this.titleByAnimeId(this.anime.id) || this.anime.title;
@@ -160,7 +154,7 @@ export default {
           const estimation = this.anime.airingDate.startOf('week').plus({
             weeks: this.anime.nextEpisode - 1,
             days: broadcast.weekday - 1,
-            hours: broadcast.hour + this.provider.value.offset,
+            hours: broadcast.hour + this.provider.offset,
             minutes: broadcast.minute,
           });
           return {
@@ -190,7 +184,7 @@ export default {
         const calendarDate = this.calendarEntry[this.anime.nextEpisode];
         if (calendarDate) {
           return {
-            date: DateTime.fromISO(calendarDate).toLocal().plus({ hours: this.provider.value.offset }),
+            date: DateTime.fromISO(calendarDate).toLocal().plus({ hours: this.provider.offset }),
             precision: 'day',
           };
         }
@@ -245,12 +239,21 @@ export default {
       }
       return date.toLocaleString({ year: 'numeric' });
     },
-    episodeUrl() {
-      return this.provider.value.episodeUrl({
+    params() {
+      return {
         anime: this.anime,
         title: this.title,
         episode: this.anime.nextEpisode,
-      });
+      };
+    },
+    episodeUrl() {
+      return this.provider.episodeUrl(this.params);
+    },
+    open() {
+      if (this.provider.open) {
+        return () => this.provider.open(this.params);
+      }
+      return null;
     },
     isSmallElement() {
       return this.width < 185;
