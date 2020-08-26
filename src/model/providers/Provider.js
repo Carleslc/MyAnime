@@ -21,14 +21,11 @@ export default class Provider {
     }
   */
 
-  static trimSpecials(s) {
-    return s.replace(/[^ -a-zA-Z0-9]+$/, '');
-  }
-
   static encode(s, sep = '-') {
     let encoded = encodeURIComponent(
-      Provider.trimSpecials(s)
+      s
         .toLowerCase()
+        .replace(/[^- a-z0-9]+/, '')
         .replace(/\s+/g, sep)
         .replace(new RegExp(`(${sep}){2,}`), sep)
     );
@@ -36,5 +33,9 @@ export default class Provider {
       encoded = encoded.substring(0, encoded.length - 1);
     }
     return encoded;
+  }
+
+  static trimSpecials(s) {
+    return s.replace(/[^- a-zA-Z0-9]+$/, '');
   }
 }
