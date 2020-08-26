@@ -8,7 +8,7 @@ class FourAnime extends Provider {
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return `${this.url}static/favicon.png`;
+    return 'statics/icons/4anime.png';
   }
 
   episodeUrl({ title, episode }) {
