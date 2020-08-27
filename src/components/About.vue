@@ -1,95 +1,82 @@
 <template>
-  <q-card>
+  <q-card class="about">
     <q-card-section class="row justify-center items-center q-pa-lg">
-      <h1 class="text-center">My Anime</h1>
+      <h1 class="text-center">MyAnime</h1>
       <div class="absolute-right">
-        <q-img v-if="$q.screen.width > 500" src="statics/chibi.png" width="96px" class="q-ma-md" />
+        <q-img v-if="!small" src="statics/chibi.png" width="96px" class="q-ma-md" />
       </div>
     </q-card-section>
     <q-separator />
-    <q-card-section>
-      <p>
-        Watch your favourite animes with your usual provider, synchronized with
-        <a href="https://myanimelist.net/" target="_blank">MyAnimeList</a>.
-      </p>
-      <h2>Why to use?</h2>
-      <p>
-        This is a shortcut to access your preferred anime series with your preferred providers, all in sync with the
-        selected animes in your MyAnimeList profile.
-      </p>
-      <p>Avoid surfing the internet or the providers looking for your episodes, just seat in and enjoy.</p>
-      <p>
-        With this single page you can test several providers and update your MyAnimeList episodes easily. It also skips
-        some advertising from providers&#39; home sites, because you&#39;ll access to the episode page directly.
-      </p>
-      <h2>How to use</h2>
-      <p>
-        Enter your MyAnimeList username <em>(https://myanimelist.net/profile/USERNAME)</em> and choose one of your
-        animes to watch, select the provider and enjoy your episode.
-      </p>
-      <p>
-        When updating your watched episodes in MyAnimeList then the next episode will be shown, waiting for you to be
-        watched.
-      </p>
-      <p>
-        Click on &quot;Next episode&quot; at the top right corner of an episode to mark it as watched in your
-        MyAnimeList profile.
-      </p>
-      <h2>Features</h2>
-      <ul class="q-gutter-y-sm">
-        <li>Cover images and links for the series in which you are interested.</li>
-        <li>
-          Easy access to your outstanding episodes of MyAnimeList lists Watching, On Hold and Plan to Watch, with
-          several providers for streaming / downloading to choose.
-        </li>
-        <li>Filter episodes by 'Already aired', 'Not yet aired', TV, Movie, OVA, Special, ONA or Music.</li>
-        <!--<li>Some series have title synonyms, choose between original or alternative title.</li>-->
-        <li>Update your watched episodes in your MyAnimeList profile directly within this page.</li>
-        <li>
-          Your preferences are saved in the browser, so you only need to change them when you need it. User is
-          automatically retrieved based on the last user used.
-        </li>
-      </ul>
-      <h2>Supported providers</h2>
-      <ul>
-        <li><a href="https://myanimelist.net/" target="_blank">MyAnimeList</a></li>
-        <li><a href="https://www.crunchyroll.com/" target="_blank">Crunchyroll</a></li>
-        <li><a href="https://www.netflix.com/" target="_blank">Netflix</a></li>
-        <li>🇪🇸🇬🇧 <a href="https://www.google.com/" target="_blank">Google</a></li>
-        <li>🇪🇸 Voy a tener suerte</li>
-        <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>
-        <li>🇪🇸 <a href="https://www.animeid.tv/" target="_blank">AnimeID</a></li>
-        <li>🇪🇸 <a href="https://animefenix.com/" target="_blank">AnimeFenix</a></li>
-        <li>🇪🇸 <a href="http://jkanime.net/" target="_blank">jkanime</a></li>
-        <li>🇪🇸 <a href="https://monoschinos.com/" target="_blank">MonosChinos</a></li>
-        <li>🇪🇸 <a href="https://animemovil2.com/" target="_blank">AnimeMovil</a></li>
-        <li>🇬🇧 I&#39;m Feeling Lucky</li>
-        <li>🇬🇧 <a href="https://twist.moe/" target="_blank">Twist</a></li>
-        <li>🇬🇧 <a href="https://gogoanime.life/" target="_blank">GogoAnime</a></li>
-      </ul>
-      <p>
-        Some options are based on search engine (<em
-          ><a href="https://duckduckgo.com/" target="_blank">DuckDuckGo</a> I&#39;m Feeling Ducky</em
-        >), trying to get a proper streamer, but it doesn&#39;t mean it always work. Sometimes it redirects to another
-        anime, a non-related page, or it is in another language.
-      </p>
-      <p>If the selected provider cannot find an episode try to use an alternative title or change the provider.</p>
-      <h2>Contact</h2>
-      <p>
-        <em
-          >Your favourite provider isn&#39;t listed here? Please, open an issue
-          <a href="http://github.com/Carleslc/MyAnime/issues" target="_blank">here</a> and we will add it!</em
-        >
-      </p>
-      <p>Open an issue too if you have any doubt, advice or you want to report about something broken.</p>
-      <h2>Disclaimer</h2>
-      <p>
-        This website does not host any video, it is a client-side website, just linking and sharing content from
-        non-affiliated external providers.
-      </p>
-      <p>
-        Official providers like Crunchyroll or Netflix are recommended. Use other providers at your own risk.
-      </p>
+    <q-card-section :class="`q-py-lg ${small ? 'q-px-lg' : 'q-px-xl'}`">
+      <i18n path="about.description" tag="p" class="q-mb-xs">
+        <template v-slot:api>
+          <a :href="api.homeUrl" target="_blank">{{ api.name }}</a>
+        </template>
+      </i18n>
+      <div class="section">
+        <h2 v-t="'about.why.header'" />
+        <div v-html="p('about.why.content', { api: api.name })" />
+      </div>
+      <div class="section">
+        <h2 v-t="'about.how.header'" />
+        <i18n path="about.how.enterYourUsername" tag="p">
+          <template v-slot:api>
+            {{ api.name }}
+          </template>
+          <template v-slot:profileUrl>
+            <i>{{ api.profileUrl + 'USERNAME' }}</i>
+          </template>
+        </i18n>
+        <div v-html="p('about.how.updateEpisode', { api: api.name })" />
+      </div>
+      <div class="section">
+        <h2 v-t="'about.features.header'" />
+        <ul class="q-gutter-y-sm" v-html="li('about.features.list', { api: api.name })" />
+        <p v-t="'about.features.note'" />
+      </div>
+      <div class="section">
+        <h2 v-t="'about.providers.header'" />
+        <ul>
+          <li><a href="https://myanimelist.net/" target="_blank">MyAnimeList</a></li>
+          <li><a href="https://www.crunchyroll.com/" target="_blank">Crunchyroll</a></li>
+          <li><a href="https://www.netflix.com/" target="_blank">Netflix</a></li>
+          <li><a href="https://www.google.com/" target="_blank">Google</a></li>
+          <li>🇬🇧 <a href="https://twist.moe/" target="_blank">Twist</a></li>
+          <li>🇬🇧 <a href="https://4anime.to/" target="_blank">4Anime</a></li>
+          <li>🇬🇧 <a href="https://9anime.ru/" target="_blank">9Anime</a></li>
+          <li>🇬🇧 <a href="https://gogoanime.movie/" target="_blank">GogoAnime.movie</a></li>
+          <li>🇬🇧 <a href="https://gogoanime.life/" target="_blank">GogoAnime.life</a></li>
+          <li>🇬🇧 <a href="https://aniwatch.me/" target="_blank">Aniwatch</a></li>
+          <li>🇬🇧 <a href="https://animeultima.to/" target="_blank">AnimeUltima</a></li>
+          <li>🇬🇧 <a href="https://animeheaven.ru/" target="_blank">AnimeHeaven</a></li>
+          <li>🇬🇧 <a href="https://masteranime.es/" target="_blank">MasterAnime</a></li>
+          <li>🇬🇧 <a href="https://myanime.co/" target="_blank">MyAnimeCo</a></li>
+          <li>🇬🇧 <a href="https://duckduckgo.com/" target="_blank">I'm Feeling Lucky</a></li>
+          <li>🇪🇸 <a href="https://duckduckgo.com/" target="_blank">Voy a tener suerte</a></li>
+          <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>
+          <li>🇪🇸 <a href="https://www.animeid.tv/" target="_blank">AnimeID</a></li>
+          <li>🇪🇸 <a href="https://animefenix.com/" target="_blank">AnimeFenix</a></li>
+          <li>🇪🇸 <a href="http://jkanime.net/" target="_blank">jkanime</a></li>
+          <li>🇪🇸 <a href="https://monoschinos.com/" target="_blank">MonosChinos</a></li>
+          <li>🇪🇸 <a href="https://animemovil2.com/" target="_blank">AnimeMovil</a></li>
+        </ul>
+        <p v-html="p('about.providers.note')" />
+      </div>
+      <div class="section">
+        <h2 v-t="'about.contact.header'" />
+        <p>
+          <i18n path="about.contact.issue" tag="i">
+            <template v-slot:issue>
+              <a href="http://github.com/Carleslc/MyAnime/issues" target="_blank">{{ $t('here') }}</a>
+            </template>
+          </i18n>
+        </p>
+        <p v-t="'about.contact.note'" class="q-mb-none" />
+      </div>
+      <div class="section">
+        <i><h2 v-t="'about.disclaimer.header'" /></i>
+        <div v-html="p('about.disclaimer.content')" />
+      </div>
     </q-card-section>
     <q-separator />
     <q-card-actions align="center" style="max-height: 80vh;" class="scroll q-pa-none">
@@ -99,5 +86,57 @@
 </template>
 
 <script>
-export default {};
+import { mapState } from 'vuex';
+import { nl2 } from '@/utils/strings';
+
+export default {
+  computed: {
+    ...mapState('store', ['api']),
+    small() {
+      return this.$q.screen.xs;
+    },
+  },
+  methods: {
+    p(key, args) {
+      return nl2(this.$t(key, args), 'p');
+    },
+    li(key, args) {
+      return nl2(this.$t(key, args), 'li');
+    },
+  },
+};
 </script>
+
+<style lang="scss">
+.about {
+  a {
+    color: $accent;
+    text-decoration: none;
+
+    &:hover,
+    &:active {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    margin-top: 0;
+
+    a {
+      color: $secondary;
+
+      &:hover,
+      &:active {
+        color: $accent;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .section {
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+</style>
