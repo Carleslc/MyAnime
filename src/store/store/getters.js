@@ -16,13 +16,16 @@ export default {
   hasUsername({ username }) {
     return !isBlank(username);
   },
-  providerByAnimeTitle({ provider, providersByAnimeTitle }) {
-    return (title) => providersByAnimeTitle[title] || provider;
+  providerByAnimeTitle({ providersByAnimeTitle }, getters) {
+    return (title) => providersByAnimeTitle[title] || getters.provider;
   },
   providers({ language }) {
     return Object.freeze(
       providers.filter((provider) => !provider.value.languages || provider.value.languages.includes(language))
     );
+  },
+  provider({ providersByLanguage, language }) {
+    return providersByLanguage[language];
   },
   titleByAnimeId({ api, titlesByAnimeId }) {
     return (id) => titlesByAnimeId[api.name][id];

@@ -13,7 +13,14 @@
           <div class="col-auto text-h4">My Anime</div>
         </div>
         <div v-else class="col row justify-end items-center no-wrap" @mousedown.prevent>
-          <provider-select ref="providerSelect" v-model="provider" dark icon class="col-auto q-mx-auto gt-xsm" />
+          <provider-select
+            ref="providerSelect"
+            :value="provider"
+            dark
+            icon
+            class="col-auto q-mx-auto gt-xsm"
+            @input="setProvider"
+          />
           <div class="col-auto q-gutter-x-lg q-mr-auto row justify-between gt-md">
             <status-select
               v-model="airingStatusFilter"
@@ -76,7 +83,7 @@
             </q-item-section>
             <q-item-section class="q-pt-sm">
               <q-item-label v-t="'selectProvider'" header class="q-px-sm" />
-              <provider-select v-model="provider" dark icon class="q-pr-xs" />
+              <provider-select :value="provider" dark icon class="q-pr-xs" @input="setProvider" />
             </q-item-section>
             <q-item-section class="q-pt-lg">
               <q-item-label v-t="'animeStatus'" header class="q-px-sm" />
@@ -165,7 +172,7 @@ export default {
   },
   computed: {
     ...mapState('store', ['api', 'userFetched']),
-    ...mapGetters('store', ['isLoading', 'isFetched', 'hasUsername']),
+    ...mapGetters('store', ['provider', 'isLoading', 'isFetched', 'hasUsername']),
     hiddenIfSettings() {
       return this.settings ? 'display: none' : undefined;
     },
@@ -185,7 +192,7 @@ export default {
     this.info = !this.isRecurringUser;
   },
   methods: {
-    ...mapMutations('store', ['loading', 'updateFetched']),
+    ...mapMutations('store', ['setProvider', 'updateFetched']),
     ...mapActions('store', ['fetchAnimes']),
     overlappingFooter(offset) {
       const footerHeight = '41px';

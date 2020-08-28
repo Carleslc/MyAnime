@@ -57,9 +57,9 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('store', ['setProvider', 'setAlternativeTitle']),
+    ...mapMutations('store', ['setProviderByTitle', 'setAlternativeTitle']),
     updateProvider(provider) {
-      this.setProvider({
+      this.setProviderByTitle({
         title: this.title,
         provider,
       });

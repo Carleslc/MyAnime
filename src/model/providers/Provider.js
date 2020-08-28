@@ -25,9 +25,9 @@ export default class Provider {
     let encoded = encodeURIComponent(
       s
         .toLowerCase()
-        .replace(/[^- a-z0-9]+/, '')
+        .replace(/[^- a-z0-9]+/g, '')
         .replace(/\s+/g, sep)
-        .replace(new RegExp(`(${sep}){2,}`), sep)
+        .replace(new RegExp(`(${sep}){2,}`, 'g'), sep)
     );
     if (encoded[encoded.length - 1] === sep) {
       encoded = encoded.substring(0, encoded.length - 1);

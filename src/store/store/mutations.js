@@ -66,8 +66,11 @@ export default {
       anime.status = 'watching';
     }
   },
-  setProvider(state, { title, provider }) {
-    if (provider === state.provider) {
+  setProvider(state, provider) {
+    state.providersByLanguage[state.language] = provider;
+  },
+  setProviderByTitle(state, { title, provider }) {
+    if (provider === state.providersByLanguage[state.language]) {
       Vue.delete(state.providersByAnimeTitle, title);
     } else {
       Vue.set(state.providersByAnimeTitle, title, provider);

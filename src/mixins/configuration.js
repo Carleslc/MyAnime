@@ -132,7 +132,10 @@ export const defaults = {
   language: i18n.locale,
   username: '',
   status: 'watching',
-  provider: providers[0],
+  providersByLanguage: {
+    es: providers[0],
+    en: providers[0],
+  },
   providersByAnimeTitle: {},
   genreFilter: [],
   airingStatusFilter: defaultConfig.airingStatuses.map((status) => status.value),
@@ -157,19 +160,15 @@ export default {
     if (!this.isRecurrentUser) {
       Object.keys(defaults).forEach((key) => {
         if (this.$q.localStorage.has(key)) {
-          let value = this.$q.localStorage.getItem(key);
+          const value = this.$q.localStorage.getItem(key);
 
           const getProvider = (label) => providers.find((provider) => provider.label === label) || providers[0];
 
           // convert provider labels to provider objects
-          if (key === 'provider') {
-            value = getProvider(value);
-          } else if (key === 'providersByAnimeTitle') {
-            const providersByAnimeTitle = {};
-            Object.entries(value).forEach(([title, providerLabel]) => {
-              providersByAnimeTitle[title] = getProvider(providerLabel);
+          if (['providersByLanguage', 'providersByAnimeTitle'].includes(key)) {
+            Object.entries(value).forEach(([providerKey, providerLabel]) => {
+              value[providerKey] = getProvider(providerLabel);
             });
-            value = providersByAnimeTitle;
           }
 
           if (value !== undefined && value !== null) {
@@ -180,25 +179,26 @@ export default {
     }
 
     // add watchers to save configuration
-    Object.keys(defaults)
-      .filter((key) => key !== 'provider' && key !== 'providersByAnimeTitle') // avoid saving entire objects
-      .forEach((key) => this.$watch(key, (value) => this.$q.localStorage.set(key, value), { deep: true }));
+    Object.keys(defaults).forEach((key) => {
+      if (['providersByLanguage', 'providersByAnimeTitle'].includes(key)) {
+        // save provider label only
+        this.$watch(
+          key,
+          (value) => {
+            const providerLabels = {};
+            Object.entries(value).forEach(([providerKey, provider]) => {
+              providerLabels[providerKey] = provider.label;
+            });
+            this.$q.localStorage.set(key, providerLabels);
+          },
+          { deep: true }
+        );
+      } else {
+        this.$watch(key, (value) => this.$q.localStorage.set(key, value), { deep: true });
+      }
+    });
   },
   watch: {
-    // save provider label only
-    provider(provider) {
-      this.$q.localStorage.set('provider', provider.label);
-    },
-    providersByAnimeTitle: {
-      handler(providersByAnimeTitle) {
-        const saveProviders = {};
-        Object.entries(providersByAnimeTitle).forEach(([title, provider]) => {
-          saveProviders[title] = provider.label;
-        });
-        this.$q.localStorage.set('providersByAnimeTitle', saveProviders);
-      },
-      deep: true,
-    },
     language(locale) {
       if (i18n.locale !== locale) {
         i18n.locale = locale;
