@@ -181,10 +181,20 @@ export default {
     },
     nextEpisodeCalendarAiringDate() {
       if (this.calendarEntry) {
-        const calendarDate = this.calendarEntry[this.anime.nextEpisode];
+        let calendarDate = this.calendarEntry[this.anime.nextEpisode];
+        const offset = { hours: this.provider.offset };
+        if (
+          !calendarDate &&
+          this.nextCalendarAiringEpisode &&
+          this.anime.nextEpisode > this.nextCalendarAiringEpisode
+        ) {
+          // next episode is after the next in calendar (calendar may include past dates, e.g. in the same day some hours ago)
+          calendarDate = this.calendarEntry[this.nextCalendarAiringEpisode];
+          offset.weeks = this.anime.nextEpisode - this.nextCalendarAiringEpisode; // better estimation than broadcast
+        }
         if (calendarDate) {
           return {
-            date: DateTime.fromISO(calendarDate).toLocal().plus({ hours: this.provider.offset }),
+            date: DateTime.fromISO(calendarDate).toLocal().plus(offset),
             precision: 'day',
           };
         }
