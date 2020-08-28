@@ -47,6 +47,7 @@
           <li>🇬🇧 <a href="https://gogoanime.movie/" target="_blank">GogoAnime.movie</a></li>
           <li>🇬🇧 <a href="https://gogoanime.life/" target="_blank">GogoAnime.life</a></li>
           <li>🇬🇧 <a href="https://aniwatch.me/" target="_blank">Aniwatch</a></li>
+          <li>🇬🇧 <a href="https://animeflix.io/" target="_blank">Animeflix</a></li>
           <li>🇬🇧 <a href="https://animeultima.to/" target="_blank">AnimeUltima</a></li>
           <li>🇬🇧 <a href="https://animeheaven.ru/" target="_blank">AnimeHeaven</a></li>
           <li>🇬🇧 <a href="https://masteranime.es/" target="_blank">MasterAnime</a></li>

@@ -46,6 +46,7 @@ Your preferences are saved in the browser, so you only need to change them when 
 - 🇬🇧 [GogoAnime.movie](https://gogoanime.movie/)
 - 🇬🇧 [GogoAnime.life](https://gogoanime.life/)
 - 🇬🇧 [Aniwatch](https://aniwatch.me/)
+- 🇬🇧 [Animeflix](https://animeflix.io/)
 - 🇬🇧 [AnimeUltima](https://animeultima.to/)
 - 🇬🇧 [AnimeHeaven](https://animeheaven.ru/)
 - 🇬🇧 [MasterAnime](https://masteranime.es/)
