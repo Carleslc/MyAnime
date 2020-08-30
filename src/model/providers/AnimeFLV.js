@@ -1,5 +1,10 @@
 import Provider from './Provider.js';
 
+// Some urls do not have standard title encoding
+const exceptionsMapping = {
+  'One Piece': 'one-piece-tv',
+};
+
 class AnimeFLV extends Provider {
   constructor() {
     super('https://animeflv.net/', 3, ['es']);
@@ -10,8 +15,8 @@ class AnimeFLV extends Provider {
     return 'statics/icons/animeflv.ico';
   }
 
-  episodeUrl({ title, episode }) {
-    return `${this.url}ver/${Provider.encode(title)}-${episode}`;
+  episodeUrl({ anime, title, episode }) {
+    return `${this.url}ver/${exceptionsMapping[anime.title] || Provider.encode(title)}-${episode}`;
   }
 }
 
