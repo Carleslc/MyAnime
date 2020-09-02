@@ -133,7 +133,7 @@ function refreshTask(cache) {
   }
   setImmediate(refresh);
   const now = DateTime.utc();
-  const scheduleLoop = now.startOf('day').plus({ days: 1, minutes: 5 }); // some minutes of delay to wait for an update at notify.moe/calendar
+  const scheduleLoop = now.startOf('day').plus({ days: 1, hours: 1, minutes: 1 }); // some delay to wait for an update at notify.moe/calendar
   const scheduleLoopMillis = scheduleLoop.diff(now).toObject().milliseconds;
   console.log(
     `Refresh loop will start in ${(scheduleLoopMillis / 1000 / 3600).toFixed(2)} hours at ${formatDateTime(
