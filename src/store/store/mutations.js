@@ -60,10 +60,12 @@ export default {
       // Remove from old list
       const animeList = state.animes[anime.status];
       animeList.splice(animeList.indexOf(anime), 1);
-      // Add to watching list
-      state.animes.watching.unshift(anime);
       // Update status
       anime.status = 'watching';
+      // Add to watching list (if not fetched it will be added later)
+      if (state.api.isFetched(state.username, anime.status)) {
+        state.animes.watching.unshift(anime);
+      }
     }
   },
   setProvider(state, provider) {

@@ -290,23 +290,25 @@ export default {
       const completed = this.anime.isLastEpisode;
       const status = this.anime.status;
 
+      const t = this.$t.bind(this.$root); // https://github.com/kazupon/vue-i18n/issues/184
+
       this.updateEpisode(this.anime)
         .then(({ ok }) => {
           if (ok) {
             if (completed) {
               this.$q.notify({
-                message: this.$t('completed', { title: this.title }),
+                message: t('completed', { title: this.title }),
                 color: 'positive',
               });
             } else {
               this.$q.notify({
-                message: this.$t('updated', { title: this.title, episode: this.anime.lastWatchedEpisode }),
+                message: t('updated', { title: this.title, episode: this.anime.lastWatchedEpisode }),
                 color: 'primary',
               });
             }
             if (status !== 'watching') {
               this.$q.notify({
-                message: this.$t('statusChanged', { title: this.title, status: this.$t('status.watching') }),
+                message: t('statusChanged', { title: this.title, status: t('status.watching') }),
                 type: 'info',
                 html: true,
               });
