@@ -57,7 +57,7 @@ Your preferences are saved in the browser, so you only need to change them when 
 - 🇪🇸 [AnimeID](https://www.animeid.tv/)
 - 🇪🇸 [AnimeFenix](https://animefenix.com/)
 - 🇪🇸 [jkanime](http://jkanime.net/)
-- 🇪🇸 [MonosChinos](https://monoschinos.com/)
+- 🇪🇸 [MonosChinos](https://monoschinos2.com/)
 - 🇪🇸 [AnimeMovil2](https://animemovil2.com/)
 
 Some options are based on search engine (_[DuckDuckGo](https://duckduckgo.com/) I'm Feeling Ducky_), trying to get a proper streamer, but it doesn't mean it always work. Sometimes it redirects to another anime, a non-related page, or it is in another language.

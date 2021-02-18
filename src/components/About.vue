@@ -58,7 +58,7 @@
           <li>🇪🇸 <a href="https://www.animeid.tv/" target="_blank">AnimeID</a></li>
           <li>🇪🇸 <a href="https://animefenix.com/" target="_blank">AnimeFenix</a></li>
           <li>🇪🇸 <a href="http://jkanime.net/" target="_blank">jkanime</a></li>
-          <li>🇪🇸 <a href="https://monoschinos.com/" target="_blank">MonosChinos</a></li>
+          <li>🇪🇸 <a href="https://monoschinos2.com/" target="_blank">MonosChinos</a></li>
           <li>🇪🇸 <a href="https://animemovil2.com/" target="_blank">AnimeMovil</a></li>
         </ul>
         <p v-html="p('about.providers.note')" />

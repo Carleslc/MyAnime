@@ -2,7 +2,7 @@ import Provider from './Provider.js';
 
 class MonosChinos extends Provider {
   constructor() {
-    super('https://monoschinos.com/', 2, ['es']);
+    super('https://monoschinos2.com/', 2, ['es']);
   }
 
   get icon() {
