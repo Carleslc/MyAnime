@@ -305,13 +305,13 @@ export default {
                 message: t('updated', { title: this.title, episode: this.anime.lastWatchedEpisode }),
                 color: 'primary',
               });
-            }
-            if (status !== 'watching') {
-              this.$q.notify({
-                message: t('statusChanged', { title: this.title, status: t('status.watching') }),
-                type: 'info',
-                html: true,
-              });
+              if (status !== 'watching') {
+                this.$q.notify({
+                  message: t('statusChanged', { title: this.title, status: t('status.watching') }),
+                  type: 'info',
+                  html: true,
+                });
+              }
             }
           }
         })
