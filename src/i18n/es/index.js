@@ -107,7 +107,7 @@ export default {
   about: {
     description: 'Disfruta de tus animes favoritos con tu proveedor habitual, sincronizado con {api}.',
     why: {
-      header: '¿Porqué usarme?',
+      header: '¿Por qué usarme?',
       content: `
         Se trata de un acceso directo a los animes de {api} que estás siguiendo con tus páginas web favoritas.
         Evita buscar los episodios por internet o los proveedores de anime, simplemente siéntate y disfruta de tu siguiente episodio, esperándote a solo un click.

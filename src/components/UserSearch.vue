@@ -30,7 +30,7 @@
 
 <script>
 import { isBlank, trim } from '@/utils/strings';
-import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
   data() {
@@ -59,7 +59,6 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('store', ['loaded']),
     ...mapActions('store', ['searchUser']),
     searchUserInput() {
       this.searchUser(trim(this.input));

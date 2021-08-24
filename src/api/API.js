@@ -102,6 +102,8 @@ export class API {
   updateAuthorization() {
     if (this.accessToken) {
       this.axios.defaults.headers.common.Authorization = `Bearer ${this.accessToken}`;
+    } else {
+      delete this.axios.defaults.headers.common.Authorization;
     }
     if (this.error instanceof AuthenticationNeededException) {
       this.error = null;
@@ -146,6 +148,15 @@ export class API {
     this.refreshing.subscribe(callback); // avoid concurrent duplicated refresh requests
   }
 
+  logout() {
+    this.setAuthInfo({
+      accessToken: undefined,
+      refreshToken: undefined,
+      expiration: undefined,
+    });
+    LocalStorage.remove(this.authKey);
+  }
+
   authenticated() {
     return new Promise((resolve, reject) => {
       if (!this.accessToken || !this.expiration) {
@@ -154,8 +165,7 @@ export class API {
         const now = DateTime.utc();
         const expiresIn = this.expiration.diff(now, 'days').toObject().days;
         if (expiresIn <= 0) {
-          delete this.axios.defaults.headers.common.Authorization;
-          LocalStorage.remove(this.authKey);
+          this.logout();
           reject(this.needsAuth('Session expired'));
         } else if (this.refreshToken && this.refreshAccessToken && expiresIn < this.tokenLifespanDays - 7) {
           // Refresh weekly

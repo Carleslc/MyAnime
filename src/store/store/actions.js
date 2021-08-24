@@ -17,6 +17,7 @@ function withLoading(commit, promise) {
 
 export default {
   async login({ commit, state }, { username, password }) {
+    commit('setUsername', username);
     await withLoading(commit, state.api.auth(username, password));
   },
   fetchAnimes({ commit, state: { api, username, status } }, next = false) {
@@ -47,17 +48,21 @@ export default {
       })
     );
   },
-  searchUser({ commit, dispatch, state: { api } }, username) {
-    api.commit = commit;
+  searchUser({ commit, dispatch, state }, username) {
+    state.api.commit = commit;
     return withLoading(
       commit,
       new Promise((resolve) => {
         commit('setUserFetched', false);
-        commit('setUsername', username);
         commit('resetAnimes');
+        if (username !== state.username) {
+          commit('logout');
+          commit('setUsername', username);
+          commit('setPicture', state.api.image);
+        }
         dispatch('updatePicture');
         dispatch('fetchAnimes').finally(() => {
-          if (!api.hasError) {
+          if (!state.api.hasError) {
             commit('setUserFetched', true);
           }
           resolve();

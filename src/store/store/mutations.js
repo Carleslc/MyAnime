@@ -110,4 +110,7 @@ export default {
     api.updateAuthorization();
     api.saveAuthInfo();
   },
+  logout({ api }) {
+    api.logout();
+  },
 };
