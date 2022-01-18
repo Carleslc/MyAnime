@@ -103,6 +103,8 @@ export default {
   username: 'Username',
   password: 'Password',
   cancel: 'Cancel',
+  back: 'Go back',
+  notFound: 'Sorry, nothing here...',
   error: 'Oops... an unexpected error has occurred 😣',
   about: {
     description: 'Watch your favourite animes with your usual provider, synchronized with {api}.',

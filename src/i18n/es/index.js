@@ -103,6 +103,8 @@ export default {
   username: 'Nombre de usuario',
   password: 'Contraseña',
   cancel: 'Cancelar',
+  back: 'Volver',
+  notFound: 'Lo sentimos, no hay nada aquí...',
   error: 'Vaya... ha ocurrido un error inesperado 😣',
   about: {
     description: 'Disfruta de tus animes favoritos con tu proveedor habitual, sincronizado con {api}.',
