@@ -4,7 +4,7 @@
     href="https://notify.moe/calendar"
     target="_blank"
     :label="icon ? '' : $t('animeCalendar')"
-    :caption="caption"
+    :caption="$t('animeCalendarDescription')"
   />
 </template>
 
@@ -15,11 +15,6 @@ export default {
       type: Boolean,
       default: false,
     },
-  },
-  data() {
-    return {
-      caption: this.$t('animeCalendarDescription'),
-    };
   },
 };
 </script>
