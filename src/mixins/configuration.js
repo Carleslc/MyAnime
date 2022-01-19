@@ -12,7 +12,7 @@ import Animeflix from '@/model/providers/Animeflix';
 import AniMixPlay from '@/model/providers/AniMixPlay';
 import Twist from '@/model/providers/Twist';
 import MasterAnime from '@/model/providers/MasterAnime';
-import { NineAnimeLucky } from '@/model/providers/NineAnime';
+import { NineAnimeSync } from '@/model/providers/NineAnime';
 import { GogoanimeNl, GogoanimeCm } from '@/model/providers/Gogoanime';
 import { ZoroWithAPI } from '@/model/providers/Zoro';
 import { FeelingDuckyES, FeelingDuckyEN, FeelingLuckyES, FeelingLuckyEN } from '@/model/providers/FeelingLucky';
@@ -41,7 +41,7 @@ export const providers = Object.freeze([
   { label: 'Twist', value: Twist },
   { label: 'Gogoanime', value: GogoanimeCm },
   { label: 'Gogoanime.nl', value: GogoanimeNl },
-  { label: '9Anime', value: NineAnimeLucky },
+  { label: '9Anime', value: NineAnimeSync },
   { label: 'Zoro', value: ZoroWithAPI },
 ]);
 

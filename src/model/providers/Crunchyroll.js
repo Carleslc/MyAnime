@@ -1,13 +1,12 @@
+import { openURL } from 'quasar';
+import MALSync from '@/api/MALSync';
 import Provider from './Provider.js';
-// import { withSearch } from './FeelingLucky';
 
 class Crunchyroll extends Provider {
-  constructor() {
+  constructor(search) {
     super('https://www.crunchyroll.com/', 1);
 
-    /* this.search = withSearch((anime, episode) => {
-      return encodeURIComponent(`site:crunchyroll.com/es intitle:"${anime.title}" inurl:"episode-${episode}"`);
-    }); */
+    this.delegate(search);
   }
 
   get icon() {
@@ -16,8 +15,16 @@ class Crunchyroll extends Provider {
 
   episodeUrl({ title, episode }) {
     return `${this.url}search?q=${encodeURI(`${title} ${episode}`)}&o=m&r=f`;
-    // return this.search.episodeUrl(anime, episode);
   }
 }
 
-export default new Crunchyroll();
+export default new Crunchyroll({
+  async open(args) {
+    const { provider, anime, title } = args;
+    const animeSite = await MALSync.getAnimeSite('Crunchyroll', anime.id, title);
+
+    openURL(animeSite && animeSite.url ? animeSite.url : provider.episodeUrl(args));
+
+    // TODO: Scrap animeSite.url for episode url
+  },
+});

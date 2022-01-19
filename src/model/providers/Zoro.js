@@ -1,6 +1,7 @@
 /* eslint-disable max-classes-per-file */
-import { openURL } from 'quasar';
+import MALSync from '@/api/MALSync';
 import { newAxios } from '@/api/API.js';
+import { openURL } from 'quasar';
 import { withSearchResolve } from './FeelingLucky';
 import Provider from './Provider.js';
 
@@ -13,6 +14,8 @@ class Zoro extends Provider {
 }
 
 const ENCODED_TITLE_HREF_REGEX = /\/?([- a-z0-9]*-([0-9]+))\?ref=search/;
+
+// https://zoro.to/watch/one-piece-100?ep=86062
 
 class ZoroAPI extends Zoro {
   constructor() {
@@ -30,9 +33,17 @@ class ZoroAPI extends Zoro {
   }
 
   async open({ anime, title, episode }) {
-    const search = await this.axios.get(`search?keyword=${anime.alternativeTitles.en || title}`);
+    const animeSite = await MALSync.getAnimeSite('Zoro', anime.id, title);
 
-    const animeEntry = search.data && ZoroAPI.findAnimeEntry(search.data, anime.title);
+    let animeEntry;
+
+    if (animeSite) {
+      animeEntry = animeSite;
+      animeEntry.url = `${Provider.encode(animeEntry.title)}-${animeEntry.id}`;
+    } else {
+      const search = await this.axios.get(`search?keyword=${anime.alternativeTitles.en || title}`);
+      animeEntry = search.data && ZoroAPI.findAnimeEntry(search.data, anime.title);
+    }
 
     let episodeResolveUrl = animeEntry && animeEntry.url && (await this.parseEpisodeUrl(animeEntry, episode));
 
@@ -56,7 +67,7 @@ class ZoroAPI extends Zoro {
       return null;
     }
 
-    let matchEntry = null;
+    let matchEntry;
 
     do {
       const entryTitle = value.getAttribute('data-jname');
@@ -85,7 +96,7 @@ class ZoroAPI extends Zoro {
 
     const episodeList = await this.api.get(`episode/list/${animeEntry.id}`);
 
-    if (!episodeList.data || !episodeList.data.status) {
+    if (!episodeList.data || !episodeList.data.status || episode > episodeList.data.totalItems) {
       return animeUrl;
     }
 
@@ -112,7 +123,6 @@ export const ZoroSearch = new Zoro({
   },
 });
 
-// https://zoro.to/watch/one-piece-100?ep=86062
 export const ZoroLucky = new Zoro(
   withSearchResolve(({ provider, anime, title }) => {
     return encodeURIComponent(`site:${provider.url}watch ${Provider.encode(anime.alternativeTitles.en || title)}`);

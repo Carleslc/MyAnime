@@ -1,5 +1,7 @@
-import Provider from './Provider.js';
+import MALSync from '@/api/MALSync';
+import { openURL } from 'quasar';
 import { withSearchResolve } from './FeelingLucky';
+import Provider from './Provider.js';
 
 class NineAnime extends Provider {
   constructor(search) {
@@ -14,24 +16,30 @@ class NineAnime extends Provider {
   }
 }
 
+function toEpisodeUrl(animeUrl, { anime, episode }) {
+  const ep = anime.type === 'movie' ? 'full' : episode;
+  return `${animeUrl}/ep-${ep}`;
+}
+
 // https://9anime.to/watch/one-piece.ov8/ep-1006
 // https://9anime.to/watch/one-piece-film-gold.71vy/ep-full
-export const NineAnimeLucky = new NineAnime(
-  withSearchResolve(
-    function search({ provider, anime, title }) {
-      return encodeURIComponent(`site:${provider.url}watch/${Provider.encode(anime.alternativeTitles.en || title)}`);
-    },
-    function episodeUrl(animeUrl, { provider, anime, episode }) {
-      if (!animeUrl.startsWith(provider.url)) {
-        return animeUrl;
-      }
-      const ep = anime.type === 'movie' ? 'full' : episode;
-      return `${animeUrl}/ep-${ep}`;
-    }
-  )
-);
+const NineAnimeLucky = withSearchResolve(({ provider, anime, title }) => {
+  return encodeURIComponent(`site:${provider.url}watch/${Provider.encode(anime.alternativeTitles.en || title)}`);
+}, toEpisodeUrl);
 
-// NOT WORKING (403): vrf verification token required
+export const NineAnimeSync = new NineAnime({
+  async open(args) {
+    const { anime, title } = args;
+    const animeSite = await MALSync.getAnimeSite('9anime', anime.id, title);
+    if (animeSite) {
+      openURL(toEpisodeUrl(animeSite.url, args));
+    } else {
+      await NineAnimeLucky.open(args);
+    }
+  },
+});
+
+// SEARCH NOT WORKING (403): vrf verification token required
 /*
   export const NineAnimeSearch = new NineAnime({
     episodeUrl({ provider, anime, title }) {

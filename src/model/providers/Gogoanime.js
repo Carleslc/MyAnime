@@ -1,3 +1,5 @@
+import MALSync from '@/api/MALSync';
+import { openURL } from 'quasar';
 import { withSearchResolve } from './FeelingLucky';
 import Provider from './Provider.js';
 
@@ -21,17 +23,25 @@ export const GogoanimeCm = new Gogoanime('https://gogoanime.cm/', {
   },
 });
 
+function nlEpisodeUrl(animeUrl, { anime, episode }) {
+  const ep = anime.type === 'movie' ? 'full' : episode;
+  return `${animeUrl}/ep-${ep}`;
+}
+
 // https://gogoanime.nl/anime/one-piece-ov8/ep-931
 // https://gogoanime.nl/anime/one-piece-film-gold-71vy/ep-full
-export const GogoanimeNl = new Gogoanime(
-  'https://gogoanime.nl/',
-  withSearchResolve(
-    ({ provider, anime, title }) => {
-      return encodeURIComponent(`site:${provider.url}anime/${anime.alternativeTitles.en || title}`);
-    },
-    (episodeUrl, { anime, episode }) => {
-      const ep = anime.type === 'movie' ? 'full' : episode;
-      return `${episodeUrl}/ep-${ep}`;
+const GogoanimeNlLucky = withSearchResolve(({ provider, anime, title }) => {
+  return encodeURIComponent(`site:${provider.url}anime/${anime.alternativeTitles.en || title}`);
+}, nlEpisodeUrl);
+
+export const GogoanimeNl = new Gogoanime('https://gogoanime.nl/', {
+  async open(args) {
+    const { provider, anime, title } = args;
+    const animeSite = await MALSync.getAnimeSite('9anime', anime.id, title);
+    if (animeSite) {
+      openURL(nlEpisodeUrl(`${provider.url}anime/${Provider.encode(animeSite.title)}-${animeSite.id}`, args)); // animeSite.id is the same in gogoanime.nl and 9anime
+    } else {
+      await GogoanimeNlLucky.open(args);
     }
-  )
-);
+  },
+});
