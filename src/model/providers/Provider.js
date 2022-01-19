@@ -16,10 +16,27 @@ export default class Provider {
   }
 
   /*
-    open({ anime, title, episode }) {
+    async open({ anime, title, episode }) {
       // Optional. If defined, this will override episodeUrl
     }
   */
+
+  delegate(auxProvider, methods = ['episodeUrl', 'open']) {
+    if (!auxProvider) {
+      return;
+    }
+
+    const withProvider = (args) => {
+      args.provider = this;
+      return args;
+    };
+
+    methods.forEach((method) => {
+      if (typeof auxProvider[method] === 'function') {
+        this[method] = (args) => auxProvider[method](withProvider(args));
+      }
+    });
+  }
 
   static encode(s, sep = '-') {
     let encoded = encodeURIComponent(

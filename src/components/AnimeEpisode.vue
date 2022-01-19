@@ -100,6 +100,7 @@
 <script>
 import { DateTime } from 'luxon';
 import { mapGetters, mapState, mapActions } from 'vuex';
+import { notifyError } from 'src/utils/errors';
 
 export default {
   props: {
@@ -261,7 +262,13 @@ export default {
     },
     open() {
       if (this.provider.open) {
-        return () => this.provider.open(this.params);
+        return async () => {
+          try {
+            await this.provider.open(this.params);
+          } catch (e) {
+            notifyError(e);
+          }
+        };
       }
       return null;
     },

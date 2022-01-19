@@ -22,7 +22,9 @@ function wrapOptsCORS(opts, cors) {
   return opts;
 }
 
-export function newAxios({ baseUrl, headers, cors = false, ...opts }) {
+export function newAxios(args) {
+  const { baseUrl, headers, cors, ...opts } = args || {};
+
   const config = {
     baseURL: wrapCORS(baseUrl, cors),
     headers: {

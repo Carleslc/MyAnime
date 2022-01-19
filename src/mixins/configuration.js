@@ -9,14 +9,12 @@ import AnimeFenix from '@/model/providers/AnimeFenix';
 import AnimeMovil2 from '@/model/providers/AnimeMovil2';
 import AnimeHeaven from '@/model/providers/AnimeHeaven';
 import Animeflix from '@/model/providers/Animeflix';
-import AnimeUltima from '@/model/providers/AnimeUltima';
-import Aniwatch from '@/model/providers/Aniwatch';
+import AniMixPlay from '@/model/providers/AniMixPlay';
 import Twist from '@/model/providers/Twist';
-import FourAnime from '@/model/providers/FourAnime';
 import MasterAnime from '@/model/providers/MasterAnime';
-import MyAnimeCo from '@/model/providers/MyAnimeCo';
-import { NineAnimeLucky, NineAnimeSearch } from '@/model/providers/NineAnime';
-import { GogoanimeLife, GogoanimeMovie } from '@/model/providers/Gogoanime';
+import { NineAnimeLucky } from '@/model/providers/NineAnime';
+import { GogoanimeNl, GogoanimeCm } from '@/model/providers/Gogoanime';
+import { ZoroWithAPI } from '@/model/providers/Zoro';
 import { FeelingDuckyES, FeelingDuckyEN, FeelingLuckyES, FeelingLuckyEN } from '@/model/providers/FeelingLucky';
 
 import { i18n } from '@/boot/i18n';
@@ -36,18 +34,15 @@ export const providers = Object.freeze([
   { label: 'AnimeMovil', value: AnimeMovil2 },
   { label: "I'm feeling ducky", value: FeelingDuckyEN },
   { label: 'Google (EN)', value: FeelingLuckyEN },
-  { label: 'Twist', value: Twist },
-  { label: '4Anime', value: FourAnime },
-  { label: '9Anime (Lucky)', value: NineAnimeLucky },
-  { label: '9Anime (Search)', value: NineAnimeSearch },
-  { label: 'Gogoanime.movie', value: GogoanimeMovie },
-  { label: 'Gogoanime.life', value: GogoanimeLife },
-  { label: 'Aniwatch', value: Aniwatch },
-  { label: 'Animeflix', value: Animeflix },
-  { label: 'AnimeUltima', value: AnimeUltima },
+  { label: 'AniMixPlay', value: AniMixPlay },
   { label: 'AnimeHeaven', value: AnimeHeaven },
+  { label: 'Animeflix', value: Animeflix },
   { label: 'MasterAnime', value: MasterAnime },
-  { label: 'MyAnimeCo', value: MyAnimeCo },
+  { label: 'Twist', value: Twist },
+  { label: 'Gogoanime', value: GogoanimeCm },
+  { label: 'Gogoanime.nl', value: GogoanimeNl },
+  { label: '9Anime', value: NineAnimeLucky },
+  { label: 'Zoro', value: ZoroWithAPI },
 ]);
 
 function newConfig() {

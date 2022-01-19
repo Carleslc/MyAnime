@@ -1,33 +1,41 @@
 import Provider from './Provider.js';
-import { withSearch } from './FeelingLucky';
+import { withSearchResolve } from './FeelingLucky';
 
 class NineAnime extends Provider {
   constructor(search) {
-    super('https://9anime.ru/', 2, ['en']);
+    super('https://9anime.to/', 2, ['en']);
 
-    if (search.url) {
-      this.episodeUrl = (args) => search.episodeUrl(args);
-    } else {
-      this.episodeUrl = (args) => search.episodeUrl.call(this, args);
-    }
+    this.delegate(search);
   }
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return 'https://staticf.akacdn.ru/assets/favicons/favicon-32x32.png';
+    return 'https://s2.fastcache.ru/assets/9anime/favicons/favicon.png';
   }
 }
 
+// https://9anime.to/watch/one-piece.ov8/ep-1006
+// https://9anime.to/watch/one-piece-film-gold.71vy/ep-full
 export const NineAnimeLucky = new NineAnime(
-  withSearch(({ anime, title }) => {
-    // https://9anime.ru/watch/one-piece.ov8/m22p017
-    // https://9anime.ru/watch/one-piece-film-gold.71vy
-    return encodeURIComponent(`site:${this.url}/watch/${Provider.encode(anime.alternativeTitles.en || title)}`);
-  })
+  withSearchResolve(
+    function search({ provider, anime, title }) {
+      return encodeURIComponent(`site:${provider.url}watch/${Provider.encode(anime.alternativeTitles.en || title)}`);
+    },
+    function episodeUrl(animeUrl, { provider, anime, episode }) {
+      if (!animeUrl.startsWith(provider.url)) {
+        return animeUrl;
+      }
+      const ep = anime.type === 'movie' ? 'full' : episode;
+      return `${animeUrl}/ep-${ep}`;
+    }
+  )
 );
 
-export const NineAnimeSearch = new NineAnime({
-  episodeUrl({ anime, title }) {
-    return `${this.url}search?keyword=${encodeURIComponent(anime.alternativeTitles.en || title)}`;
-  },
-});
+// NOT WORKING (403): vrf verification token required
+/*
+  export const NineAnimeSearch = new NineAnime({
+    episodeUrl({ provider, anime, title }) {
+      return `${provider.url}search?keyword=${encodeURIComponent(anime.alternativeTitles.en || title)}`;
+    },
+  });
+*/

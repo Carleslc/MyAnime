@@ -1,29 +1,37 @@
+import { withSearchResolve } from './FeelingLucky';
 import Provider from './Provider.js';
 
 class Gogoanime extends Provider {
   constructor(url, search) {
     super(url, 2, ['en']);
 
-    this.episodeUrl = (args) => search.episodeUrl.call(this, args);
+    this.delegate(search);
   }
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    // Alternative: https://cdn.gogocdn.net/files/gogo/img/favicon.png
-    return 'https://staticf.akacdn.ru/assets/gogo/favicon.png';
+    // Alternative: https://s2.fastcache.ru/assets/gogoanime/favicon.png
+    return 'https://cdn.gogocdn.net/files/gogo/img/favicon.png';
   }
 }
 
-export const GogoanimeLife = new Gogoanime('https://gogoanime.life/', {
-  episodeUrl({ title }) {
-    // https://gogoanime.life/anime/one-piece-ov8/ep-931
-    // https://gogoanime.life/anime/one-piece-film-gold-71vy/ep-full
-    return `${this.url}search?keyword=${encodeURIComponent(title)}`;
+export const GogoanimeCm = new Gogoanime('https://gogoanime.cm/', {
+  episodeUrl({ provider, title, episode }) {
+    return `${provider.url}${Provider.encode(title)}-episode-${episode}`;
   },
 });
 
-export const GogoanimeMovie = new Gogoanime('https://gogoanime.movie/', {
-  episodeUrl({ title, episode }) {
-    return `${this.url}${Provider.encode(title)}-episode-${episode}`;
-  },
-});
+// https://gogoanime.nl/anime/one-piece-ov8/ep-931
+// https://gogoanime.nl/anime/one-piece-film-gold-71vy/ep-full
+export const GogoanimeNl = new Gogoanime(
+  'https://gogoanime.nl/',
+  withSearchResolve(
+    ({ provider, anime, title }) => {
+      return encodeURIComponent(`site:${provider.url}anime/${anime.alternativeTitles.en || title}`);
+    },
+    (episodeUrl, { anime, episode }) => {
+      const ep = anime.type === 'movie' ? 'full' : episode;
+      return `${episodeUrl}/ep-${ep}`;
+    }
+  )
+);

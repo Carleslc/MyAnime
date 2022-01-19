@@ -14,7 +14,8 @@ class AnimeHeaven extends Provider {
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return 'https://static.animecdn.xyz/static/favicon.ico';
+    // Alternative: https://static.anmedm.com/static/favicon.ico
+    return 'https://static.animecdn.xyz/static/css/animeheaven-logo.png';
   }
 
   episodeUrl({ anime, title, episode }) {
