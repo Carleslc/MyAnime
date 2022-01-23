@@ -1,12 +1,9 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 
 import store from './store';
 
-Vue.use(Vuex);
-
-export default function () {
-  const Store = new Vuex.Store({
+export default function newStore() {
+  const Store = createStore({
     modules: {
       store
     },

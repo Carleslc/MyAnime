@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { updateField } from 'vuex-map-fields';
 import { newState } from './state';
 
@@ -73,16 +72,16 @@ export default {
   },
   setProviderByTitle(state, { title, provider }) {
     if (provider === state.providersByLanguage[state.language]) {
-      Vue.delete(state.providersByAnimeTitle, title);
+      delete state.providersByAnimeTitle[title];
     } else {
-      Vue.set(state.providersByAnimeTitle, title, provider);
+      state.providersByAnimeTitle[title] = provider;
     }
   },
   setAlternativeTitle(state, { anime, title }) {
     if (title === anime.title) {
-      Vue.delete(state.titlesByAnimeId[state.api.name], anime.id);
+      delete state.titlesByAnimeId[state.api.name][anime.id];
     } else {
-      Vue.set(state.titlesByAnimeId[state.api.name], anime.id, title);
+      state.titlesByAnimeId[state.api.name][anime.id] = title;
     }
   },
   setCalendar(state, calendar) {

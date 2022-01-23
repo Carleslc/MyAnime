@@ -1,14 +1,11 @@
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
 import messages from 'src/i18n';
 import { LocalStorage, Quasar } from 'quasar';
+import { createI18n } from 'vue-i18n';
 
 const languages = {
   en: '🇬🇧',
   es: '🇪🇸',
 };
-
-Vue.use(VueI18n);
 
 function getLocale() {
   const language = LocalStorage.getItem('language');
@@ -18,14 +15,18 @@ function getLocale() {
   return Quasar.lang.getLocale().split('-')[0];
 }
 
-const i18n = new VueI18n({
+const i18n = createI18n({
   locale: getLocale(),
   fallbackLocale: 'en',
+  globalInjection: true,
+  legacy: true,
   messages,
 });
 
+i18n.t = i18n.global.t;
+
 export default ({ app }) => {
-  app.i18n = i18n;
+  app.use(i18n);
 };
 
 export { i18n };

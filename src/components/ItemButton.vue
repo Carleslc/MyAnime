@@ -26,17 +26,6 @@
   </q-item>
 </template>
 
-<style lang="scss">
-.icon-only {
-  border-radius: 3px;
-
-  .q-item__section {
-    padding: 0;
-    min-width: 0;
-  }
-}
-</style>
-
 <script>
 export default {
   props: {
@@ -72,3 +61,14 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.icon-only {
+  border-radius: 3px;
+
+  .q-item__section {
+    padding: 0;
+    min-width: 0;
+  }
+}
+</style>

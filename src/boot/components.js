@@ -1,4 +1,6 @@
-export default async ({ Vue }) => {
+import { defineAsyncComponent } from 'vue';
+
+export default async ({ app }) => {
   function kebabCase(s) {
     return s
       .replace(/([a-z])([A-Z])/g, '$1-$2')
@@ -10,6 +12,9 @@ export default async ({ Vue }) => {
 
   ComponentContext.keys().forEach((componentFilePath) => {
     const componentName = kebabCase(componentFilePath.split('/').pop().split('.')[0]);
-    Vue.component(componentName, () => ComponentContext(componentFilePath));
+    app.component(
+      componentName,
+      defineAsyncComponent(() => ComponentContext(componentFilePath))
+    );
   });
 };

@@ -2,7 +2,7 @@ module.exports = {
   root: true,
 
   parserOptions: {
-    parser: 'babel-eslint',
+    parser: '@babel/eslint-parser',
     sourceType: 'module',
   },
 
@@ -49,11 +49,13 @@ module.exports = {
 
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'vue/no-v-html': 'off', // Beware of XSS!
+    'vue/v-slot-style': 'off',
     'no-param-reassign': 'off',
     'global-require': 'off',
     'no-unused-vars': 'warn',
 
     'import/first': 'off',
+    'import/order': 'off',
     'import/named': 'error',
     'import/namespace': 'error',
     'import/default': 'error',

@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 export default {
   all: 'Todo',
   any: 'Cualquiera',
