@@ -81,11 +81,7 @@ export default {
       return option;
     },
     focus(focus = true) {
-      if (focus) {
-        this.$refs.statusSelect.$el.classList.add('q-field--focused');
-      } else {
-        this.$refs.statusSelect.$el.classList.remove('q-field--focused');
-      }
+      this.$refs.statusSelect.focused = focus;
     },
   },
 };

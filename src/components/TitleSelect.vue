@@ -27,18 +27,10 @@ export default {
       type: Array,
       required: true,
     },
-    standout: {
-      type: String,
-      default: undefined,
-    },
   },
   methods: {
     focus(focus = true) {
-      if (focus) {
-        this.$refs.titleSelect.$el.classList.add('q-field--focused');
-      } else {
-        this.$refs.titleSelect.$el.classList.remove('q-field--focused');
-      }
+      this.$refs.titleSelect.focused = focus;
     },
   },
 };

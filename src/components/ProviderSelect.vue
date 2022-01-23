@@ -99,11 +99,7 @@ export default {
       this.$refs.providerSelect.showPopup();
     },
     focus(focus = true) {
-      if (focus) {
-        this.$refs.providerSelect.$el.classList.add('q-field--focused');
-      } else {
-        this.$refs.providerSelect.$el.classList.remove('q-field--focused');
-      }
+      this.$refs.providerSelect.focused = focus;
     },
   },
 };

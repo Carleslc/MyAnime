@@ -69,11 +69,7 @@ export default {
       this.sortLanguageOptions();
     },
     focus(focus = true) {
-      if (focus) {
-        this.$refs.languageSelect.$el.classList.add('q-field--focused');
-      } else {
-        this.$refs.languageSelect.$el.classList.remove('q-field--focused');
-      }
+      this.$refs.languageSelect.focused = focus;
     },
   },
 };
