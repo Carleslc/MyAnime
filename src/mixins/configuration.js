@@ -15,6 +15,7 @@ import MasterAnime from '@/model/providers/MasterAnime';
 import { NineAnimeSync } from '@/model/providers/NineAnime';
 import { GogoanimeNl, GogoanimeCm } from '@/model/providers/Gogoanime';
 import { ZoroWithAPI } from '@/model/providers/Zoro';
+import { YouTubeES, YouTubeEN } from '@/model/providers/YouTube';
 import { FeelingDuckyES, FeelingDuckyEN, FeelingLuckyES, FeelingLuckyEN } from '@/model/providers/FeelingLucky';
 
 import { i18n } from '@/boot/i18n';
@@ -25,15 +26,16 @@ export const providers = Object.freeze([
   { label: 'Crunchyroll', value: Crunchyroll },
   { label: 'Netflix', value: Netflix },
   { label: 'Voy a tener suerte', value: FeelingDuckyES },
-  { label: 'Google (ES)', value: FeelingLuckyES },
+  { label: 'Google', value: FeelingLuckyES },
   { label: 'AnimeFLV', value: AnimeFLV },
   { label: 'AnimeFenix', value: AnimeFenix },
   { label: 'AnimeID', value: AnimeID },
   { label: 'jkanime', value: jkAnime },
   { label: 'MonosChinos', value: MonosChinos },
   { label: 'AnimeMovil', value: AnimeMovil2 },
+  { label: 'YouTube', value: YouTubeES },
   { label: "I'm feeling ducky", value: FeelingDuckyEN },
-  { label: 'Google (EN)', value: FeelingLuckyEN },
+  { label: 'Google', value: FeelingLuckyEN },
   { label: 'AniMixPlay', value: AniMixPlay },
   { label: 'AnimeHeaven', value: AnimeHeaven },
   { label: 'Animeflix', value: Animeflix },
@@ -43,6 +45,7 @@ export const providers = Object.freeze([
   { label: 'Gogoanime.nl', value: GogoanimeNl },
   { label: '9Anime', value: NineAnimeSync },
   { label: 'Zoro', value: ZoroWithAPI },
+  { label: 'YouTube', value: YouTubeEN },
 ]);
 
 function newConfig() {
