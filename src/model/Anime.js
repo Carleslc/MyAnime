@@ -66,6 +66,10 @@ export class Anime {
     return titles;
   }
 
+  get hasManyEpisodes() {
+    return this.type === 'tv' || this.totalEpisodes > 1;
+  }
+
   get nextEpisode() {
     return this.lastWatchedEpisode + 1;
   }

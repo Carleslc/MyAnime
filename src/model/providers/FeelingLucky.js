@@ -4,7 +4,7 @@ import { newAxios } from '@/api/API.js';
 import { notifyError } from '@/utils/errors.js';
 import Provider from './Provider.js';
 
-export default class FeelingLucky extends Provider {
+export class FeelingLucky extends Provider {
   constructor(url, prefix, search, languages) {
     super(url, 0, languages);
 
@@ -17,21 +17,21 @@ export default class FeelingLucky extends Provider {
   }
 }
 
-class FeelingLuckyResolve extends FeelingLucky {
-  constructor(url, prefix, search, resolve, languages) {
+export class FeelingLuckyResolve extends FeelingLucky {
+  constructor(url, prefix, search, languages) {
     super(url, prefix, search, languages);
 
-    this.resolve = resolve || ((redirect) => redirect);
-
-    this.axios = newAxios({
-      baseUrl: this.url,
-    });
+    this.client = newAxios();
   }
 
+  /* eslint-disable no-unused-vars */
+  /* eslint-disable no-empty-function */
+  /* eslint-disable class-methods-use-this */
+  async resolve(searchResponse, args) {} // Template
+
   async open(args) {
-    const searchResponse = await this.axios.get(this.prefix + this.search(args));
-    const episodeRedirectUrl = searchResponse.data && searchResponse.data.Redirect;
-    const episodeResolveUrl = episodeRedirectUrl && (await this.resolve(episodeRedirectUrl, args));
+    const searchResponse = await this.client.get(this.episodeUrl(args));
+    const episodeResolveUrl = await this.resolve(searchResponse, args);
 
     if (episodeResolveUrl) {
       openURL(episodeResolveUrl);
@@ -41,28 +41,40 @@ class FeelingLuckyResolve extends FeelingLucky {
   }
 }
 
+class FeelingDuckyResolve extends FeelingLuckyResolve {
+  constructor(search, toUrl, languages) {
+    super('https://api.duckduckgo.com/', '?format=json&no_redirect=1&t=MyAnime&q=!ducky+', search, languages);
+
+    this.toUrl = toUrl || ((episodeRedirectUrl) => episodeRedirectUrl);
+  }
+
+  async resolve(searchResponse, args) {
+    const episodeRedirectUrl = searchResponse.data && searchResponse.data.Redirect;
+    const episodeResolveUrl = episodeRedirectUrl && (await this.toUrl(episodeRedirectUrl, args));
+    return episodeResolveUrl;
+  }
+}
+
 function luckySpanish({ anime, title, episode }) {
   const suffix = 'online español -english';
-  return encodeURIComponent(`${title}${anime.type !== 'movie' ? ` inurl:${episode}` : ''} ${suffix}`);
+  return encodeURIComponent(
+    `"${title}"${anime.hasManyEpisodes || episode > 1 ? ` "episodio ${episode}" inurl:${episode}` : ''} ${suffix}`
+  );
 }
 
 function luckyEnglish({ anime, title, episode }) {
   const suffix = 'online english anime -español';
-  return encodeURIComponent(`${title}${anime.type !== 'movie' ? ` episode inurl:${episode}` : ''} ${suffix}`);
+  return encodeURIComponent(
+    `"${title}"${anime.hasManyEpisodes || episode > 1 ? ` "episode ${episode}" inurl:${episode}` : ''} ${suffix}`
+  );
 }
 
 export function withSearch(search, languages) {
   return new FeelingLucky('https://duckduckgo.com/', '?q=!ducky+', search, languages);
 }
 
-export function withSearchResolve(search, resolve, languages) {
-  return new FeelingLuckyResolve(
-    'https://api.duckduckgo.com/',
-    '?format=json&no_redirect=1&t=MyAnime&q=!ducky+',
-    search,
-    resolve,
-    languages
-  );
+export function withSearchResolve(search, toUrl, languages) {
+  return new FeelingDuckyResolve(search, toUrl, languages);
 }
 
 export const FeelingDuckyES = withSearch(luckySpanish, ['es']);

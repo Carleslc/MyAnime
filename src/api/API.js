@@ -26,7 +26,7 @@ export function newAxios(args) {
   const { baseUrl, headers, cors, ...opts } = args || {};
 
   const config = {
-    baseURL: wrapCORS(baseUrl, cors),
+    baseURL: wrapCORS(baseUrl, cors) || '',
     headers: {
       common: {
         Accept: 'application/json',
