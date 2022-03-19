@@ -13,7 +13,7 @@ class MasterAnime extends Provider {
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return 'https://static.animecdn.xyz/static/img/masterani-icon.png';
+    return 'https://static.anmedm.com/static/img/masterani-icon.png';
   }
 
   episodeUrl(args) {
