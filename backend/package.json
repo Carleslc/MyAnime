@@ -28,7 +28,7 @@
     "jsonframe-cheerio": "^3.0.1",
     "lodash.isequal": "^4.5.0",
     "luxon": "^1.2.1",
-    "nconf": "^0.10.0",
+    "nconf": "^0.11.4",
     "popura": "^1.2.5",
     "redis": "^3.1.1",
     "request": "^2.86.0"
