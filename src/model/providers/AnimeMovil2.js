@@ -7,7 +7,7 @@ class AnimeMovil2 extends Provider {
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return `${this.url}assets/webApp/ico.png`;
+    return `${this.url}media/icons/ico.ico`;
   }
 
   episodeUrl({ title, episode }) {

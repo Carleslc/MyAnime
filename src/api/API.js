@@ -30,6 +30,7 @@ export function newAxios(args) {
     headers: {
       common: {
         Accept: 'application/json',
+        SameSite: 'Lax',
       },
       ...headers,
     },

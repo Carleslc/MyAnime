@@ -12,7 +12,7 @@ class NineAnime extends Provider {
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return 'https://s2.bunnycdn.ru/assets/sites/9anime/favicons/favicon.png';
+    return `${this.url}assets/sites/9anime/icons/favicon.png`;
   }
 }
 

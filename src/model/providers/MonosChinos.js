@@ -5,8 +5,9 @@ class MonosChinos extends Provider {
     super('https://monoschinos2.com/', 2, ['es']);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return `${this.url}assets/img/favicon.ico`;
+    return 'statics/icons/monoschinos.ico'; // `${this.url}public/favicon.ico`
   }
 
   episodeUrl({ title, episode }) {
