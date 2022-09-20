@@ -7,7 +7,7 @@
     label="<3"
     icon="img:statics/kofi.png"
   >
-    <q-tooltip transition-show="fade" transition-hide="fade" content-class="bg-primary shadow-2">
+    <q-tooltip transition-show="fade" transition-hide="fade" content-class="bg-primary shadow-2" class="no-scroll">
       <div v-html="donate" />
     </q-tooltip>
   </q-btn>
