@@ -2,7 +2,7 @@ import Provider from './Provider.js';
 
 class AnimeFenix extends Provider {
   constructor() {
-    super('https://animefenix.com/', 2, ['es']);
+    super('https://animefenix.tv/', 2, ['es']);
   }
 
   episodeUrl({ title, episode }) {

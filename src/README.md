@@ -8,37 +8,45 @@ Watch your favourite animes synchronized with your usual provider.
 yarn
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+## Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
 quasar dev
 ```
 
-### Lint the files
+### Node >= v17
+
+Set before `quasar dev`:
+
+```bash
+export NODE_OPTIONS=--openssl-legacy-provider
+```
+
+## Lint the files
 
 ```bash
 yarn run lint
 ```
 
-### Build the app for production
+## Build the app for production
 
 ```bash
 quasar build
 ```
 
-### Serve production app
+## Serve production app
 
 ```bash
 quasar serve -o --history dist/spa
 ```
 
-### Deploy to Github Pages
+## Deploy to Github Pages
 
 ```sh
 git subtree push --prefix dist/spa origin gh-pages
 ```
 
-### Upgrade Quasar
+## Upgrade Quasar
 
 ```bash
 quasar upgrade -i

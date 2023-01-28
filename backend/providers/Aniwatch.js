@@ -1,6 +1,9 @@
 const axios = require('axios');
 const { generateToken } = require('../utils/strings');
 
+// This provider is no longer active
+// We keep this file only as a reference
+
 class Aniwatch {
   constructor() {
     this.url = 'https://aniwatch.me/';

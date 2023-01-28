@@ -10,7 +10,6 @@ import AnimeMovil2 from '@/model/providers/AnimeMovil2';
 import AnimeHeaven from '@/model/providers/AnimeHeaven';
 import Animeflix from '@/model/providers/Animeflix';
 import AniMixPlay from '@/model/providers/AniMixPlay';
-import Twist from '@/model/providers/Twist';
 import MasterAnime from '@/model/providers/MasterAnime';
 import { NineAnimeSync } from '@/model/providers/NineAnime';
 import { GogoanimeNl, GogoanimeCm } from '@/model/providers/Gogoanime';
@@ -40,7 +39,6 @@ export const providers = Object.freeze([
   { label: 'AnimeHeaven', value: AnimeHeaven },
   { label: 'Animeflix', value: Animeflix },
   { label: 'MasterAnime', value: MasterAnime },
-  { label: 'Twist', value: Twist },
   { label: 'Gogoanime', value: GogoanimeCm },
   { label: 'Gogoanime.nl', value: GogoanimeNl },
   { label: '9Anime', value: NineAnimeSync },
