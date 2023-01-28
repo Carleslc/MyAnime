@@ -9,8 +9,10 @@ class Crunchyroll extends Provider {
     this.delegate(search);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return `${this.url}favicons/favicon-32x32.png`;
+    // `${this.url}favicons/favicon-32x32.png`;
+    return 'statics/icons/crunchyroll.png';
   }
 
   episodeUrl({ title, episode }) {
