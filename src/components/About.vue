@@ -43,9 +43,8 @@
           <li><a href="https://www.google.com/" target="_blank">Google</a></li>
           <li>🇬🇧 <a href="https://animixplay.to/" target="_blank">AniMixPlay</a></li>
           <li>🇬🇧 <a href="https://animeheaven.ru/" target="_blank">AnimeHeaven</a></li>
-          <li>🇬🇧 <a href="https://animeflix.sbs/" target="_blank">Animeflix</a></li>
+          <li>🇬🇧 <a href="https://animeflix.live/" target="_blank">Animeflix</a></li>
           <li>🇬🇧 <a href="https://masteranime.es/" target="_blank">MasterAnime</a></li>
-          <li>🇬🇧 <a href="https://twist.moe/" target="_blank">Twist</a></li>
           <li>🇬🇧 <a href="https://gogoanime.cm/" target="_blank">GogoAnime.cm</a></li>
           <li>🇬🇧 <a href="https://gogoanime.nl/" target="_blank">GogoAnime.nl</a></li>
           <li>🇬🇧 <a href="https://9anime.to/" target="_blank">9Anime</a></li>
@@ -54,7 +53,7 @@
           <li>🇪🇸 <a href="https://duckduckgo.com/" target="_blank">Voy a tener suerte</a></li>
           <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>
           <li>🇪🇸 <a href="https://www.animeid.tv/" target="_blank">AnimeID</a></li>
-          <li>🇪🇸 <a href="https://animefenix.com/" target="_blank">AnimeFenix</a></li>
+          <li>🇪🇸 <a href="https://animefenix.tv/" target="_blank">AnimeFenix</a></li>
           <li>🇪🇸 <a href="http://jkanime.net/" target="_blank">jkanime</a></li>
           <li>🇪🇸 <a href="https://monoschinos2.com/" target="_blank">MonosChinos</a></li>
           <li>🇪🇸 <a href="https://animemovil2.com/" target="_blank">AnimeMovil</a></li>
