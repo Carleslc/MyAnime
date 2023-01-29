@@ -3,7 +3,7 @@
     <q-card-section class="row justify-center items-center q-pa-lg">
       <h1 class="text-center">MyAnime</h1>
       <div class="absolute-right">
-        <q-img v-if="!small" src="statics/chibi.png" width="96px" class="q-ma-md" />
+        <q-img v-if="!small" src="chibi.png" width="96px" class="q-ma-md" />
       </div>
     </q-card-section>
     <q-separator />

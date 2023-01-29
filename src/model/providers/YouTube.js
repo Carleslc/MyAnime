@@ -7,7 +7,7 @@ class YouTube extends FeelingLucky {
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return 'statics/icons/youtube.png';
+    return 'icons/youtube.png';
   }
 }
 

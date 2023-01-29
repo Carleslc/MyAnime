@@ -7,7 +7,7 @@ class MonosChinos extends Provider {
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return 'statics/icons/monoschinos.ico'; // `${this.url}public/favicon.ico`
+    return 'icons/monoschinos.ico';
   }
 
   episodeUrl({ title, episode }) {

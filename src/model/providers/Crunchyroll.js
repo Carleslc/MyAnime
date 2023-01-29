@@ -12,7 +12,7 @@ class Crunchyroll extends Provider {
   // eslint-disable-next-line class-methods-use-this
   get icon() {
     // `${this.url}favicons/favicon-32x32.png`;
-    return 'statics/icons/crunchyroll.png';
+    return 'icons/crunchyroll.png';
   }
 
   episodeUrl({ title, episode }) {

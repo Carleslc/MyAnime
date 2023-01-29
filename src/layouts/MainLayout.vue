@@ -155,7 +155,7 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 export default {
   meta: {
     meta: {
-      'og:image': { property: 'og:image', content: `${window.location.href}statics/chibi.png` },
+      'og:image': { property: 'og:image', content: `${window.location.href}/chibi.png` },
     },
   },
   mixins: [

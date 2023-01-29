@@ -5,7 +5,7 @@
     target="_blank"
     color="purple"
     label="<3"
-    icon="img:statics/kofi.png"
+    icon="img:kofi.png"
   >
     <q-tooltip transition-show="fade" transition-hide="fade" content-class="bg-primary shadow-2 no-scroll">
       <div v-html="donate" />

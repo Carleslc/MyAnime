@@ -46,7 +46,7 @@ export class MyAnimeList extends API {
   constructor() {
     super({
       name: 'MyAnimeList',
-      image: 'statics/mal.png',
+      image: 'mal.png',
       homeUrl: 'https://myanimelist.net/',
       profileUrl: 'https://myanimelist.net/profile/',
       registerUrl: 'https://myanimelist.net/register.php',

@@ -12,7 +12,7 @@ class AnimeFLV extends Provider {
 
   // eslint-disable-next-line class-methods-use-this
   get icon() {
-    return 'statics/icons/animeflv.ico';
+    return 'icons/animeflv.ico';
   }
 
   episodeUrl({ anime, title, episode }) {
