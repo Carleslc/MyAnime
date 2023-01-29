@@ -10,6 +10,7 @@ services:
     ports:
       - 3000:3000
     environment:
+      - WHITELIST=my-anime.netlify.app,anime.carleslc.me,carleslc.me
       - REDIS_HOST=my-anime-redis-cache
       - NODE_ENV=production
       - PORT=3000
