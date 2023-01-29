@@ -21,7 +21,9 @@ export class FeelingLuckyResolve extends FeelingLucky {
   constructor(url, prefix, search, languages) {
     super(url, prefix, search, languages);
 
-    this.client = newAxios();
+    this.client = newAxios({
+      baseUrl: url + prefix,
+    });
   }
 
   /* eslint-disable no-unused-vars */
@@ -30,7 +32,7 @@ export class FeelingLuckyResolve extends FeelingLucky {
   async resolve(searchResponse, args) {} // Template
 
   async open(args) {
-    const searchResponse = await this.client.get(this.episodeUrl(args));
+    const searchResponse = await this.client.get(this.search(args));
     const episodeResolveUrl = await this.resolve(searchResponse, args);
 
     if (episodeResolveUrl) {
@@ -51,7 +53,7 @@ class FeelingDuckyResolve extends FeelingLuckyResolve {
   async resolve(searchResponse, args) {
     const episodeRedirectUrl = searchResponse.data && searchResponse.data.Redirect;
     const episodeResolveUrl = episodeRedirectUrl && (await this.toUrl(episodeRedirectUrl, args));
-    return episodeResolveUrl;
+    return episodeResolveUrl || `https://duckduckgo.com/?q=!ducky+${this.search(args)}`;
   }
 }
 

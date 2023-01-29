@@ -5,9 +5,9 @@ class Animeflix extends Provider {
     super('https://animeflix.live/', 2, ['en']);
   }
 
-  episodeUrl({ title, episode }) {
-    // https://animeflix.live/watch/one-piece-episode-1006
-    return `${this.url}watch/${Provider.encode(title)}-episode-${episode}`;
+  episodeUrl({ anime, title, episode }) {
+    // https://animeflix.live/watch/one-piece-episode-1006/21/
+    return `${this.url}watch/${Provider.encode(title)}-episode-${episode}/${anime.id}/`;
   }
 }
 

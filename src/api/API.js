@@ -12,7 +12,7 @@ export function encodeParams(params) {
 }
 
 function wrapCORS(baseUrl, cors) {
-  return cors ? CORS_PROXY_URL + baseUrl : baseUrl;
+  return cors ? CORS_PROXY_URL + (baseUrl || '') : baseUrl;
 }
 
 function wrapOptsCORS(opts, cors) {
@@ -30,7 +30,7 @@ export function newAxios(args) {
     headers: {
       common: {
         Accept: 'application/json',
-        SameSite: 'Lax',
+        // SameSite: 'Lax',
       },
       ...headers,
     },

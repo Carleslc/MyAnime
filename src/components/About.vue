@@ -41,14 +41,15 @@
           <li><a href="https://www.crunchyroll.com/" target="_blank">Crunchyroll</a></li>
           <li><a href="https://www.netflix.com/" target="_blank">Netflix</a></li>
           <li><a href="https://www.google.com/" target="_blank">Google</a></li>
-          <li>🇬🇧 <a href="https://animixplay.to/" target="_blank">AniMixPlay</a></li>
-          <li>🇬🇧 <a href="https://animeheaven.ru/" target="_blank">AnimeHeaven</a></li>
-          <li>🇬🇧 <a href="https://animeflix.live/" target="_blank">Animeflix</a></li>
-          <li>🇬🇧 <a href="https://masteranime.es/" target="_blank">MasterAnime</a></li>
-          <li>🇬🇧 <a href="https://gogoanime.cm/" target="_blank">GogoAnime.cm</a></li>
-          <li>🇬🇧 <a href="https://gogoanime.nl/" target="_blank">GogoAnime.nl</a></li>
           <li>🇬🇧 <a href="https://9anime.to/" target="_blank">9Anime</a></li>
           <li>🇬🇧 <a href="https://zoro.to/" target="_blank">Zoro</a></li>
+          <li>🇬🇧 <a href="https://yugen.to/" target="_blank">YugenAnime</a></li>
+          <li>🇬🇧 <a href="https://gogoanime.bid/" target="_blank">GogoAnime</a></li>
+          <li>🇬🇧 <a href="https://gogoanime.page/" target="_blank">GogoAnime.page</a></li>
+          <li>🇬🇧 <a href="https://animesuge.to/" target="_blank">AnimeSuge</a></li>
+          <li>🇬🇧 <a href="https://animepahe.ru/" target="_blank">animepahe</a></li>
+          <li>🇬🇧 <a href="https://animeheaven.ru/" target="_blank">AnimeHeaven</a></li>
+          <li>🇬🇧 <a href="https://animeflix.live/" target="_blank">Animeflix</a></li>
           <li>🇬🇧 <a href="https://duckduckgo.com/" target="_blank">I'm Feeling Lucky</a></li>
           <li>🇪🇸 <a href="https://duckduckgo.com/" target="_blank">Voy a tener suerte</a></li>
           <li>🇪🇸 <a href="https://www.animeflv.net" target="_blank">AnimeFlv</a></li>

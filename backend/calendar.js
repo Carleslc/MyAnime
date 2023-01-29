@@ -9,6 +9,7 @@ const tag = 'calendar';
 const refreshSeconds = 60 * 60 * 24;
 const backupTTL = refreshSeconds;
 
+// Alternative: https://www.livechart.me/timetable
 const CALENDAR_URL = 'https://notify.moe/calendar';
 
 function formatDateTime(dateTime) {

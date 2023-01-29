@@ -1,7 +1,7 @@
-import MALSync from '@/api/MALSync';
 import { openURL } from 'quasar';
-import { withSearchResolve } from './FeelingLucky';
+import MALSync from '@/api/MALSync';
 import Provider from './Provider.js';
+import { withSearchResolve } from './FeelingLucky';
 
 class NineAnime extends Provider {
   constructor(search) {

@@ -18,20 +18,13 @@ class AnimeHeaven extends Provider {
     return 'https://static.anmedm.com/static/css/animeheaven-logo.png';
   }
 
-  episodeUrl({ anime, title, episode }) {
+  episodeUrl({ anime, title }) {
     if (anime.type === 'movie') {
-      return `${this.url}search?q=${encodeURIComponent(Provider.trimSpecials(title))}`;
+      return `${this.url}watch/${encodeURIComponent(Provider.trimSpecials(title))}`;
     }
-    return this.search.episodeUrl({ anime, title, episode });
+    // return this.search.episodeUrl({ anime, title, episode });
+    return `${this.url}search?q=${encodeURIComponent(Provider.trimSpecials(title))}`;
   }
-
-  /* episodeUrl({ title }) {
-    return `${this.url}detail/${Provider.encode(title)}-sub`;
-  } */
-
-  /* episodeUrl({ title }) {
-    return `${this.url}search?q=${encodeURIComponent(title)}`;
-  } */
 }
 
 export default new AnimeHeaven();

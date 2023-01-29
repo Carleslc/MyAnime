@@ -6,6 +6,7 @@ class MALSync {
   constructor() {
     this.axios = newAxios({
       baseUrl: API_URL,
+      cors: true,
     });
   }
 

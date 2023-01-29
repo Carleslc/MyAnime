@@ -7,18 +7,22 @@ import jkAnime from '@/model/providers/jkAnime';
 import MonosChinos from '@/model/providers/MonosChinos';
 import AnimeFenix from '@/model/providers/AnimeFenix';
 import AnimeMovil2 from '@/model/providers/AnimeMovil2';
+import AnimeSuge from '@/model/providers/AnimeSuge';
+import Animepahe from '@/model/providers/Animepahe';
 import AnimeHeaven from '@/model/providers/AnimeHeaven';
 import Animeflix from '@/model/providers/Animeflix';
-import AniMixPlay from '@/model/providers/AniMixPlay';
-import MasterAnime from '@/model/providers/MasterAnime';
+import YugenAnime from '@/model/providers/YugenAnime';
 import { NineAnimeSync } from '@/model/providers/NineAnime';
-import { GogoanimeNl, GogoanimeCm } from '@/model/providers/Gogoanime';
 import { ZoroWithAPI } from '@/model/providers/Zoro';
-import { YouTubeES, YouTubeEN } from '@/model/providers/YouTube';
+import { GogoanimeOfficial, GogoanimeAlt } from '@/model/providers/Gogoanime';
 import { FeelingDuckyES, FeelingDuckyEN, FeelingLuckyES, FeelingLuckyEN } from '@/model/providers/FeelingLucky';
+import { YouTubeES, YouTubeEN } from '@/model/providers/YouTube';
 
 import { i18n } from '@/boot/i18n';
 import { mapFields } from 'vuex-map-fields';
+
+// Alternatives: https://www.reddit.com/r/StreamingAnime/comments/wcn0rt/top_streaming_services_to_watch_anime/
+// TODO: AllAnime https://allanime.site/anime/ReooPAxPMsHM4KPMY/one-piece
 
 export const providers = Object.freeze([
   { label: 'MyAnimeList', value: MyAnimeList },
@@ -35,14 +39,15 @@ export const providers = Object.freeze([
   { label: 'YouTube', value: YouTubeES },
   { label: "I'm feeling ducky", value: FeelingDuckyEN },
   { label: 'Google', value: FeelingLuckyEN },
-  { label: 'AniMixPlay', value: AniMixPlay },
-  { label: 'AnimeHeaven', value: AnimeHeaven },
-  { label: 'Animeflix', value: Animeflix },
-  { label: 'MasterAnime', value: MasterAnime },
-  { label: 'Gogoanime', value: GogoanimeCm },
-  { label: 'Gogoanime.nl', value: GogoanimeNl },
   { label: '9Anime', value: NineAnimeSync },
   { label: 'Zoro', value: ZoroWithAPI },
+  { label: 'YugenAnime', value: YugenAnime },
+  { label: 'Gogoanime', value: GogoanimeOfficial },
+  { label: 'Gogoanime 2', value: GogoanimeAlt },
+  { label: 'AnimeSuge', value: AnimeSuge },
+  { label: 'animepahe', value: Animepahe },
+  { label: 'AnimeHeaven', value: AnimeHeaven },
+  { label: 'Animeflix', value: Animeflix },
   { label: 'YouTube', value: YouTubeEN },
 ]);
 
