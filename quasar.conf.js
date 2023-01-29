@@ -42,11 +42,9 @@ module.exports = function (ctx) {
       // Possible values for "all":
       // * 'auto' - Auto-import needed Quasar components & directives
       //            (slightly higher compile time; next to minimum bundle size; most convenient)
-      // * false  - Manually specify what to import
-      //            (fastest compile time; minimum bundle size; most tedious)
-      // * true   - Import everything from Quasar
+      // * 'all'  - Import everything from Quasar
       //            (not treeshaking Quasar; biggest bundle size; convenient)
-      all: 'auto',
+      importStrategy: 'auto',
 
       components: [],
       directives: [],
@@ -54,9 +52,6 @@ module.exports = function (ctx) {
       // Quasar plugins
       plugins: ['LocalStorage', 'Notify', 'Meta'],
     },
-
-    // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
-    supportIE: false,
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ts
     supportTS: false,
@@ -66,12 +61,10 @@ module.exports = function (ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      modern: true,
       vueRouterMode: 'history', // available values: 'hash', 'history'
       publicPath: 'MyAnime',
 
       // rtl: false, // https://quasar.dev/options/rtl-support
-      // preloadChunks: true,
       // showProgress: false,
       // gzip: true,
       // analyze: true,

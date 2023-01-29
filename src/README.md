@@ -10,6 +10,8 @@ yarn
 
 ## Start the app in development mode (hot-code reloading, error reporting, etc.)
 
+### `nvm use` (Node v16.19)
+
 ```bash
 quasar dev
 ```
