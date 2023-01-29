@@ -172,7 +172,13 @@ export default {
     },
     nextCalendarAiringEpisode() {
       if (this.calendarEntry) {
-        const nextAiringEpisode = Math.min(...Object.keys(this.calendarEntry).map((episode) => parseInt(episode, 10)));
+        const calendarEpisodesDates = Object.entries(this.calendarEntry).map(
+          ([episode, date]) => [parseInt(episode, 10), DateTime.fromISO(date)]
+        );
+        // Episode with minimum date
+        const nextAiringEpisode = calendarEpisodesDates.reduce(
+          (acc, current) => (current[1] < acc[1] ? current : acc) // acc is the [episode, date] with minimum date
+        )[0];
         if (!this.anime.totalEpisodes || nextAiringEpisode <= this.anime.totalEpisodes) {
           return nextAiringEpisode;
         }

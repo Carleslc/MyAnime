@@ -9,6 +9,8 @@ const tag = 'calendar';
 const refreshSeconds = 60 * 60 * 24;
 const backupTTL = refreshSeconds;
 
+const CALENDAR_URL = 'https://notify.moe/calendar';
+
 function formatDateTime(dateTime) {
   // https://moment.github.io/luxon/docs/manual/formatting.html#table-of-tokens
   return dateTime.toFormat('EEE dd/MM/yyyy, HH:mm ZZZZ');
@@ -25,7 +27,7 @@ function parse(html) {
         {
           title: '.calendar-entry-title',
           episode: '.calendar-entry-episode | number',
-          date: '.calendar-entry-time @ data-date',
+          date: '.calendar-entry-time @ datetime',
         },
       ],
     },
@@ -46,13 +48,49 @@ function parse(html) {
 }
 
 function set(cache, calendar) {
-  cache.add(tag, calendar, { expire: backupTTL, type: 'json' }, (error, added) => {
+  // eslint-disable-next-line no-unused-vars
+  cache.add(tag, calendar, { expire: backupTTL, type: 'json' }, (error, _added) => {
     if (error) {
       console.error(`Calendar set cache error: ${error.message}`);
     } else {
       console.log('Calendar refreshed successfully');
     }
   });
+}
+
+function removeCalendarDuplicates(calendar) {
+  const titleEpisodes = {}; // title: [int(episode)]
+  const filteredEntries = [];
+
+  calendar.airingAnimes.forEach((entry) => {
+    const sameTitleEpisodes = titleEpisodes[entry.title];
+    const entryEpisode = parseInt(entry.episode, 10);
+
+    if (sameTitleEpisodes) {
+      // Discard duplicated episodes (keep older date, i.e. first episode added) [previousEpisode === entryEpisode]
+      // Discard older episodes published later (e.g. dubbed versions) [previousEpisode > entryEpisode]
+      if (!sameTitleEpisodes.some((previousEpisode) => previousEpisode >= entryEpisode)) {
+        filteredEntries.push(entry);
+        sameTitleEpisodes.push(entryEpisode);
+      }
+    } else {
+      filteredEntries.push(entry);
+      titleEpisodes[entry.title] = [entryEpisode];
+    }
+  });
+
+  return {
+    airingAnimes: filteredEntries
+  };
+}
+
+function clean(calendar) {
+  try {
+    return removeCalendarDuplicates(calendar);
+  } catch (e) {
+    console.error('Cannot clean calendar', e);
+    return calendar;
+  }
 }
 
 function getCurrentCalendar(cache) {
@@ -74,9 +112,9 @@ function getCurrentCalendar(cache) {
 function fetch(cache) {
   return new Promise((resolve, reject) => {
     function retrieve() {
-      get('https://notify.moe/calendar')
+      get(CALENDAR_URL)
         .then((html) => {
-          const calendar = parse(html);
+          const calendar = clean(parse(html));
           console.log('Calendar retrieved');
           const calendarData = JSON.stringify(calendar);
           if (cache) {
