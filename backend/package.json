@@ -19,10 +19,10 @@
   "dependencies": {
     "axios": "^0.21.2",
     "basic-auth": "^2.0.0",
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.20.1",
     "cheerio": "^1.0.0-rc.2",
     "cors": "^2.8.4",
-    "express": "^4.16.3",
+    "express": "^4.18.2",
     "express-redis-cache": "^1.1.1",
     "full-icu": "^1.2.1",
     "jsonframe-cheerio": "^3.0.1",
