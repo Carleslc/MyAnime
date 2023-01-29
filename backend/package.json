@@ -22,7 +22,7 @@
     "body-parser": "^1.18.2",
     "cheerio": "^1.0.0-rc.2",
     "cors": "^2.8.4",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "express-redis-cache": "^1.1.1",
     "full-icu": "^1.2.1",
     "jsonframe-cheerio": "^3.0.1",
