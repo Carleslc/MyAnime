@@ -42,12 +42,6 @@ quasar build
 quasar serve -o --history dist/spa
 ```
 
-## Deploy to Github Pages
-
-```sh
-git subtree push --prefix dist/spa origin gh-pages
-```
-
 ## Upgrade Quasar
 
 ```bash
