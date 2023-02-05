@@ -31,7 +31,7 @@ const cache = require('express-redis-cache')({ client, prefix: 'anime' });
 }); */
 
 app.get('/', (req, res) => {
-  res.send('<h2>MyAnime API</h2><a href="https://carleslc.me/MyAnime/">Go to the app</a>');
+  res.send('<h2>MyAnime API</h2><a href="https://my-anime.netlify.app/">Go to the app</a>');
 });
 
 const calendar = require('./calendar');

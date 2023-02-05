@@ -6,6 +6,8 @@ Watch your favourite animes with your usual provider, synchronized with [MyAnime
 
 ![MyAnime](https://i.imgur.com/OnxMvdY.png)
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/4ce00d86-1734-45bf-a867-a89d351e45a8/deploy-status)](https://app.netlify.com/sites/my-anime/deploys)
+
 ## Why to use?
 
 This is a shortcut to access your favourite anime series with your preferred providers, all in sync with the selected animes in your MyAnimeList profile.
