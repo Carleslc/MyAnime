@@ -78,7 +78,7 @@ Official providers like Crunchyroll or Netflix are recommended. Use other provid
 
 <p align="center">
   <br>
-  <img src="src/statics/chibi.png">
+  <img src="public/chibi.png">
 </p>
 
 <p align="center">
